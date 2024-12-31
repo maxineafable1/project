@@ -6,6 +6,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.navbar {
+  background-color: rgba(255, 255, 255, 0.2);  
+  backdrop-filter: blur(4px);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
 /* nursing page */
 .item:first-child {
   grid-column: 1 / span 2;
@@ -36,30 +44,37 @@ body {
 /* motto life page */
 .motto:first-child {
   grid-column: 1 / span 2;
+  transition-delay: 500ms;
 }
 
 .motto:nth-child(2) {
   grid-column: 3 / span 2;
+  transition-delay: 300ms;
 }
 
 .motto:nth-child(3) {
   grid-column: 5 / span 2;
+  transition-delay: 100ms;
 }
 
 .motto:nth-child(4) {
   grid-column: 7 / span 2;
+  transition-delay: 50ms;
 }
 
 .motto:nth-child(5) {
   grid-column: 2 / span 2;
+  transition-delay: 400ms;
 }
 
 .motto:nth-child(6) {
   grid-column: 4 / span 2;
+  transition-delay: 200ms;
 }
 
 .motto:last-child {
   grid-column: 6 / span 2;
+  transition-delay: 100ms;
 }
 /* end */
 
@@ -124,6 +139,45 @@ body {
 .importance:last-child {
   grid-column: 1 / -1;
 }
+/* end */
+
+/* lessons learned page */
+.lesson:first-child {
+  grid-column: 1 / -1;
+  transition-delay: 50ms;
+}
+
+.lesson:nth-child(2) {
+  grid-column: 1 / span 3;
+  transition-delay: 300ms;
+}
+
+.lesson:nth-child(3) {
+  grid-column: 4 / -1;
+  transition-delay: 100ms;
+}
+
+.lesson:nth-child(4) {
+  grid-column: 1 / -1;
+  transition-delay: 200ms;
+}
+
+.lesson:nth-child(5) {
+  grid-column: 1 / span 2;
+  transition-delay: 500ms;
+}
+
+.lesson:nth-child(6) {
+  grid-column: 3 / span 2;
+  transition-delay: 300ms;
+}
+
+.lesson:last-child {
+  grid-column: 5 / span 2;
+  transition-delay: 50ms;
+}
+
+/* end */
 
 /* animations */
 .underline-link {

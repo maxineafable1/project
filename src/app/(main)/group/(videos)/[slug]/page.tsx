@@ -1,12 +1,26 @@
 import { videoLinks } from "@/features/group/data/videoLinks"
+import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import React from "react"
+
+type Props = {
+  params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { slug } = await params
+
+  const video = videoLinks.find(({href}) => href === slug)
+
+  return {
+    title: video ? `${video.text} | GOSH!P GIRLS` : 'GOSH!P GIRLS'
+  }
+}
 
 export default async function page({
   params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
+}: Props) {
   const { slug } = await params
 
   const video = videoLinks.find(({href}) => href === slug)

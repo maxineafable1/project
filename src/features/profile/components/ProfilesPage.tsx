@@ -6,7 +6,7 @@ import { profileList } from "../data/profiles"
 
 export default function ProfilesPage() {
   return (
-    <section className="max-w-screen-xl mx-auto px-4 py-16">
+    <section className="max-w-screen-2xl mx-auto px-4 py-16">
       <div className="space-y-16">
         <h2 className="text-4xl text-shadow shadow-black/30 font-semibold text-center uppercase">
           Profile Page

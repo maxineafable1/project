@@ -24,7 +24,7 @@ export default function NursingPage() {
                   transition-transform duration-500"
               >
                 <div className="bg-neutral-400 aspect-square rounded-lg card-up"></div>
-                <div className="text-center text-xl font-semibold uppercase text-shadow shadow-black/20">
+                <div className="text-center text-xl font-semibold uppercase text-shadow shadow-black/30">
                   {text}
                 </div>
               </Link>

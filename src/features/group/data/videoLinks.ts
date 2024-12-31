@@ -1,14 +1,14 @@
 export const videoLinks = [
   {
-    text: 'A day in our life',
+    text: 'A Day In Our Life',
     href: 'a-day-in-our-life',
   },
   {
-    text: 'New year celebration',
+    text: 'New Year Celebration',
     href: 'new-year-celebration',
   },
   {
-    text: 'Review preparations',
+    text: 'Review Preparations',
     href: 'review-preparations',
   },
 ]

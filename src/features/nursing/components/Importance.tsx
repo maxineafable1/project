@@ -22,7 +22,7 @@ export default function Importance() {
                 ref={ref}
                 className="
                 importance
-                text-xl leading-loose bg-black/30 p-8 rounded-lg
+                text-xl leading-loose bg-black/50 p-8 rounded-lg
                 opacity-0 -translate-x-full 
                 transition-transform duration-500
               "

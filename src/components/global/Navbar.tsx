@@ -4,21 +4,21 @@ import { Button } from "../ui/button"
 
 export default function Navbar() {
   return (
-    <nav
-      className="
-        max-w-screen-xl mx-auto p-4
-        flex justify-between items-center gap-4
-      "
-    >
-      <Link href="/" className="font-bold">
-        GOSH!P GIRLS
-      </Link>
-      <Button
-        asChild
-        className="rounded-full px-6 font-semibold bg-pink-500 hover:bg-pink-600 active:bg-pink-700"
+    <nav className="navbar">
+      <div
+        className="max-w-screen-2xl mx-auto p-4
+        flex justify-between items-center gap-4"
       >
-        <Link href="/login">Log in</Link>
-      </Button>
+        <Link href="/" className="font-bold">
+          GOSH!P GIRLS
+        </Link>
+        <Button
+          asChild
+          className="rounded-full px-6 font-semibold bg-pink-500 hover:bg-pink-600 active:bg-pink-700"
+        >
+          <Link href="/login">Log in</Link>
+        </Button>
+      </div>
     </nav>
   )
 }

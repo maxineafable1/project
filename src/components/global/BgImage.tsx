@@ -33,6 +33,7 @@ export default function BgImage({
       className={`
         bg-[image:var(--bg-img)]
         bg-center bg-cover bg-no-repeat min-h-dvh
+        
       `}
       style={
         {

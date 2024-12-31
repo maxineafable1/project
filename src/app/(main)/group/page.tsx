@@ -1,10 +1,15 @@
 import { videoLinks } from "@/features/group/data/videoLinks"
+import { Metadata } from "next"
 import Link from "next/link"
 import React from "react"
 
+export const metadata: Metadata = {
+  title: 'Group | GOSH!P GIRLS'
+}
+
 export default function page() {
   return (
-    <section className="grid place-items-center min-h-dvh">
+    <section className="my-64 grid place-items-center">
       <div className="space-y-16">
         <h2 className="text-7xl text-center font-bold text-shadow-lg uppercase shadow-black/20">
           Group Page

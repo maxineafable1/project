@@ -21,13 +21,20 @@ export default function ProfileLayoutLinks() {
     [searchParams]
   )
 
+  const tab = searchParams.get('tab')
+
   return (
     <ul className="flex items-center uppercase justify-between text-2xl font-semibold">
       {profileLinks.map(({ href, text }) => (
         <Link 
           key={href} 
           href={pathname + '?' + createQueryString('tab', href)}
-          className="underline-link"
+          className={`
+            ${((!tab && text.toLowerCase() === 'biography') || (tab === href)) 
+              ? 'bg-pink-500 px-4 py-2 rounded-md'
+              : 'underline-link'
+            }
+          `}
         >
           {text}
         </Link>

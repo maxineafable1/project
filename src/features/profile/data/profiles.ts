@@ -8,7 +8,7 @@ export const profileList = [
       birthday: 'July 03, 2006',
       address: 'Tartaro, San Miguel, Bulacan',
       contactNum: '09173560525',
-      gmail: '',
+      gmail: 'example@xyz.com',
     },
   },
   {
