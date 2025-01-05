@@ -16,102 +16,140 @@ body {
 
 /* nursing page */
 .item:first-child {
-  grid-column: 1 / span 2;
-  transition-delay: 400ms;
+  @apply 
+    col-start-1 
+    md:col-span-2 sm:col-span-2 col-span-6
+    delay-400
 }
 
 .item:nth-child(2) {
-  grid-column: 3 / span 2;
-  transition-delay: 200ms;
+  @apply 
+    md:col-start-3 sm:col-start-3 col-start-1
+    md:col-span-2 sm:col-span-2 col-span-6
+    delay-200
 }
 
 .item:nth-child(3) {
-  grid-column: 5 / span 2;
-  transition-delay: 100ms;
+  @apply 
+    md:col-start-5 sm:col-start-1
+    md:col-span-2 sm:col-span-2 col-span-6
+    md:delay-100 sm:delay-300
 }
 
 .item:nth-child(4) {
-  grid-column: 2 / span 2;
-  transition-delay: 300ms;
+  @apply 
+    md:col-start-2 col-start-1
+    md:col-span-2 sm:col-span-2 col-span-6
+    md:delay-300 sm:delay-100
 }
 
 .item:last-child {
-  grid-column: 4 / span 2;
-  transition-delay: 100ms;
+  @apply 
+    md:col-start-4 sm:col-start-2 col-start-1
+    md:col-span-2 sm:col-span-2 col-span-6
+    md:delay-100 sm:delay-200
 }
 /* end */
 
 /* motto life page */
 .motto:first-child {
-  grid-column: 1 / span 2;
-  transition-delay: 500ms;
+  @apply 
+    md:col-start-1 col-start-1
+    md:col-span-2 col-span-2
+    delay-500
 }
 
 .motto:nth-child(2) {
-  grid-column: 3 / span 2;
-  transition-delay: 300ms;
+  @apply 
+    md:col-start-3 col-start-3
+    md:col-span-2 col-span-2
+    delay-300
 }
 
 .motto:nth-child(3) {
-  grid-column: 5 / span 2;
-  transition-delay: 100ms;
+  @apply 
+    md:col-start-5 col-start-1
+    md:col-span-2 col-span-2
+    delay-100
 }
 
 .motto:nth-child(4) {
-  grid-column: 7 / span 2;
-  transition-delay: 50ms;
+  @apply 
+    md:col-start-7 col-start-3
+    md:col-span-2 col-span-2
+    delay-50
 }
 
 .motto:nth-child(5) {
-  grid-column: 2 / span 2;
-  transition-delay: 400ms;
+  @apply 
+    md:col-start-2 col-start-1
+    md:col-span-2 col-span-2
+    delay-400
 }
 
 .motto:nth-child(6) {
-  grid-column: 4 / span 2;
-  transition-delay: 200ms;
+  @apply 
+    md:col-start-4 col-start-3
+    md:col-span-2 col-span-2
+    delay-200
 }
 
 .motto:last-child {
-  grid-column: 6 / span 2;
-  transition-delay: 100ms;
+  @apply 
+    md:col-start-6 col-start-2 col-end-4
+    md:col-span-2 col-span-2
+    delay-100
 }
 /* end */
 
 /* profile page */
 .profile:first-child {
-  grid-column: 2 / span 2;
-  transition-delay: 500ms;
+  @apply 
+    md:col-start-2 col-start-1
+    md:col-span-2 col-span-2
+    delay-500
 }
 
 .profile:nth-child(2) {
-  grid-column: 4 / span 2;
-  transition-delay: 200ms;
+  @apply 
+    md:col-start-4 col-start-3
+    md:col-span-2 col-span-2
+    delay-200
 }
 
 .profile:nth-child(3) {
-  grid-column: 6 / span 2;
-  transition-delay: 100ms;
+  @apply 
+    md:col-start-6 col-start-1
+    md:col-span-2 col-span-2
+    md:delay-100 delay-400
 }
 
 .profile:nth-child(4) {
-  grid-column: 1 / span 2;
-  transition-delay: 400ms;
+  @apply 
+    md:col-start-1 col-start-3
+    md:col-span-2 col-span-2
+    md:delay-400 delay-100
 }
 
 .profile:nth-child(5) {
-  grid-column: 3 / span 2;
-  transition-delay: 300ms;
+  @apply 
+    md:col-start-3 col-start-1
+    md:col-span-2 col-span-2
+    delay-300
 }
 
 .profile:nth-child(6) {
-  grid-column: 5 / span 2;
-  transition-delay: 200ms;
+  @apply 
+    md:col-start-5 col-start-3
+    md:col-span-2 col-span-2
+    delay-200
 }
 
 .profile:last-child {
-  grid-column: 7 / span 2;
-  transition-delay: 50ms;
+  @apply 
+    md:col-start-7 col-start-2 col-end-4
+    md:col-span-2 col-span-2
+    md:delay-50 delay-250
 }
 /* end */
 
@@ -122,13 +160,17 @@ body {
 }
 
 .importance:nth-child(2) {
-  grid-column: 1 / span 2;
-  transition-delay: 300ms;
+  @apply 
+    col-start-1
+    md:col-span-2 col-span-4
+    delay-300
 }
 
 .importance:nth-child(3) {
-  grid-column: 3 / span 2;
-  transition-delay: 100ms;
+  @apply 
+    md:col-start-3 col-start-1
+    md:col-span-2 col-span-4
+    delay-100
 }
 
 .importance:nth-child(4) {
@@ -148,13 +190,17 @@ body {
 }
 
 .lesson:nth-child(2) {
-  grid-column: 1 / span 3;
-  transition-delay: 300ms;
+  @apply 
+    col-start-1
+    md:col-span-3 col-span-6
+    delay-300
 }
 
 .lesson:nth-child(3) {
-  grid-column: 4 / -1;
-  transition-delay: 100ms;
+  @apply 
+    md:col-start-4 col-start-1
+    md:col-span-3 col-span-6
+    delay-100
 }
 
 .lesson:nth-child(4) {
@@ -163,18 +209,24 @@ body {
 }
 
 .lesson:nth-child(5) {
-  grid-column: 1 / span 2;
-  transition-delay: 500ms;
+  @apply 
+    col-start-1
+    md:col-span-2 col-span-6
+    md:delay-500 delay-250
 }
 
 .lesson:nth-child(6) {
-  grid-column: 3 / span 2;
-  transition-delay: 300ms;
+  @apply 
+    md:col-start-3 col-start-1
+    md:col-span-3 col-span-6
+    md:delay-300 delay-150
 }
 
 .lesson:last-child {
-  grid-column: 5 / span 2;
-  transition-delay: 50ms;
+  @apply 
+    md:col-start-5 col-start-1
+    md:col-span-2 col-span-6
+    delay-50
 }
 
 /* end */

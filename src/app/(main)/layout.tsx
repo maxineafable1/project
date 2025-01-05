@@ -23,7 +23,7 @@ export default function RootLayout({
       >
         <BgImage>
           <Navbar />
-          <main className="h-full">
+          <main>
             {children}
           </main>
         </BgImage>

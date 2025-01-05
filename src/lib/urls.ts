@@ -1,0 +1,1 @@
+export const IMAGE_URL = `https://goship-girls.s3.ap-southeast-1.amazonaws.com`;

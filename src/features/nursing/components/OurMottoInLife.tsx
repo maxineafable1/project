@@ -2,6 +2,7 @@
 
 import { InView } from "react-intersection-observer"
 import { mottoLifeList } from "../data/motto"
+import Image from "next/image"
 
 export default function OurMottoInLife() {
   return (
@@ -9,7 +10,7 @@ export default function OurMottoInLife() {
       <h2 className="text-4xl text-shadow shadow-black/30 font-semibold text-center uppercase">
         Our motto in life
       </h2>
-      <ul className="grid grid-cols-8 gap-x-16 gap-y-8">
+      <ul className="grid md:grid-cols-8 grid-cols-4 lg:gap-x-16 lg:gap-y-8 md:gap-x-12 md:gap-y-6 gap-8">
         {mottoLifeList.map(({ name, src, text }) => (
           <InView
             onChange={(isInView, entry) => {
@@ -25,7 +26,13 @@ export default function OurMottoInLife() {
                   transition-transform duration-500
                 "
               >
-                <div className="bg-neutral-400 aspect-square rounded-lg"></div>
+                <Image
+                  src={src}
+                  alt={name}
+                  width={300}
+                  height={300}
+                  className="rounded-lg aspect-square object-cover object-top card-up"
+                />
                 <div className="space-x-2 text-shadow-sm shadow-black/20">
                   <q>{text}</q>
                   <span>&mdash;</span>

@@ -1,3 +1,9 @@
+import daquel from '../../../../public/profiles/daquel.jpg';
+import paulo from '../../../../public/profiles/paulo.jpg';
+import soriano from '../../../../public/profiles/soriano.jpg';
+import urbino from '../../../../public/profiles/urbino.jpg';
+import villasan from '../../../../public/profiles/villasan.jpg';
+
 export const profileList = [
   {
     src: '',
@@ -12,7 +18,7 @@ export const profileList = [
     },
   },
   {
-    src: '',
+    src: daquel.src,
     name: 'Daquel, Mishee Faith C.',
     href: 'daquel-mishee-faith',
     data: {
@@ -36,7 +42,7 @@ export const profileList = [
     },
   },
   {
-    src: '',
+    src: paulo.src,
     name: 'Paulo, Tyron Jerby C.',
     href: 'paulo-tyron-jerby',
     data: {
@@ -48,7 +54,7 @@ export const profileList = [
     },
   },
   {
-    src: '',
+    src: soriano.src,
     name: 'Soriano, Angeline B.',
     href: 'soriano-angeline',
     data: {
@@ -60,7 +66,7 @@ export const profileList = [
     },
   },
   {
-    src: '',
+    src: urbino.src,
     name: 'Urbino, Hanna Mikhaela B.',
     href: 'urbino-hanna-mikhaela',
     data: {
@@ -72,7 +78,7 @@ export const profileList = [
     },
   },
   {
-    src: '',
+    src: villasan.src,
     name: 'Villasan, Angel C.',
     href: 'villasan-angel',
     data: {

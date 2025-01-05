@@ -11,7 +11,7 @@ export default function GroupLayoutLinks() {
   const currPath = pathname.slice(pathname.lastIndexOf('/') + 1)
 
   return (
-    <ul className="flex items-center uppercase justify-between text-2xl font-semibold">
+    <ul className="flex max-sm:flex-col gap-4 sm:items-center uppercase justify-between text-2xl font-semibold">
       {videoLinks.map(({href, text}) => (
         <Link
           key={href}

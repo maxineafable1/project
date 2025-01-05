@@ -7,7 +7,7 @@ import { nursingLinks } from "../data/nursingLinks"
 export default function NursingPage() {
   return (
     <section className="max-w-screen-xl mx-auto px-4 py-16">
-      <ul className="grid grid-cols-6 gap-16">
+      <ul className="grid md:grid-cols-6 sm:grid-cols-4 lg:gap-16 md:gap-8 gap-6">
         {nursingLinks.map(({ href, text }) => (
           <InView
             onChange={(isInView, entry) => {

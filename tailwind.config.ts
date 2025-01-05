@@ -65,7 +65,12 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+			transitionDelay: {
+				'400': '400ms',
+				'50': '50ms',
+				'250': '250ms',
+			},
   	}
   },
   plugins: [

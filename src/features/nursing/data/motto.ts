@@ -1,3 +1,6 @@
+import paulo from '../../../../public/profiles/paulo-nursing.jpg';
+import daquel from '../../../../public/profiles/daquel-nursing.jpg';
+
 export const mottoLifeList = [
   {
     src: '',
@@ -5,7 +8,7 @@ export const mottoLifeList = [
     text: 'when you\'re stuck don\'t give up - try something new',
   },
   {
-    src: '',
+    src: daquel.src,
     name: 'Daquel',
     text: 'the only limit is the one you place on yourself',
   },
@@ -20,7 +23,7 @@ export const mottoLifeList = [
     text: 'if you don\'t heal what hurt you, you\'ll bleed on people who didn\'t cut you',
   },
   {
-    src: '',
+    src: paulo.src,
     name: 'Paulo',
     text: 'experience is the best teacher',
   },

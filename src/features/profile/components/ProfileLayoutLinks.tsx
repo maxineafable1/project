@@ -24,7 +24,7 @@ export default function ProfileLayoutLinks() {
   const tab = searchParams.get('tab')
 
   return (
-    <ul className="flex items-center uppercase justify-between text-2xl font-semibold">
+    <ul className={`flex max-lg:flex-col gap-4 lg:items-center uppercase justify-between text-2xl font-semibold`}>
       {profileLinks.map(({ href, text }) => (
         <Link 
           key={href} 
@@ -32,7 +32,7 @@ export default function ProfileLayoutLinks() {
           className={`
             ${((!tab && text.toLowerCase() === 'biography') || (tab === href)) 
               ? 'bg-pink-500 px-4 py-2 rounded-md'
-              : 'underline-link'
+              : 'underline-link self-start'
             }
           `}
         >
