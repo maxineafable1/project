@@ -28,6 +28,9 @@ export default function BgImage({
     }
   }
 
+  if (pathname !== '/profile' && pathname.startsWith("/profile"))
+    bgName = "profile-bg.png"
+
   return (
     <div
       className={`

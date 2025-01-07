@@ -1,4 +1,5 @@
 import Importance from "@/features/nursing/components/Importance"
+import KnowledgeMore from "@/features/nursing/components/KnowledgeMore"
 import LessonWeveLearned from "@/features/nursing/components/LessonWeveLearned"
 import NursingHistory from "@/features/nursing/components/NursingHistory"
 import OurMottoInLife from "@/features/nursing/components/OurMottoInLife"
@@ -46,6 +47,9 @@ export default async function page({
       )}
       {nursing.href === 'our-motto-in-life' && (
         <OurMottoInLife />
+      )}
+      {nursing.href === 'knowledge-that-we-want-to-gain' && (
+        <KnowledgeMore />
       )}
     </section>
   )

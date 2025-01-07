@@ -8,5 +8,10 @@ export type ProfileType = {
     address: string;
     contactNum: string;
     gmail: string;
+    hobbies: string[];
+    achievements: string[];
+    pics: string[];
+    journal: string;
+    planB: string;
   };
 }

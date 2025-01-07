@@ -211,21 +211,21 @@ body {
 .lesson:nth-child(5) {
   @apply 
     col-start-1
-    md:col-span-2 col-span-6
+    lg:col-span-2 md:col-span-3 col-span-6
     md:delay-500 delay-250
 }
 
 .lesson:nth-child(6) {
   @apply 
-    md:col-start-3 col-start-1
-    md:col-span-3 col-span-6
+    lg:col-start-3 col-start-1
+    lg:col-span-2 md:col-span-3 col-span-6
     md:delay-300 delay-150
 }
 
 .lesson:last-child {
   @apply 
-    md:col-start-5 col-start-1
-    md:col-span-2 col-span-6
+    lg:col-start-5 col-start-1
+    lg:col-span-2 col-span-6
     delay-50
 }
 

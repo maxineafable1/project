@@ -1,6 +1,6 @@
 import React from "react"
 import { ProfileType } from "../lib/types"
-import { Calendar, Mail, Phone } from "lucide-react"
+import { Calendar, Mail, MapPinHouse, Phone } from "lucide-react"
 import Image from "next/image"
 
 type Props = {
@@ -21,6 +21,10 @@ export default function Biography({ profile }: Props) {
         <div className="md:text-4xl text-2xl font-bold">{profile.name}</div>
         <div className="md:text-2xl text-lg font-medium">{profile.data.age}</div>
         <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MapPinHouse />
+            <div>{profile.data.address}</div>
+          </div>
           <div className="flex items-center gap-2">
             <Calendar />
             <div>{profile.data.birthday}</div>
