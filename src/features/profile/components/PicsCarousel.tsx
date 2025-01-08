@@ -14,13 +14,28 @@ export default function PicsCarousel({ pics }: { pics: string[] }) {
     <Carousel opts={{ loop: true }}>
       <CarouselContent>
         {pics.map((pic) => (
-          <CarouselItem key={pic}>
+          <CarouselItem
+            key={pic}
+            className="relative"
+          >
+            <div
+              className="
+              absolute inset-0
+              bg-[image:var(--image-url)] bg-no-repeat
+              bg-center bg-cover blur -z-50
+            "
+            style={
+              {
+                "--image-url": `url(${pic})`,
+              } as React.CSSProperties
+            }
+            ></div>
             <Image
               src={pic}
               alt="Profile picture"
               width={1920}
               height={1080}
-              className="object-contain aspect-square w-full md:max-h-[700px]"
+              className="object-contain z-50 aspect-square w-full md:max-h-[700px]"
             />
           </CarouselItem>
         ))}

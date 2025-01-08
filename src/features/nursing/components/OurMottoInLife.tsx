@@ -3,6 +3,7 @@
 import { InView } from "react-intersection-observer"
 import { mottoLifeList } from "../data/motto"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function OurMottoInLife() {
   return (
@@ -11,7 +12,7 @@ export default function OurMottoInLife() {
         Our motto in life
       </h2>
       <ul className="grid md:grid-cols-8 grid-cols-4 lg:gap-x-16 lg:gap-y-8 md:gap-x-12 md:gap-y-6 gap-8">
-        {mottoLifeList.map(({ name, src, text }) => (
+        {mottoLifeList.map(({ name, src, text, href }) => (
           <InView
             onChange={(isInView, entry) => {
               if (isInView) entry.target.classList.add("scroll-in")
@@ -19,7 +20,8 @@ export default function OurMottoInLife() {
             key={name}
           >
             {({ ref }) => (
-              <li
+              <Link
+                href={`/profile/${href}`}
                 ref={ref}
                 className="
                   space-y-2 motto opacity-0 -translate-x-full 
@@ -31,14 +33,14 @@ export default function OurMottoInLife() {
                   alt={name}
                   width={300}
                   height={300}
-                  className="rounded-lg aspect-square object-cover object-top card-up"
+                  className="rounded-xl aspect-square object-cover object-top card-up"
                 />
-                <div className="space-x-2 text-shadow-sm shadow-black/20">
+                <div className="space-x-2 text-shadow shadow-black/40 text-center">
                   <q>{text}</q>
                   <span>&mdash;</span>
                   <span>{name}</span>
                 </div>
-              </li>
+              </Link>
             )}
           </InView>
         ))}

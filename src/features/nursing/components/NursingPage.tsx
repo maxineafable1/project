@@ -29,7 +29,7 @@ export default function NursingPage() {
                   alt={text}
                   width={500}
                   height={500}
-                  className="rounded-full aspect-square object-cover card-up"
+                  className="rounded-full shadow-sm shadow-black/40 aspect-square object-cover card-up"
                 />
                 <div className="text-center text-xl font-semibold uppercase text-shadow shadow-black/30">
                   {text}

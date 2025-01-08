@@ -18,7 +18,7 @@ export const videoLinks = [
   {
     text: 'Review Preparations',
     href: 'review-preparations',
-    src: '',
+    src: '/review.mp4',
     imgSrc: review.src,
   },
 ]
