@@ -18,7 +18,7 @@ export default function RootLayout({
       <body
         className={`
           ${raleway.variable} antialiased
-          font-raleway text-neutral-100
+          font-raleway text-neutral-100 min-h-dvh
         `}
       >
         <BgImage>

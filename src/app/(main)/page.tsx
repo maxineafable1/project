@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function Home() {
   return (
-    <section className="md:py-60 py-16 px-8 grid place-items-center">
+    <section className="md:py-48 py-16 px-8 grid place-items-center">
       <div className="space-y-16">
         <h1 className="text-7xl text-center font-bold text-shadow-lg shadow-black/30">
           GOSH!P GIRLS

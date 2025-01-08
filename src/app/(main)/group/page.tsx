@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function page() {
   return (
-    <section className="md:py-60 py-16 px-8 grid place-items-center">
+    <section className="md:py-48 py-16 px-8 grid place-items-center">
       <div className="space-y-16">
         <h2 className="text-7xl text-center font-bold text-shadow-lg uppercase shadow-black/20">
           Our Group
