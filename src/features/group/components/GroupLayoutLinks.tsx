@@ -19,7 +19,7 @@ export default function GroupLayoutLinks() {
           className={`
             ${currPath === href 
               ? 'bg-pink-500 px-4 py-2 rounded-md'
-              : 'underline-link'
+              : 'underline-link self-start'
             }
           `}
         >
