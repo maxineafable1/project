@@ -17,7 +17,7 @@ export default function Home() {
           <h2 className="text-lg">Built for lifters who want results without the hassle.
             Simple to use, powerful where it matters, and made to help you stay consistent every day.</h2>
           <Link
-            href='/'
+            href='/dashboard'
             className='px-8 py-2 rounded-full 
             bg-white dark:bg-neutral-100 text-neutral-900 inline-flex gap-2 items-center
             hover:bg-neutral-50 dark:hover:bg-neutral-200 transition-colors
