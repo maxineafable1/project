@@ -1,32 +1,51 @@
 'use client'
 
+import { ExercisesType } from "@/db-schema"
+import { Minus, Plus } from "lucide-react"
 import { useState } from "react"
+import ExerciseTable from "./ExerciseTable"
+import NewExerciseForm from "./NewExerciseForm"
 import Sidebar from "./Sidebar"
-import CreateExerciseForm from "./CreateExerciseForm"
 
-export default function Dashboard() {
-  const [isCreate, setIsCreate] = useState(false)
+type Props = {
+  sessId: string
+  exercises: ExercisesType[]
+}
+
+export default function Dashboard({
+  sessId,
+  exercises,
+}: Props) {
+  const [newExercise, setNewExercise] = useState(false)
+
+  const groupBy = Object.groupBy(exercises, ({ exerciseDate }) => exerciseDate)
+
+  const exerciseGroup = Object.entries(groupBy)
 
   return (
     <>
-      <Sidebar setIsCreate={setIsCreate} />
-      <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 
-      ">
-        {isCreate && <CreateExerciseForm setIsCreate={setIsCreate} />}
-        <div className="border rounded-lg w-full p-4">
-          <h2 className='mb-4 text-xl font-bold'>{new Date().toLocaleDateString()}</h2>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            <div className="bg-neutral-500 p-4 rounded-md">Card text</div>
-            <div className="bg-neutral-500 p-4 rounded-md">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit itaque corporis nostrum corrupti, aut ullam quod ipsum deleniti debitis explicabo molestiae ab repudiandae incidunt neque possimus molestias accusamus asperiores ipsa.
-
-            </div>
-            <div className="bg-neutral-500 p-4 rounded-md">Card text</div>
-            <div className="bg-neutral-500 p-4 rounded-md">Card text</div>
-            <div className="bg-neutral-500 p-4 rounded-md">Card text</div>
-            <div className="bg-neutral-500 p-4 rounded-md">Card text</div>
+      <Sidebar />
+      <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
+        <button
+          onClick={() => setNewExercise(prev => !prev)}
+          className="inline-flex items-center gap-2 text-sm text-white
+          bg-slate-500 px-4 py-2 rounded font-bold self-end
+          "
+        >
+          {newExercise ? <Minus className="size-4" /> : <Plus className="size-4" />}
+          {newExercise ? 'Cancel' : 'New Exercise'}
+        </button>
+        {newExercise && (
+          <NewExerciseForm sessId={sessId} setNewExercise={setNewExercise} />
+        )}
+        {(exerciseGroup.length === 0 && !newExercise) ?
+          <div className="text-center space-y-2">
+            <div className="text-3xl font-bold">No exercises added yet.</div>
+            <div className="">Click <span className="font-bold">New Exercise</span> to start tracking your workouts.</div>
           </div>
-        </div>
+          : exerciseGroup.map(([key, value]) => (
+            <ExerciseTable key={key} sessId={sessId} titleDate={key} value={value} />
+          ))}
       </div>
     </>
   )
