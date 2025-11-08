@@ -10,11 +10,13 @@ import Sidebar from "./Sidebar"
 type Props = {
   sessId: string
   exercises: ExercisesType[]
+  username: string
 }
 
 export default function Dashboard({
   sessId,
   exercises,
+  username,
 }: Props) {
   const [newExercise, setNewExercise] = useState(false)
 
@@ -24,7 +26,7 @@ export default function Dashboard({
 
   return (
     <>
-      <Sidebar />
+      <Sidebar username={username} />
       <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
         <button
           onClick={() => setNewExercise(prev => !prev)}

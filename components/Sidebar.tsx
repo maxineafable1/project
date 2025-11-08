@@ -1,21 +1,28 @@
 'use client'
 
 import { authClient } from '@/lib/auth-client'
-import { Bolt, Menu, Search, User, X } from 'lucide-react'
+import { Calendar, ChevronDown, LogOut, Menu, Search, User, X } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-export default function Sidebar() {
+type Props = {
+  username: string
+}
+
+export default function Sidebar({
+  username,
+}: Props) {
   const [sidebar, setSidebar] = useState(false)
-
-  const {
-    data: session,
-  } = authClient.useSession()
+  const [isUserDropdown, setIsUserDropdown] = useState(false)
+  const [isSortDropdown, setIsSortDropdown] = useState(false)
 
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const divRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -30,6 +37,20 @@ export default function Sidebar() {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [sidebar])
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
+
+  const sortBy = searchParams.get('sortBy')
 
   return (
     <>
@@ -52,59 +73,98 @@ export default function Sidebar() {
           </button>
         </div>
         <div className="mb-4">
-          <div className="
+          <form
+            onSubmit={e => {
+              e.preventDefault()
+              if (inputRef.current && inputRef.current.value)
+                router.push(pathname + '?' + createQueryString('search', inputRef.current.value))
+              else
+                router.push(pathname)
+            }}
+            className="
             focus-within:border-blue-500
             border border-slate-300 rounded-md px-4 py-2 inline-flex items-center gap-2 w-full">
             <Search className='size-5' />
             <input
+              ref={inputRef}
               type="search"
               placeholder='Search'
               className='text-sm w-full focus:border-0 focus:outline-0'
             />
+          </form>
+        </div>
+        <div className="font-bold text-sm mb-2">
+          Sort by
+        </div>
+        <div className="relative">
+          <button
+            onClick={() => setIsSortDropdown(prev => !prev)}
+            className="inline-flex items-center gap-2 py-1.5 px-3
+          hover:bg-slate-200 rounded transition-colors w-full
+        ">
+            <Calendar className='size-5' />
+            <span>Date</span>
+            <ChevronDown className='size-5 ml-auto' />
+          </button>
+          <div className={`z-10 absolute w-full
+          ${!isSortDropdown && 'hidden'} shadow bg-white rounded *:text-start`}>
+            <ul className="text-sm">
+              <li
+                onClick={() => {
+                  if (sortBy === 'date_desc') return
+                  router.push(pathname + '?' + createQueryString('sortBy', 'date_desc'))
+                  setIsSortDropdown(false)
+                }}
+                className={`px-4 py-2 transition-colors
+                  ${sortBy === 'date_desc' ? 'bg-slate-200' : 'hover:bg-slate-50 cursor-pointer'}
+                `}>
+                Newest First
+              </li>
+              <li
+                onClick={() => {
+                  if (sortBy === 'date_asc') return
+                  router.push(pathname + '?' + createQueryString('sortBy', 'date_asc'))
+                  setIsSortDropdown(false)
+                }}
+                className={`px-4 py-2 transition-colors
+                  ${sortBy === 'date_asc' ? 'bg-slate-200' : 'hover:bg-slate-50 cursor-pointer'}
+                `}>
+                Oldest First
+              </li>
+            </ul>
           </div>
         </div>
-        {/* <button
-          onClick={() => setIsCreate(prev => !prev)}
-          className={`px-8 py-2 bg-neutral-900 text-neutral-100 rounded-md w-full 
-            dark:bg-neutral-100 dark:text-neutral-900 text-sm cursor-pointer
-            hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors
-          `}
-        >
-          Add a workout
-        </button> */}
-        <div className="font-bold text-sm mb-2">
-          Main Menu
-        </div>
-        <div className="flex items-center gap-2 py-1.5 px-3
-          hover:bg-slate-300 rounded transition-colors
-        ">
-          <User className='size-5' />
-          <h2>User Name</h2>
-        </div>
-        <div className="flex items-center gap-2 py-1.5 px-3
-          hover:bg-slate-300 rounded transition-colors
-        ">
-          <Bolt className='size-5' />
-          <h2>Settings</h2>
-        </div>
-        {session && (
+
+
+        <div className="mt-auto relative w-full">
           <button
-            onClick={async () => {
-              await authClient.signOut({
-                fetchOptions: {
-                  onSuccess: () => {
-                    router.push("/");
-                  },
-                },
-              });
-            }}
-            className='px-8 py-2 rounded-md w-full text-sm cursor-pointer mt-auto 
-            bg-slate-500 hover:bg-slate-600 text-white transition-colors 
-            '
-          >
-            Sign out
+            onClick={() => setIsUserDropdown(prev => !prev)}
+            className="inline-flex items-center gap-2 py-1.5 px-3
+          hover:bg-slate-300 rounded transition-colors w-full bg-slate-200
+        ">
+            <User className='size-5' />
+            <span>{username}</span>
           </button>
-        )}
+          <div className={`z-10 absolute w-full top-0 -translate-y-full
+          ${!isUserDropdown && 'hidden'} shadow bg-white rounded *:text-start`}>
+            <button
+              onClick={async () => {
+                await authClient.signOut({
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.push("/");
+                    },
+                  },
+                });
+              }}
+              className='inline-flex gap-1.5 px-3 py-1.5 w-full text-sm cursor-pointer mt-auto 
+            hover:bg-slate-50 transition-colors'
+            >
+              <LogOut className='size-4' />
+              Sign out
+            </button>
+          </div>
+        </div>
       </div>
       {/* hamburger when small screen */}
       <button
