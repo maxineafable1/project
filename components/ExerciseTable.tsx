@@ -1,11 +1,12 @@
 'use client'
 
-import { createExercise, deleteExercise } from "@/actions/exercise-actions"
+import { createExercise } from "@/actions/exercise-actions"
 import { createExerciseSchema, CreateExerciseSchemaType } from "@/utils/exercise-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ChevronDown, CircleAlert, Minus, Plus } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import EditExerciseRow from "./EditExerciseRow"
 
 type Props = {
   sessId: string
@@ -186,42 +187,8 @@ export default function ExerciseTable({
             </div>
           </form>
         )}
-        {value?.map(({ id, name, weight, isKilogram, sets, reps }) => (
-          <div
-            key={id}
-            className="border-b border-slate-200 grid grid-cols-6">
-            <div
-              className="border-r border-slate-200 px-6 py-4">
-              {name}
-            </div>
-            <div className="px-6 py-4 border-r border-slate-200">
-              {weight}
-            </div>
-            <div className="px-6 py-4 border-r border-slate-200">
-              {isKilogram ? 'Kg' : 'Lbs'}
-            </div>
-            <div className="px-6 py-4 border-r border-slate-200">
-              {sets}
-            </div>
-            <div className="px-6 py-4 border-r border-slate-200">
-              {reps}
-            </div>
-            <div className="px-6 h-full flex flex-col items-start justify-center">
-              <div className="flex gap-2">
-                <button
-                  className="px-4 py-1.5 rounded-lg bg-sky-500 text-white"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={async () => await deleteExercise(id)}
-                  className="px-4 py-1.5 rounded-lg bg-red-500 text-white"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
+        {value?.map(data => (
+          <EditExerciseRow key={data.id} data={data} sessId={sessId} />
         ))}
       </div>
     </div>
