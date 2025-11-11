@@ -55,8 +55,11 @@ export default function SigninForm() {
           </label>
           <input
             type="email"
+            id="email"
             placeholder='Enter your email'
-            className='border rounded-full px-4 py-1.5 text-sm'
+            className='border rounded-full px-4 py-1.5 text-sm
+            focus-within:border-blue-500 focus-within:outline-blue-500 focus-within:outline
+            border-neutral-300 dark:border-neutral-700'
             {...register('email')}
           />
           {errors.email && (
@@ -71,8 +74,11 @@ export default function SigninForm() {
           </label>
           <input
             type="password"
+            id="password"
             placeholder='Enter your password'
-            className='border rounded-full px-4 py-1.5 text-sm not-placeholder-shown:font-mono'
+            className='border rounded-full px-4 py-1.5 text-sm not-placeholder-shown:font-mono
+            focus-within:border-blue-500 focus-within:outline-blue-500 focus-within:outline
+            border-neutral-300 dark:border-neutral-700'
             {...register('password')}
           />
           {errors.password && (
@@ -83,9 +89,10 @@ export default function SigninForm() {
         </div>
         <button
           type='submit'
-          className='bg-sky-500 text-neutral-100 rounded-full 
-          py-1.5 mt-4 text-sm cursor-pointer hover:bg-sky-400 transition-colors
+          className='bg-blue-500 text-neutral-100 rounded-full 
+          py-1.5 mt-4 text-sm cursor-pointer hover:bg-blue-600 transition-colors
           inline-flex justify-center items-center gap-2
+          focus-visible:outline-2 focus-visible:outline-black dark:focus-visible:outline-white
           '
           disabled={loading}
         >

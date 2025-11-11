@@ -3,10 +3,16 @@
 import { createExercise } from "@/actions/exercise-actions"
 import { createExerciseSchema, CreateExerciseSchemaType } from "@/utils/exercise-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ChevronDown, CircleAlert, Minus, Plus } from "lucide-react"
+import { CircleAlert, Minus, Plus } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import EditExerciseRow from "./EditExerciseRow"
+import ExerciseForm from "./ExerciseForm"
+
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+
+dayjs.extend(localizedFormat);
 
 type Props = {
   sessId: string
@@ -19,8 +25,8 @@ type Props = {
     reps: number;
     exerciseDate: string;
     isKilogram: boolean;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     userId: string | null;
   }[] | undefined
 }
@@ -31,7 +37,6 @@ export default function ExerciseTable({
   value,
 }: Props) {
   const [isCreate, setIsCreate] = useState(false)
-  const [isDropdown, setIsDropdown] = useState(false)
 
   const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({
     resolver: zodResolver(createExerciseSchema),
@@ -40,21 +45,23 @@ export default function ExerciseTable({
   async function onSubmit(data: CreateExerciseSchemaType) {
     const newData = {
       ...data,
-      exerciseDate: titleDate,
+      exerciseDate: dayjs(titleDate).format('YYYY-MM-DD'),
     }
+
     const res = await createExercise(newData, sessId)
     if (res?.error)
       console.log(res.error)
-    else
+    else {
       setIsCreate(false)
-
-  };
+      reset()
+    }
+  }
 
   const isKilogram = getValues('isKilogram') ?? null
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 bg-slate-100 px-6 py-2 rounded-lg">
+      <div className="flex justify-between items-center mb-4 bg-neutral-100 dark:bg-neutral-900 px-6 py-2 rounded-lg">
         <h2 className='text-xl font-bold'>{titleDate}</h2>
         <button
           onClick={() => setIsCreate(prev => {
@@ -62,14 +69,15 @@ export default function ExerciseTable({
               reset()
             return !prev
           })}
+          className="hover:bg-white dark:hover:bg-neutral-700 p-1 transition-colors rounded focus-visible:outline-blue-500 focus-visible:outline-2"
         >
-          {isCreate ? <Minus /> : <Plus />}
+          {isCreate ? <Minus className="size-4" /> : <Plus className="size-4" />}
           <span className="sr-only">{isCreate ? 'Cancel add new exercise' : 'Add new exercise'}</span>
         </button>
       </div>
 
       <div className="w-full text-sm text-left rtl:text-right">
-        <div className="grid grid-cols-6 font-bold border-b border-slate-200 text-xs uppercase">
+        <div className="grid grid-cols-6 font-bold border-b border-neutral-200 dark:border-neutral-700 text-xs uppercase">
           <div className={`px-6 py-3 ${errors.name && 'text-red-500 flex gap-1'}`}>
             Exercise {errors.name && <CircleAlert className="size-4" />}
           </div>
@@ -91,101 +99,14 @@ export default function ExerciseTable({
         </div>
         {/* form here when adding */}
         {isCreate && (
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="border-b border-slate-200 grid grid-cols-6"
-          >
-            <div
-              className={`focus-within:outline border-r border-slate-200
-                  ${errors.name
-                  ? 'focus-within:outline-red-500'
-                  : 'focus-within:outline-sky-500'}`}>
-              <input
-                type="text"
-                className='px-6 py-4 w-full focus:border-0 focus:outline-0'
-                autoFocus
-                {...register('name')}
-              />
-            </div>
-            <div
-              className={`focus-within:outline border-r border-slate-200
-                  ${errors.weight
-                  ? 'focus-within:outline-red-500'
-                  : 'focus-within:outline-sky-500'}`}>
-              <input
-                type="text"
-                className="px-6 py-4 w-full focus:border-0 focus:outline-0"
-                {...register('weight', { valueAsNumber: true })}
-              />
-            </div>
-            <div
-              className={`focus-within:outline border-r border-slate-200
-                  ${errors.isKilogram
-                  ? 'focus-within:outline-red-500'
-                  : 'focus-within:outline-sky-500'}
-                    relative
-                  `}>
-              <button
-                type="button"
-                onClick={() => setIsDropdown(prev => !prev)}
-                className={`inline-flex items-center gap-2 w-full px-6 py-4`}>
-                {isKilogram ? 'Kilograms' : isKilogram === null ? 'Select a unit' : 'Pounds'}
-                <ChevronDown className="size-4" />
-              </button>
-              <div className={`z-10 absolute w-full
-                    ${!isDropdown && 'hidden'} bg-slate-100 rounded-lg shadow-sm
-                    `}>
-                <ul className="text-sm">
-                  <li
-                    onClick={() => {
-                      setValue('isKilogram', true, { shouldValidate: true })
-                      setIsDropdown(false)
-                    }}
-                    className="px-4 py-2 hover:bg-slate-200 cursor-pointer">
-                    Kilograms
-                  </li>
-                  <li
-                    onClick={() => {
-                      setValue('isKilogram', false, { shouldValidate: true })
-                      setIsDropdown(false)
-                    }}
-                    className="px-4 py-2 hover:bg-slate-200 cursor-pointer">
-                    Pounds
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div
-              className={`focus-within:outline border-r border-slate-200
-                  ${errors.sets
-                  ? 'focus-within:outline-red-500'
-                  : 'focus-within:outline-sky-500'}`}>
-              <input
-                type="text"
-                className="px-6 py-4 w-full focus:border-0 focus:outline-0"
-                {...register('sets', { valueAsNumber: true })}
-              />
-            </div>
-            <div
-              className={`focus-within:outline border-r border-slate-200
-                  ${errors.reps
-                  ? 'focus-within:outline-red-500'
-                  : 'focus-within:outline-sky-500'}`}>
-              <input
-                type="text"
-                className="px-6 py-4 w-full focus:border-0 focus:outline-0"
-                {...register('reps', { valueAsNumber: true })}
-              />
-            </div>
-            <div className="px-6 h-full flex flex-col items-start justify-center">
-              <button
-                type="submit"
-                className="px-4 py-1.5 rounded-lg bg-yellow-500 text-white"
-              >
-                Save
-              </button>
-            </div>
-          </form>
+          <ExerciseForm
+            errors={errors}
+            isKilogram={isKilogram}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+            register={register}
+            setValue={setValue}
+          />
         )}
         {value?.map(data => (
           <EditExerciseRow key={data.id} data={data} sessId={sessId} />

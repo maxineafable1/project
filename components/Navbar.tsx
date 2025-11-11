@@ -19,21 +19,20 @@ export default function Navbar() {
 					App Name
 				</div>
 			</div>
-			<div className="flex gap-4 items-center">
+			<div className="flex gap-2 items-center">
 				{!session ? (
 					<>
 						<Link
 							href='/sign-in'
-							className='text-sm 
-								dark:text-neutral-100 dark:hover:text-neutral-50
-							text-neutral-800 hover:text-neutral-900 transition-colors'
+							className='text-sm px-6 py-1.5 rounded-full border border-neutral-300 not-dark:hover:bg-neutral-100 
+                focus-within:outline-blue-500 focus-within:outline focus-within:border-blue-500
+                 dark:border-neutral-700 dark:hover:border-neutral-500 transition-colors '
 						>
 							Sign in
 						</Link>
 						<Link href='/sign-up'
-							className='px-8 py-2 bg-neutral-900 text-neutral-100 rounded-full 
-                dark:bg-neutral-100 dark:text-neutral-900 text-sm
-								hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors
+							className='text-sm px-6 py-1.5 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors text-white
+                  dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2
                 '>
 							Sign up
 						</Link>
@@ -50,9 +49,8 @@ export default function Navbar() {
 									},
 								});
 							}}
-							className='px-8 py-2 bg-neutral-900 text-neutral-100 rounded-full 
-                dark:bg-neutral-100 dark:text-neutral-900 text-sm cursor-pointer
-								hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors
+							className='text-sm px-6 py-1.5 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors text-white
+                  dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2
                 '
 						>
 							Sign out

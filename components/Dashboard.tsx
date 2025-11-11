@@ -7,6 +7,11 @@ import ExerciseTable from "./ExerciseTable"
 import NewExerciseForm from "./NewExerciseForm"
 import Sidebar from "./Sidebar"
 
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+
+dayjs.extend(localizedFormat);
+
 type Props = {
   sessId: string
   exercises: ExercisesType[]
@@ -20,7 +25,7 @@ export default function Dashboard({
 }: Props) {
   const [newExercise, setNewExercise] = useState(false)
 
-  const groupBy = Object.groupBy(exercises, ({ exerciseDate }) => exerciseDate)
+  const groupBy = Object.groupBy(exercises, ({ exerciseDate }) => dayjs(exerciseDate).format('ll'))
 
   const exerciseGroup = Object.entries(groupBy)
 
@@ -30,8 +35,8 @@ export default function Dashboard({
       <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
         <button
           onClick={() => setNewExercise(prev => !prev)}
-          className="inline-flex items-center gap-2 text-sm text-white
-          bg-slate-500 px-4 py-2 rounded font-bold self-end
+          className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-white focus-visible:outline-2
+          bg-blue-500 hover:bg-blue-600 transition-colors px-4 py-2 rounded font-bold self-end
           "
         >
           {newExercise ? <Minus className="size-4" /> : <Plus className="size-4" />}

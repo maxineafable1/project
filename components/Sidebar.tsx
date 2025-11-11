@@ -55,13 +55,13 @@ export default function Sidebar({
   return (
     <>
       <div ref={divRef} className={`p-4 flex flex-col  
-          dark:bg-neutral-900 bg-slate-100 fixed w-sm min-h-dvh
+          dark:bg-neutral-900 bg-neutral-100 fixed w-sm min-h-dvh
           ${sidebar && 'translate-x-0'} 
           lg:translate-x-0 duration-300 ease-in-out
           top-0 left-0 z-40 overflow-y-auto transition-transform -translate-x-full
       `}>
         <div className="flex justify-between items-center mb-2">
-          <Link href='/' className="text-lg font-bold">App Name</Link>
+          <Link href='/' className="text-lg font-bold focus-visible:outline-blue-500 focus-visible:outline-2">App Name</Link>
           {/* close button hidden in large screen */}
           <button
             onClick={() => setSidebar(prev => !prev)}
@@ -82,8 +82,9 @@ export default function Sidebar({
                 router.push(pathname)
             }}
             className="
-            focus-within:border-blue-500
-            border border-slate-300 rounded-md px-4 py-2 inline-flex items-center gap-2 w-full">
+            focus-within:border-blue-500 focus-within:outline-blue-500 focus-within:outline
+            border border-neutral-300 dark:border-neutral-700
+            rounded-md px-4 py-2 inline-flex items-center gap-2 w-full">
             <Search className='size-5' />
             <input
               ref={inputRef}
@@ -99,15 +100,15 @@ export default function Sidebar({
         <div className="relative">
           <button
             onClick={() => setIsSortDropdown(prev => !prev)}
-            className="inline-flex items-center gap-2 py-1.5 px-3
-          hover:bg-slate-200 rounded transition-colors w-full
-        ">
-            <Calendar className='size-5' />
+            className={`inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
+          ${isSortDropdown ? 'bg-white dark:bg-neutral-700' : 'hover:bg-white dark:hover:bg-neutral-700'} rounded transition-colors w-full text-sm
+        `}>
+            <Calendar className='size-4' />
             <span>Date</span>
-            <ChevronDown className='size-5 ml-auto' />
+            <ChevronDown className='size-4 ml-auto' />
           </button>
-          <div className={`z-10 absolute w-full
-          ${!isSortDropdown && 'hidden'} shadow bg-white rounded *:text-start`}>
+          <div className={`z-10 absolute w-full translate-y-1 overflow-hidden
+          ${!isSortDropdown && 'hidden'} shadow bg-white dark:bg-neutral-700 rounded *:text-start`}>
             <ul className="text-sm">
               <li
                 onClick={() => {
@@ -115,8 +116,8 @@ export default function Sidebar({
                   router.push(pathname + '?' + createQueryString('sortBy', 'date_desc'))
                   setIsSortDropdown(false)
                 }}
-                className={`px-4 py-2 transition-colors
-                  ${sortBy === 'date_desc' ? 'bg-slate-200' : 'hover:bg-slate-50 cursor-pointer'}
+                className={`px-4 py-2 transition-colors 
+                  ${sortBy === 'date_desc' ? 'bg-neutral-100 dark:bg-neutral-600' : 'hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer'}
                 `}>
                 Newest First
               </li>
@@ -127,7 +128,7 @@ export default function Sidebar({
                   setIsSortDropdown(false)
                 }}
                 className={`px-4 py-2 transition-colors
-                  ${sortBy === 'date_asc' ? 'bg-slate-200' : 'hover:bg-slate-50 cursor-pointer'}
+                  ${sortBy === 'date_asc' ? 'bg-neutral-100 dark:bg-neutral-600' : 'hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer'}
                 `}>
                 Oldest First
               </li>
@@ -139,14 +140,14 @@ export default function Sidebar({
         <div className="mt-auto relative w-full">
           <button
             onClick={() => setIsUserDropdown(prev => !prev)}
-            className="inline-flex items-center gap-2 py-1.5 px-3
-          hover:bg-slate-300 rounded transition-colors w-full bg-slate-200
-        ">
-            <User className='size-5' />
+            className={`inline-flex items-center gap-2 py-1.5 px-3 text-sm focus-visible:outline-blue-500 focus-visible:outline-2
+          ${isUserDropdown ? 'bg-white dark:bg-neutral-600' : 'hover:bg-white bg-neutral-200 dark:hover:bg-neutral-600 dark:bg-neutral-700'} rounded transition-colors w-full 
+        `}>
+            <User className='size-4' />
             <span>{username}</span>
           </button>
-          <div className={`z-10 absolute w-full top-0 -translate-y-full
-          ${!isUserDropdown && 'hidden'} shadow bg-white rounded *:text-start`}>
+          <div className={`z-10 absolute w-full -top-1 -translate-y-full overflow-hidden
+          ${!isUserDropdown && 'hidden'} shadow bg-white dark:bg-neutral-700 rounded *:text-start`}>
             <button
               onClick={async () => {
                 await authClient.signOut({
@@ -158,7 +159,7 @@ export default function Sidebar({
                 });
               }}
               className='inline-flex gap-1.5 px-3 py-1.5 w-full text-sm cursor-pointer mt-auto 
-            hover:bg-slate-50 transition-colors'
+            hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors'
             >
               <LogOut className='size-4' />
               Sign out

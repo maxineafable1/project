@@ -20,7 +20,8 @@ export default async function page() {
         <SignupForm />
         <Link
           href='/sign-in'
-          className='text-sky-500 hover:text-sky-400 transition-colors
+          className='text-blue-500 hover:text-blue-600 transition-colors
+          focus-visible:outline-blue-500 focus-visible:outline-2
           text-sm self-center'>
           Already have an account?
         </Link>

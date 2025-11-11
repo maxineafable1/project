@@ -81,14 +81,24 @@ export const exercises = sqliteTable("exercises", {
   weight: integer("weight").notNull(),
   sets: integer("sets").notNull(),
   reps: integer("reps").notNull(),
-  exerciseDate: text("exercise_date").notNull().default(sql`(current_date)`),
+  exerciseDate: text("exercise_date").notNull().default(sql`(current_timestamp)`),
+  // exerciseDate: integer("exercise_date", { mode: 'timestamp_ms' })
+  //   .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+  //   .notNull(),
   isKilogram: integer('is_kilogram', { mode: 'boolean' }).notNull(),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
-  updatedAt: text("updated_at")
-    .notNull()
-    .default(sql`(current_timestamp)`)
-    .$onUpdate(() => sql`(current_timestamp)`),
+  // createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
+  // updatedAt: text("updated_at")
+  //   .notNull()
+  //   .default(sql`(current_timestamp)`)
+  //   .$onUpdate(() => sql`(current_timestamp)`),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 })
 
 export type ExercisesType = typeof exercises.$inferSelect; 

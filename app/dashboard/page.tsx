@@ -16,7 +16,7 @@ export default async function page({
   })
 
   if (!session)
-    redirect('/')
+    redirect('/sign-in')
 
   const safetySort = ['asc', 'desc']
 
@@ -30,14 +30,16 @@ export default async function page({
     ? await db.select()
       .from(exercises)
       .where(eq(exercises.userId, session.user.id))
-      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
+      // .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
+      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`${exercises.createdAt} desc`)
     :
     await db.select()
       .from(exercises)
       .where(
         and(eq(exercises.userId, session.user.id), sql`lower(${exercises.name}) like lower(${`%${searchVal}%`})`)
       )
-      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
+      // .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
+      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`${exercises.createdAt} desc`)
 
   return (
     <Dashboard sessId={session.user.id} username={session.user.name} exercises={exercisesData} />
