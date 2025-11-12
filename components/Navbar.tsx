@@ -1,6 +1,7 @@
 'use client'
 
 import { authClient } from '@/lib/auth-client'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -13,19 +14,16 @@ export default function Navbar() {
 
 	return (
 		<div className='flex justify-between items-center py-4 px-8'>
-			<div className="flex gap-4">
-				{/* <Image src={''} alt='' /> */}
-				<div className="">
-					App Name
-				</div>
-			</div>
+			<Link href='/' className="text-lg font-bold focus-visible:outline-blue-500 focus-visible:outline-2">
+				Lift<span className='text-blue-500'>ts</span>
+			</Link>
 			<div className="flex gap-2 items-center">
 				{!session ? (
 					<>
 						<Link
 							href='/sign-in'
 							className='text-sm px-6 py-1.5 rounded-full border border-neutral-300 not-dark:hover:bg-neutral-100 
-                focus-within:outline-blue-500 focus-within:outline focus-within:border-blue-500
+                focus-visible:outline-blue-500 focus-visible:outline focus-visible:border-blue-500
                  dark:border-neutral-700 dark:hover:border-neutral-500 transition-colors '
 						>
 							Sign in

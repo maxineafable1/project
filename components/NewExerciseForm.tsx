@@ -32,7 +32,6 @@ export default function NewExerciseForm({
       exerciseDate: data.exerciseDate ? data.exerciseDate : dayjs().format().split('T')[0]
     }
 
-
     if (dayjs(newData.exerciseDate).isAfter(dayjs())) {
       // console.log('date is after', newData.exerciseDate)
       setError('exerciseDate', { message: 'error' }, { shouldFocus: true })
@@ -46,11 +45,13 @@ export default function NewExerciseForm({
     }
   }
 
+  console.log(errors)
+
   const isKilogram = getValues('isKilogram') ?? null
 
   return (
-    <div>
-      <div className="mb-4 bg-neutral-100 dark:bg-neutral-900 px-6 py-2 rounded-lg">
+    <div className="">
+      <div className="mb-4 bg-neutral-100 dark:bg-neutral-900 px-6 py-2 rounded-lg ">
         <div className="flex flex-col items-start">
           <label htmlFor="exerciseDate" className="text-sm">
             <span className="font-bold">Exercise Date</span> (Optional)
@@ -66,24 +67,24 @@ export default function NewExerciseForm({
           />
         </div>
       </div>
-      <div className="w-full text-sm text-left rtl:text-right">
-        <div className="grid grid-cols-6 font-bold border-b border-neutral-200 dark:border-neutral-700 text-xs uppercase">
-          <div className={`px-6 py-3 ${errors.name && 'text-red-500 flex gap-1'}`}>
+      <div className="text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
+        <div className="grid grid-cols-[repeat(6,minmax(200px,1fr))] w-full font-bold text-xs uppercase">
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700  ${errors.name && 'text-red-500 flex gap-1'}`}>
             Exercise {errors.name && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.weight && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700  ${errors.weight && 'text-red-500 flex gap-1'}`}>
             Weight {errors.weight && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.isKilogram && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700  ${errors.isKilogram && 'text-red-500 flex gap-1'}`}>
             Unit {errors.isKilogram && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.sets && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700  ${errors.sets && 'text-red-500 flex gap-1'}`}>
             Sets {errors.sets && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.reps && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700  ${errors.reps && 'text-red-500 flex gap-1'}`}>
             Reps {errors.reps && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 `}>
             Actions
           </div>
         </div>

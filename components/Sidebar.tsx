@@ -2,6 +2,7 @@
 
 import { authClient } from '@/lib/auth-client'
 import { Calendar, ChevronDown, LogOut, Menu, Search, User, X } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -55,13 +56,15 @@ export default function Sidebar({
   return (
     <>
       <div ref={divRef} className={`p-4 flex flex-col  
-          dark:bg-neutral-900 bg-neutral-100 fixed w-sm min-h-dvh
+          dark:bg-neutral-900 bg-neutral-100 fixed w-xs md:w-sm min-h-dvh
           ${sidebar && 'translate-x-0'} 
           lg:translate-x-0 duration-300 ease-in-out
           top-0 left-0 z-40 overflow-y-auto transition-transform -translate-x-full
       `}>
         <div className="flex justify-between items-center mb-2">
-          <Link href='/' className="text-lg font-bold focus-visible:outline-blue-500 focus-visible:outline-2">App Name</Link>
+          <Link href='/' className="text-lg font-bold focus-visible:outline-blue-500 focus-visible:outline-2">
+            Lift<span className='text-blue-500'>ts</span>
+          </Link>
           {/* close button hidden in large screen */}
           <button
             onClick={() => setSidebar(prev => !prev)}

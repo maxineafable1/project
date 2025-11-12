@@ -31,7 +31,7 @@ export default function SignupForm() {
       },
       onSuccess: (ctx) => {
         //redirect to the dashboard or sign in page
-        router.push('/')
+        router.push('/dashboard')
       },
       onError: (ctx) => {
         // display the error message

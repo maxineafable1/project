@@ -72,29 +72,29 @@ export default function EditExerciseRow({
         />
       ) : (
         <div
-          className="border-b border-neutral-200 dark:border-neutral-700 grid grid-cols-6">
+          className="grid grid-cols-[repeat(6,minmax(200px,1fr))]">
           <div
-            className="border-r border-neutral-200 dark:border-neutral-700 px-6 py-4">
+            className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
             {name}
           </div>
-          <div className="px-6 py-4 border-r border-neutral-200 dark:border-neutral-700">
+          <div className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
             {weight}
           </div>
-          <div className="px-6 py-4 border-r border-neutral-200 dark:border-neutral-700">
+          <div className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
             {isKilogram ? 'Kg' : 'Lbs'}
           </div>
-          <div className="px-6 py-4 border-r border-neutral-200 dark:border-neutral-700">
+          <div className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
             {sets}
           </div>
-          <div className="px-6 py-4 border-r border-neutral-200 dark:border-neutral-700">
+          <div className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
             {reps}
           </div>
-          <div className="px-6 h-full flex flex-col items-start justify-center">
+          <div className="px-6 h-full border-b border-neutral-200 dark:border-neutral-700 flex flex-col items-start justify-center">
             <div className="flex gap-2">
               <button
                 onClick={() => setIsEdit(true)}
                 className="px-4 py-1.5 rounded-lg border border-neutral-300 not-dark:hover:bg-neutral-100 
-                focus-within:outline-blue-500 focus-within:outline focus-within:border-blue-500
+                focus-visible:outline-blue-500 focus-visible:outline focus-visible:border-blue-500
                  dark:border-neutral-700 dark:hover:border-neutral-500 transition-colors "
               >
                 Edit
@@ -102,7 +102,7 @@ export default function EditExerciseRow({
               <button
                 onClick={async () => await deleteExercise(id)}
                 className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
-                focus-within:outline-blue-500 focus-within:outline-2
+                focus-visible:outline-blue-500 focus-visible:outline-2
                 transition-colors text-white"
               >
                 Delete

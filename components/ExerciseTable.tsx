@@ -76,24 +76,24 @@ export default function ExerciseTable({
         </button>
       </div>
 
-      <div className="w-full text-sm text-left rtl:text-right">
-        <div className="grid grid-cols-6 font-bold border-b border-neutral-200 dark:border-neutral-700 text-xs uppercase">
-          <div className={`px-6 py-3 ${errors.name && 'text-red-500 flex gap-1'}`}>
+      <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
+        <div className="grid grid-cols-[repeat(6,minmax(200px,1fr))] font-bold text-xs uppercase">
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 ${errors.name && 'text-red-500 flex gap-1'}`}>
             Exercise {errors.name && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.weight && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 ${errors.weight && 'text-red-500 flex gap-1'}`}>
             Weight {errors.weight && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.isKilogram && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 ${errors.isKilogram && 'text-red-500 flex gap-1'}`}>
             Unit {errors.isKilogram && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.sets && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 ${errors.sets && 'text-red-500 flex gap-1'}`}>
             Sets {errors.sets && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3 ${errors.reps && 'text-red-500 flex gap-1'}`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 ${errors.reps && 'text-red-500 flex gap-1'}`}>
             Reps {errors.reps && <CircleAlert className="size-4" />}
           </div>
-          <div className={`px-6 py-3`}>
+          <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
             Actions
           </div>
         </div>
