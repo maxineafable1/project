@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm } from "react-hook-form"
 
 export default function SignupForm() {
   const { register, handleSubmit, formState: { errors }, setError } = useForm({
@@ -20,16 +20,17 @@ export default function SignupForm() {
   async function onSubmit(data1: SignupSchemaType) {
     const { email, password } = data1
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = await authClient.signUp.email({
       email, // user email address
       password, // user password -> min 8 characters by default
       name: email.split('@')[0],
     }, {
-      onRequest: (ctx) => {
+      onRequest: () => {
         //show loading
         setLoading(prev => !prev)
       },
-      onSuccess: (ctx) => {
+      onSuccess: () => {
         //redirect to the dashboard or sign in page
         router.push('/dashboard')
       },

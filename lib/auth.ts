@@ -18,5 +18,6 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 	},
+	baseURL: "http://localhost:3001"
 	// database: new Database("./sqlite.db"),
 });

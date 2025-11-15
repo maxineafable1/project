@@ -2,10 +2,8 @@
 
 
 import { CreateExerciseSchemaType } from '@/utils/exercise-form-schema'
-import { ChevronDown } from 'lucide-react'
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue } from 'react-hook-form'
-import { boolean } from 'zod'
+import React, { Dispatch, SetStateAction } from 'react'
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue } from 'react-hook-form'
 
 type Props = {
   errors: FieldErrors<CreateExerciseSchemaType>
@@ -30,8 +28,6 @@ export default function ExerciseForm({
   reset,
   isEdit = false,
 }: Props) {
-  const [isDropdown, setIsDropdown] = useState(false)
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

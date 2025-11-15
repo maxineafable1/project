@@ -2,7 +2,6 @@
 
 import { authClient } from '@/lib/auth-client'
 import { Calendar, ChevronDown, LogOut, Menu, Search, User, X } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -28,7 +27,7 @@ export default function Sidebar({
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (e.target instanceof HTMLElement && divRef.current && !divRef.current.contains(e.target)) {
-        setSidebar(prev => prev = false)
+        setSidebar(false)
       }
     }
 

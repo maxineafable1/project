@@ -23,7 +23,7 @@ export default async function page() {
           className='text-blue-500 hover:text-blue-600 transition-colors
           focus-visible:outline-blue-500 focus-visible:outline-2
           text-sm self-center'>
-          Don't have an account?
+          Don&apos;t have an account?
         </Link>
       </div>
     </div>

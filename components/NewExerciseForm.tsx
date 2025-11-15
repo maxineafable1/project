@@ -45,8 +45,6 @@ export default function NewExerciseForm({
     }
   }
 
-  console.log(errors)
-
   const isKilogram = getValues('isKilogram') ?? null
 
   return (

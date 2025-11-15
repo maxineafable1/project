@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  app:
+    image: liftts
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: liftts-container
+    ports:
+      - 3001:3001
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
