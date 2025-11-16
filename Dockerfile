@@ -55,7 +55,7 @@ ENV PORT=3001
 ENV HOSTNAME="0.0.0.0"
 ENV NODE_ENV=production
 
-COPY --from=builder --chown=node:node /app/public ./public
+# COPY --from=builder --chown=node:node /app/public ./public
 
 COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 
