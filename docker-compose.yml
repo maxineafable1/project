@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   app:
-    image: liftts
+    image: ghcr.io/maxineafable1/liftts:latest
     build:
       context: .
       dockerfile: Dockerfile
