@@ -19,7 +19,8 @@ export const auth = betterAuth({
 		enabled: true,
 	},
 	trustedOrigins: [
-		'http://128.199.117.20/',
+		'https://liftts.app/',
+		'https://*.liftts.app/',
 		'http://localhost:3000',
 		'http://localhost:3001',
 	]

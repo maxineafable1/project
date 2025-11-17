@@ -1,3 +1,4 @@
 # project
 
-di pa tapos :)
+tapos na :) \
+[liftts.app](https://liftts.app/)
