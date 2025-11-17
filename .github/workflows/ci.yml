@@ -40,11 +40,11 @@ jobs:
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Create a .env file
+      - name: Create a .env.production file
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
-          echo "$ENV_FILE" > .env
+          echo "$ENV_FILE" > .env.production
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5

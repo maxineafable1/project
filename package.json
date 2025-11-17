@@ -7,7 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "db:migrate:prod": "node ./migrate.ts"
+    "db:migrate:prod": "node --env-file=.env.production ./migrate.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

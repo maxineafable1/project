@@ -18,6 +18,10 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 	},
-	baseURL: "http://localhost:3001"
+	trustedOrigins: [
+		'http://128.199.117.20/',
+		'http://localhost:3000',
+		'http://localhost:3001',
+	]
 	// database: new Database("./sqlite.db"),
 });

@@ -33,7 +33,7 @@ COPY --chown=node:node . .
 
 COPY --chown=node:node /drizzle ./drizzle
 
-COPY --chown=node:node .env .env
+COPY --chown=node:node .env.production .env.production
 
 USER root
 
