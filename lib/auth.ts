@@ -20,9 +20,15 @@ export const auth = betterAuth({
 	},
 	trustedOrigins: [
 		'https://liftts.app/',
-		'https://*.liftts.app/',
+		'https://www.liftts.app/',
 		'http://localhost:3000',
 		'http://localhost:3001',
-	]
+	],
+	advanced: {
+		crossSubDomainCookies: {
+			enabled: true,
+			domain: 'liftts.app',
+		},
+	},
 	// database: new Database("./sqlite.db"),
 });
