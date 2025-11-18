@@ -12,7 +12,7 @@ set -e
 # pnpm approve-builds --filter better-sqlite3
 # cd ..
 
-echo "Creating '/data/users.prod.sqlite' using bind volume mount"
+echo "Creating '/data/sqlite.db' using bind volume mount"
 pnpm run db:migrate:prod & PID=$!
 # Wait for migration to finish
 wait $PID

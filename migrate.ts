@@ -4,7 +4,9 @@ import sqlite from 'better-sqlite3'
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import 'dotenv/config';
 
-const client = sqlite(process.env.DATABASE_URL!)
+const url = `/data/${process.env.DATABASE_URL}`
+
+const client = sqlite(url)
 
 const db = drizzle(client)
 
