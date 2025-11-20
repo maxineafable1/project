@@ -3,6 +3,8 @@ import { accounts, exercises, sessions, users, verifications } from "@/db-schema
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
+const isProd = process.env.DATABASE_URL === 'production'
+
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "sqlite", // or "mysql", "sqlite"
@@ -24,11 +26,13 @@ export const auth = betterAuth({
 		'http://localhost:3000',
 		'http://localhost:3001',
 	],
-	advanced: {
-		crossSubDomainCookies: {
-			enabled: true,
-			domain: 'liftts.app',
+	...(isProd && {
+		advanced: {
+			crossSubDomainCookies: {
+				enabled: true,
+				domain: 'liftts.app',
+			},
 		},
-	},
+	})
 	// database: new Database("./sqlite.db"),
 });

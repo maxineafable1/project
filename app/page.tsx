@@ -1,6 +1,6 @@
 import Divider from "@/components/Divider";
 import Navbar from "@/components/Navbar";
-import { ArrowRight, ChartLine, CircleStar, Dumbbell } from "lucide-react";
+import { ArrowRight, ChartLine, ChartNoAxesGantt, Dumbbell } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -24,9 +24,10 @@ export default function Home() {
             Start Tracking <ArrowRight className="size-4" />
           </Link>
         </div>
-        <div className="bg-neutral-400 h-60">
-          {/* gif display */}
-        </div>
+        <video className="rounded-lg shadow focus-visible:outline-blue-500 focus-visible:outline-2" autoPlay muted loop>
+          <source src="/liftts-demo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
       <div className="bg-neutral-100 dark:bg-neutral-700 py-20 w-full">
         <div className="max-w-screen-xl mx-auto px-8 md:gap-8 gap-16 grid md:grid-cols-3">
@@ -46,7 +47,7 @@ export default function Home() {
           </div>
           <div className="space-y-4">
             <div className="p-2 rounded-md bg-blue-500 w-fit">
-              <CircleStar className="text-white" />
+              <ChartNoAxesGantt className="text-white" />
             </div>
             <h2 className="text-lg font-bold">Manage Your Routine</h2>
             <p className="max-w-[40ch]">Make quick changes to your workouts anytime. Stay organized and keep your training on track.</p>
