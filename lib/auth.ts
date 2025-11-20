@@ -3,7 +3,7 @@ import { accounts, exercises, sessions, users, verifications } from "@/db-schema
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
-const isProd = process.env.DATABASE_URL === 'production'
+const isProd = process.env.NODE_ENV === 'production'
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {

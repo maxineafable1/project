@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import sqlite from 'better-sqlite3'
 import * as schema from './db-schema';
 // import Database from 'better-sqlite3';
-const isProd = process.env.DATABASE_URL === 'production'
+const isProd = process.env.NODE_ENV === 'production'
 // export const db = drizzle(process.env.DATABASE_URL!);
 const url = isProd 
   ? `/data/${process.env.DATABASE_URL}`
