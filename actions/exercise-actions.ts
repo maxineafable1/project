@@ -30,8 +30,12 @@ export async function createExercise(data: CreateExercise, userId: string) {
 }
 
 export async function deleteExercise(id: number) {
-  await db.delete(exercises).where(eq(exercises.id, id))
-  revalidatePath('/dashboard')
+  try {
+    await db.delete(exercises).where(eq(exercises.id, id))
+    revalidatePath('/dashboard')
+  } catch (error) {
+    return { error }
+  }
 }
 
 export async function updateExercise(exerciseId: number, data: CreateExercise, userId: string) {

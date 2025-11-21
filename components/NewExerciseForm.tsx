@@ -22,7 +22,7 @@ export default function NewExerciseForm({
   sessId,
   setNewExercise,
 }: Props) {
-  const { register, handleSubmit, formState: { errors }, setValue, getValues, setError } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, getValues, setError } = useForm({
     resolver: zodResolver(createExerciseSchema),
   })
 
@@ -93,6 +93,7 @@ export default function NewExerciseForm({
           onSubmit={onSubmit}
           register={register}
           setValue={setValue}
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>

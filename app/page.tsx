@@ -24,7 +24,7 @@ export default function Home() {
             Start Tracking <ArrowRight className="size-4" />
           </Link>
         </div>
-        <video className="rounded-lg shadow focus-visible:outline-blue-500 focus-visible:outline-2" autoPlay muted loop>
+        <video className="rounded-lg shadow focus-visible:outline-blue-500 focus-visible:outline-2" autoPlay playsInline muted loop>
           <source src="/liftts-demo.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>

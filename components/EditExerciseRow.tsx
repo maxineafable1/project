@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import ExerciseForm from "./ExerciseForm"
+import { LoaderCircle } from "lucide-react"
 
 type Props = {
   data: {
@@ -28,8 +29,9 @@ export default function EditExerciseRow({
   sessId,
 }: Props) {
   const [isEdit, setIsEdit] = useState(false)
+  const [isDeleteLoading, setDeleteLoading] = useState(false)
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, getValues } = useForm({
     resolver: zodResolver(createExerciseSchema),
     defaultValues: {
       name,
@@ -54,6 +56,15 @@ export default function EditExerciseRow({
       setIsEdit(false)
   }
 
+  async function handleExerciseDelete(exerciseId: number) {
+    setDeleteLoading(true)
+    const res = await deleteExercise(exerciseId)
+    if (res?.error)
+      console.log(res.error)
+    else
+      setDeleteLoading(false)
+  }
+
   const isKilogram = getValues('isKilogram') ?? null
 
   return (
@@ -69,12 +80,13 @@ export default function EditExerciseRow({
           isEdit
           reset={reset}
           setIsEdit={setIsEdit}
+          isSubmitting={isSubmitting}
         />
       ) : (
         <div
           className="grid grid-cols-[repeat(6,minmax(200px,1fr))]">
           <div
-            className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
+            className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
             {name}
           </div>
           <div className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
@@ -100,12 +112,15 @@ export default function EditExerciseRow({
                 Edit
               </button>
               <button
-                onClick={async () => await deleteExercise(id)}
+                onClick={() => handleExerciseDelete(id)}
                 className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
                 focus-visible:outline-blue-500 focus-visible:outline-2
                 transition-colors text-white"
+                disabled={isDeleteLoading}
               >
-                Delete
+                {isDeleteLoading ?
+                  <LoaderCircle className="size-4 animate-spin" />
+                  : 'Delete'}
               </button>
             </div>
           </div>

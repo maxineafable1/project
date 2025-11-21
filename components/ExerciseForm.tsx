@@ -2,6 +2,7 @@
 
 
 import { CreateExerciseSchemaType } from '@/utils/exercise-form-schema'
+import { LoaderCircle } from 'lucide-react'
 import React, { Dispatch, SetStateAction } from 'react'
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue } from 'react-hook-form'
 
@@ -15,6 +16,7 @@ type Props = {
   isEdit?: boolean
   setIsEdit?: Dispatch<SetStateAction<boolean>>
   reset?: UseFormReset<CreateExerciseSchemaType>
+  isSubmitting: boolean
 }
 
 export default function ExerciseForm({
@@ -26,6 +28,7 @@ export default function ExerciseForm({
   onSubmit,
   setIsEdit,
   reset,
+  isSubmitting,
   isEdit = false,
 }: Props) {
   return (
@@ -114,8 +117,11 @@ export default function ExerciseForm({
             className="px-4 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors text-white
                   dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2
                   "
+            disabled={isSubmitting}
           >
-            Save
+            {isSubmitting ?
+              <LoaderCircle className="size-4 animate-spin" />
+              : 'Save'}
           </button>
           {isEdit && (
             <button

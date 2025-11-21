@@ -38,7 +38,7 @@ export default function ExerciseTable({
 }: Props) {
   const [isCreate, setIsCreate] = useState(false)
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, getValues } = useForm({
     resolver: zodResolver(createExerciseSchema),
   })
 
@@ -106,6 +106,7 @@ export default function ExerciseTable({
             onSubmit={onSubmit}
             register={register}
             setValue={setValue}
+            isSubmitting={isSubmitting}
           />
         )}
         {value?.map(data => (
