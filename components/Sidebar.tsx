@@ -2,6 +2,7 @@
 
 import { authClient } from '@/lib/auth-client'
 import { Calendar, ChevronDown, LogOut, Menu, Search, User, X } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -61,8 +62,11 @@ export default function Sidebar({
           top-0 left-0 z-40 overflow-y-auto transition-transform -translate-x-full
       `}>
         <div className="flex justify-between items-center mb-2">
-          <Link href='/' className="text-lg font-bold focus-visible:outline-blue-500 focus-visible:outline-2">
-            Lift<span className='text-blue-500'>ts</span>
+          <Link href='/' className="text-lg font-bold focus-visible:outline-blue-500 focus-visible:outline-2 flex items-center gap-1">
+            <Image src={'/icon.png'} className='mx-auto' alt='Liftts logo icon' width={25} height={25} />
+            <div className="">
+              Liftts
+            </div>
           </Link>
           {/* close button hidden in large screen */}
           <button

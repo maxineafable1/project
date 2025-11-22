@@ -4,6 +4,7 @@ import React from 'react'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import Image from 'next/image'
 
 export default async function page() {
   const session = await auth.api.getSession({
@@ -16,6 +17,9 @@ export default async function page() {
   return (
     <div className='flex items-center justify-center min-h-dvh px-6'>
       <div className="flex flex-col gap-8 max-w-sm w-full">
+        <Link href={'/'}>
+          <Image src={'/icon.png'} className='mx-auto' alt='Liftts logo icon' width={50} height={50} />
+        </Link>
         <h2 className='text-center text-3xl font-bold'>Create your account</h2>
         <SignupForm />
         <Link
