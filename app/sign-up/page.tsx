@@ -14,7 +14,7 @@ export default async function page() {
     redirect('/')
 
   return (
-    <div className='flex items-center justify-center min-h-dvh'>
+    <div className='flex items-center justify-center min-h-dvh px-6'>
       <div className="flex flex-col gap-8 max-w-sm w-full">
         <h2 className='text-center text-3xl font-bold'>Create your account</h2>
         <SignupForm />

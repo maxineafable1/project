@@ -4,7 +4,6 @@ import { authClient } from "@/lib/auth-client"
 import { signinSchema, SigninSchemaType } from "@/utils/auth-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -12,8 +11,6 @@ export default function SigninForm() {
   const { register, handleSubmit, formState: { errors }, setError } = useForm({
     resolver: zodResolver(signinSchema),
   })
-
-  const router = useRouter()
 
   const [loading, setLoading] = useState(false)
 
@@ -24,28 +21,37 @@ export default function SigninForm() {
     const { data, error } = await authClient.signIn.email({
       email, // user email address
       password, // user password -> min 8 characters by default
+      callbackURL: "/dashboard",
+      /**
+       * remember the user session after the browser is closed. 
+       * @default true
+       */
+      rememberMe: false
     }, {
       onRequest: () => {
         //show loading
-        setLoading(prev => !prev)
+        setLoading(true)
       },
       onSuccess: () => {
         //redirect to the dashboard or sign in page
-        router.push('/dashboard')
+        // router.push('/dashboard')
       },
       onError: (ctx) => {
         // display the error message
-        setError("root", { message: ctx.error.message })
-        setLoading(prev => !prev)
+        if (ctx.error.status === 403)
+          setError("root", { message: 'Please verify your email address' })
+        else
+          setError("root", { message: ctx.error.message })
+
+        setLoading(false)
       },
     });
-
   }
 
   return (
     <>
       {errors.root && (
-        <p className="bg-red-400 px-4 rounded py-1.5 text-sm">
+        <p className="bg-red-400 px-4 rounded py-1.5 text-sm text-white">
           {errors.root.message}
         </p>
       )}
@@ -91,7 +97,7 @@ export default function SigninForm() {
         <button
           type='submit'
           className='bg-blue-500 text-neutral-100 rounded-full 
-          py-1.5 mt-4 text-sm cursor-pointer hover:bg-blue-600 transition-colors
+          py-1.5 mt-4 text-sm hover:bg-blue-600 transition-colors
           inline-flex justify-center items-center gap-2
           focus-visible:outline-2 focus-visible:outline-black dark:focus-visible:outline-white
           '

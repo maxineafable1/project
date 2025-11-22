@@ -1,3 +1,4 @@
+import { sendEmail } from "@/actions/email-actions";
 import { db } from "@/db"; // your drizzle instance
 import { accounts, exercises, sessions, users, verifications } from "@/db-schema";
 import { betterAuth } from "better-auth";
@@ -19,6 +20,7 @@ export const auth = betterAuth({
 	}),
 	emailAndPassword: {
 		enabled: true,
+		requireEmailVerification: true,
 	},
 	trustedOrigins: [
 		'https://liftts.app/',
@@ -33,6 +35,18 @@ export const auth = betterAuth({
 				domain: 'liftts.app',
 			},
 		},
-	})
+	}),
+	emailVerification: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+		sendVerificationEmail: async ({ user, url, token }, request) => {
+			await sendEmail(
+				user.email,
+				url,
+			);
+		},
+		sendOnSignIn: true,
+		sendOnSignUp: true,
+		autoSignInAfterVerification: true,
+	},
 	// database: new Database("./sqlite.db"),
 });
