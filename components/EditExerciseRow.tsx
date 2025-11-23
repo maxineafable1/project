@@ -1,12 +1,12 @@
 'use client'
 
-import { deleteExercise, updateExercise } from "@/actions/exercise-actions"
+import { updateExercise } from "@/actions/exercise-actions"
 import { createExerciseSchema, CreateExerciseSchemaType } from "@/utils/exercise-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
+import DeleteConfirmModal from "./DeleteConfirmModal"
 import ExerciseForm from "./ExerciseForm"
-import { LoaderCircle } from "lucide-react"
 
 type Props = {
   data: {
@@ -29,7 +29,7 @@ export default function EditExerciseRow({
   sessId,
 }: Props) {
   const [isEdit, setIsEdit] = useState(false)
-  const [isDeleteLoading, setDeleteLoading] = useState(false)
+  const deleteBtnRef = useRef<HTMLButtonElement | null>(null)
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, getValues } = useForm({
     resolver: zodResolver(createExerciseSchema),
@@ -54,15 +54,6 @@ export default function EditExerciseRow({
       console.log(res.error)
     else
       setIsEdit(false)
-  }
-
-  async function handleExerciseDelete(exerciseId: number) {
-    setDeleteLoading(true)
-    const res = await deleteExercise(exerciseId)
-    if (res?.error)
-      console.log(res.error)
-    else
-      setDeleteLoading(false)
   }
 
   const isKilogram = getValues('isKilogram') ?? null
@@ -112,20 +103,18 @@ export default function EditExerciseRow({
                 Edit
               </button>
               <button
-                onClick={() => handleExerciseDelete(id)}
+                ref={deleteBtnRef}
                 className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
                 focus-visible:outline-blue-500 focus-visible:outline-2
                 transition-colors text-white"
-                disabled={isDeleteLoading}
               >
-                {isDeleteLoading ?
-                  <LoaderCircle className="size-4 animate-spin" />
-                  : 'Delete'}
+                Delete
               </button>
             </div>
           </div>
         </div>
       )}
+      <DeleteConfirmModal deleteBtnRef={deleteBtnRef} exerciseId={id} />
     </>
   )
 }
