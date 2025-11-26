@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
@@ -101,4 +101,38 @@ export const exercises = sqliteTable("exercises", {
     .notNull(),
 })
 
-export type ExercisesType = typeof exercises.$inferSelect; 
+export type ExercisesType = typeof exercises.$inferSelect;
+
+export const bodyweights = sqliteTable("bodyweights", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  weight: integer("weight").notNull(),
+  bodyweightDate: text("exercise_date").notNull().default(sql`(current_timestamp)`),
+  isKilogram: integer('is_kilogram', { mode: 'boolean' }).notNull(),
+  userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+})
+
+export const usersRelations = relations(users, ({ many }) => ({
+  exercises: many(exercises),
+  bodyweights: many(bodyweights),
+}));
+
+export const exercisesRelations = relations(exercises, ({ one }) => ({
+  author: one(users, {
+    fields: [exercises.userId],
+    references: [users.id],
+  }),
+}));
+
+export const bodyweightsRelations = relations(bodyweights, ({ one }) => ({
+  author: one(users, {
+    fields: [bodyweights.userId],
+    references: [users.id],
+  }),
+}));

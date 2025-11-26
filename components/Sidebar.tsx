@@ -1,7 +1,7 @@
 'use client'
 
 import { authClient } from '@/lib/auth-client'
-import { Calendar, ChevronDown, LogOut, Menu, Search, User, X } from 'lucide-react'
+import { Calendar, ChevronDown, Dumbbell, LogOut, Menu, Search, User, Weight, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -141,7 +141,27 @@ export default function Sidebar({
             </ul>
           </div>
         </div>
-
+        <div className="font-bold text-sm my-2">
+          Application
+        </div>
+        <Link 
+          href={'/workouts'} 
+          className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
+          hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
+          '
+        >
+          <Dumbbell className='size-4' />
+          Workouts
+        </Link>
+        <Link 
+          href={'/my-weight'} 
+          className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
+          hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
+          '
+        >
+          <Weight className='size-4' />
+          My Weight
+        </Link>
 
         <div className="mt-auto relative w-full">
           <button

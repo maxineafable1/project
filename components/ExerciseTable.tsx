@@ -11,8 +11,12 @@ import ExerciseForm from "./ExerciseForm"
 
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import isoWeek from 'dayjs/plugin/isoWeek'
 
 dayjs.extend(localizedFormat);
+dayjs.extend(weekOfYear);
+dayjs.extend(isoWeek);
 
 type Props = {
   sessId: string
@@ -37,6 +41,8 @@ export default function ExerciseTable({
   value,
 }: Props) {
   const [isCreate, setIsCreate] = useState(false)
+
+  console.log(dayjs('2025-11-19').startOf('week').format().split('T')[0])
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, getValues } = useForm({
     resolver: zodResolver(createExerciseSchema),

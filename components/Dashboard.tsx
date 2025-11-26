@@ -31,7 +31,7 @@ export default function Dashboard({
 
   return (
     <>
-      <Sidebar username={username} />
+      {/* <Sidebar username={username} /> */}
       <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
         {(exerciseGroup.length > 0 || newExercise) && (
           <button
