@@ -4,7 +4,7 @@ import { authClient } from "@/lib/auth-client"
 import { signinSchema, SigninSchemaType } from "@/utils/auth-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
 export default function SigninForm() {
@@ -13,6 +13,8 @@ export default function SigninForm() {
   })
 
   const [loading, setLoading] = useState(false)
+
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   async function onSubmit(data1: SigninSchemaType) {
     const { email, password } = data1
@@ -26,7 +28,7 @@ export default function SigninForm() {
        * remember the user session after the browser is closed. 
        * @default true
        */
-      rememberMe: false
+      rememberMe: inputRef.current ? inputRef.current.checked : false
     }, {
       onRequest: () => {
         //show loading
@@ -93,6 +95,15 @@ export default function SigninForm() {
               {errors.password.message}
             </p>
           )}
+        </div>
+        <div className="text-sm space-x-2">
+          <input
+            ref={inputRef}
+            type="checkbox"
+            id="rememberMe"
+            className="accent-blue-600 focus-visible:outline-2 focus-visible:outline-blue-500"
+          />
+          <label htmlFor="rememberMe">Remember Me</label>
         </div>
         <button
           type='submit'
