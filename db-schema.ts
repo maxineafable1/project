@@ -118,6 +118,8 @@ export const bodyweights = sqliteTable("bodyweights", {
     .notNull(),
 })
 
+export type BodyweightsType = typeof bodyweights.$inferSelect;
+
 export const usersRelations = relations(users, ({ many }) => ({
   exercises: many(exercises),
   bodyweights: many(bodyweights),

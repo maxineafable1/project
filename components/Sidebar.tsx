@@ -71,8 +71,8 @@ export default function Sidebar({
           {/* close button hidden in large screen */}
           <button
             onClick={() => setSidebar(prev => !prev)}
-            className={`text-neutral-200 hover:text-neutral-50
-            transition-colors cursor-pointer lg:hidden
+            className={`hover:opacity-80 focus-visible:outline-blue-500 focus-visible:outline-2
+            transition-opacity cursor-pointer lg:hidden
           `}
           >
             <X />
@@ -198,7 +198,7 @@ export default function Sidebar({
         onClick={() => setSidebar(prev => !prev)}
         className={`fixed top-2 left-2 z-50 rounded-sm
         transition-all hover:bg-neutral-100 hover:text-neutral-900 p-1 
-        cursor-pointer lg:hidden 
+        cursor-pointer lg:hidden focus-visible:outline-blue-500 focus-visible:outline-2
         ${sidebar ? '-translate-x-52 duration-150' : 'translate-x-0 duration-400'}
         `}
       >

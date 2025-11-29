@@ -36,7 +36,7 @@ export default function Dashboard({
         {(exerciseGroup.length > 0 || newExercise) && (
           <button
             onClick={() => setNewExercise(prev => !prev)}
-            className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-white focus-visible:outline-2
+            className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-black dark:focus-visible:outline-white focus-visible:outline-2
           bg-blue-500 hover:bg-blue-600 transition-colors px-4 py-2 rounded font-bold self-end
           "
           >
