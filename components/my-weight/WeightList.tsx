@@ -6,16 +6,12 @@ import { useState } from 'react'
 import NewWeightForm from './NewWeightForm'
 
 import dayjs from 'dayjs'
-import dayOfYear from 'dayjs/plugin/dayOfYear'
 import isoWeek from 'dayjs/plugin/isoWeek'
-import localizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import BodyweightRow, { instanceOfBodyweight } from './BodyweightRow'
 
-dayjs.extend(localizedFormat);
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
-dayjs.extend(dayOfYear);
 
 type Props = {
   sessId: string
@@ -31,8 +27,6 @@ export default function WeightList({
   const groupBy = Object.groupBy(bodyweights, ({ bodyweightDate }) => dayjs(bodyweightDate).week())
 
   const bodyweightGroup = Object.entries(groupBy).reverse()
-
-  console.log(bodyweightGroup)
 
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
@@ -72,36 +66,60 @@ export default function WeightList({
           const startWeek = currFirstAtWeek.startOf('week')
           const endWeek = currLastAtWeek.endOf('week')
 
-          const arr = []
 
-          for (let i = startWeek.date(); i <= endWeek.date(); i++) {
-            const week = startWeek.format().split('T')[0].split('-')
-            const currWeek = week.with(2, i.toString()).join('-')
+          let daysDiff = endWeek.diff(startWeek, 'day')
+          let daysAdd = 0
+
+          const arr = []
+          let total = 0
+          let count = 0
+
+          while (daysDiff >= 0) {
+            const week = startWeek.add(daysAdd, 'd')
+            const currWeek = week.format().split('T')[0]
 
             const hasDate = value.find(v => v.bodyweightDate === currWeek)
-            if (hasDate)
+            if (hasDate) {
               arr.push(hasDate)
+              total += hasDate.isKilogram ? hasDate.weight : (hasDate.weight / 2.205)
+              count++
+            }
             else
               arr.push(currWeek)
 
+            daysDiff--
+            daysAdd++
           }
 
+          const average = +(total / count).toFixed(2)
+          const averageLb = +((total / count) * 2.205).toFixed(2)
+
           return (
-            <div key={key} className="">
-              <div
-                className="w-full text-sm overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500"
-              >
-                <div className="grid grid-cols-[repeat(7,minmax(200px,1fr))] font-bold text-sm">
-                  {arr.map((date, dateIndex) => {
-                    const isObj = instanceOfBodyweight(date)
-                    return (
-                      <BodyweightRow
-                        key={isObj ? date.bodyweightDate : date}
-                        date={date}
-                        sessId={sessId}
-                      />
-                    )
-                  })}
+            <div
+              key={key}
+              className="w-full text-sm overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500"
+            >
+              <div className="grid grid-cols-[repeat(8,minmax(200px,1fr))] font-bold text-sm">
+                {arr.map(date => {
+                  const isObj = instanceOfBodyweight(date)
+                  return (
+                    <BodyweightRow
+                      key={isObj ? date.bodyweightDate : date}
+                      date={date}
+                      sessId={sessId}
+                    />
+                  )
+                })}
+                <div className="">
+                  <div className="px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 text-sm
+                    bg-neutral-100 dark:bg-neutral-900 group-first:rounded-l-lg group-last-of-type:rounded-r-lg
+                    uppercase
+                    ">
+                    Average
+                  </div>
+                  <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 max-h-14 h-full">
+                    {average}kg ({averageLb}lb)
+                  </div>
                 </div>
               </div>
             </div>

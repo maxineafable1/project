@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, numeric } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
@@ -105,8 +105,8 @@ export type ExercisesType = typeof exercises.$inferSelect;
 
 export const bodyweights = sqliteTable("bodyweights", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  weight: integer("weight").notNull(),
-  bodyweightDate: text("exercise_date").notNull().default(sql`(current_timestamp)`),
+  weight: numeric("weight", { mode: 'number' }).notNull(),
+  bodyweightDate: text("exercise_date").notNull().default(sql`(current_timestamp)`).unique(),
   isKilogram: integer('is_kilogram', { mode: 'boolean' }).notNull(),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
