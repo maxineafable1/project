@@ -1,7 +1,7 @@
 'use client'
 
 import { authClient } from '@/lib/auth-client'
-import { Calendar, ChevronDown, Dumbbell, LogOut, Menu, Search, User, Weight, X } from 'lucide-react'
+import { Calendar, ChevronDown, Dumbbell, LayoutDashboard, LogOut, Menu, Search, User, Weight, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -100,52 +100,65 @@ export default function Sidebar({
             />
           </form>
         </div>
-        <div className="font-bold text-sm mb-2">
-          Sort by
-        </div>
-        <div className="relative">
-          <button
-            onClick={() => setIsSortDropdown(prev => !prev)}
-            className={`inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
-          ${isSortDropdown ? 'bg-white dark:bg-neutral-700' : 'hover:bg-white dark:hover:bg-neutral-700'} rounded transition-colors w-full text-sm
-        `}>
-            <Calendar className='size-4' />
-            <span>Date</span>
-            <ChevronDown className='size-4 ml-auto' />
-          </button>
-          <div className={`z-10 absolute w-full translate-y-1 overflow-hidden
-          ${!isSortDropdown && 'hidden'} shadow bg-white dark:bg-neutral-700 rounded *:text-start`}>
-            <ul className="text-sm">
-              <li
-                onClick={() => {
-                  if (sortBy === 'date_desc') return
-                  router.push(pathname + '?' + createQueryString('sortBy', 'date_desc'))
-                  setIsSortDropdown(false)
-                }}
-                className={`px-4 py-2 transition-colors 
+        {pathname === '/workouts' && (
+          <>
+            <div className="font-bold text-sm mb-2">
+              Sort by
+            </div>
+            <button
+              onClick={() => setIsSortDropdown(prev => !prev)}
+              className={`inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
+                ${isSortDropdown ? 'bg-white dark:bg-neutral-700' : 'hover:bg-white dark:hover:bg-neutral-700'} 
+                rounded transition-colors w-full text-sm
+              `}>
+              <Calendar className='size-4' />
+              <span>Date</span>
+              <ChevronDown className='size-4 ml-auto' />
+            </button>
+            {isSortDropdown && (
+              <div className='w-full translate-y-1 overflow-hidden bg-white dark:bg-neutral-700 rounded *:text-start'>
+                <ul className="text-sm">
+                  <li
+                    onClick={() => {
+                      if (sortBy === 'date_desc') return
+                      router.push(pathname + '?' + createQueryString('sortBy', 'date_desc'))
+                      setIsSortDropdown(false)
+                    }}
+                    className={`px-4 py-2 transition-colors 
                   ${sortBy === 'date_desc' ? 'bg-neutral-100 dark:bg-neutral-600' : 'hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer'}
                 `}>
-                Newest First
-              </li>
-              <li
-                onClick={() => {
-                  if (sortBy === 'date_asc') return
-                  router.push(pathname + '?' + createQueryString('sortBy', 'date_asc'))
-                  setIsSortDropdown(false)
-                }}
-                className={`px-4 py-2 transition-colors
+                    Newest First
+                  </li>
+                  <li
+                    onClick={() => {
+                      if (sortBy === 'date_asc') return
+                      router.push(pathname + '?' + createQueryString('sortBy', 'date_asc'))
+                      setIsSortDropdown(false)
+                    }}
+                    className={`px-4 py-2 transition-colors
                   ${sortBy === 'date_asc' ? 'bg-neutral-100 dark:bg-neutral-600' : 'hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer'}
                 `}>
-                Oldest First
-              </li>
-            </ul>
-          </div>
-        </div>
+                    Oldest First
+                  </li>
+                </ul>
+              </div>
+            )}
+          </>
+        )}
         <div className="font-bold text-sm my-2">
           Application
         </div>
-        <Link 
-          href={'/workouts'} 
+        <Link
+          href={'/dashboard'}
+          className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
+          hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
+          '
+        >
+          <LayoutDashboard className='size-4' />
+          Dashboard
+        </Link>
+        <Link
+          href={'/workouts'}
           className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
           hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
           '
@@ -153,8 +166,8 @@ export default function Sidebar({
           <Dumbbell className='size-4' />
           Workouts
         </Link>
-        <Link 
-          href={'/my-weight'} 
+        <Link
+          href={'/my-weight'}
           className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
           hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
           '

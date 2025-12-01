@@ -1,16 +1,13 @@
-import Dashboard from '@/components/Dashboard'
 import { db } from '@/db'
-import { exercises } from '@/db-schema'
+import { bodyweights, exercises } from '@/db-schema'
 import { auth } from '@/lib/auth'
-import { and, eq, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-export default async function page({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
+import Dashboard from '@/components/Dashboard'
+
+export default async function page() {
   const session = await auth.api.getSession({
     headers: await headers()
   })
@@ -18,30 +15,34 @@ export default async function page({
   if (!session)
     redirect('/sign-in')
 
-  const safetySort = ['asc', 'desc']
+  // const latestDate = await db.query.exercises.findFirst({
+  //   where: eq(exercises.userId, session.user.id),
+  //   orderBy: sql`date (${exercises.exerciseDate}) desc`,
+  // })
 
-  const searchParam = (await searchParams)
-  const searchVal = Array.isArray(searchParam.search) ? searchParam.search[0] : searchParam.search
-  const sortBy = Array.isArray(searchParam.sortBy) ? searchParam.sortBy[0] : searchParam.sortBy
+  // let exerciseData = null
 
-  const sortVal = sortBy ? safetySort.includes(sortBy.split('_')[1]) ? sortBy.split('_')[1] : 'desc' : 'desc'
+  // if (latestDate) {
+  //   exerciseData = await db.select()
+  //     .from(exercises)
+  //     .where(and(eq(exercises.userId, session.user.id), eq(exercises.exerciseDate, latestDate.exerciseDate)))
+  //     .orderBy(sql`date(${exercises.exerciseDate}) desc`, sql`${exercises.createdAt} desc`)
+  // }
 
-  const exercisesData = !searchVal
-    ? await db.select()
-      .from(exercises)
-      .where(eq(exercises.userId, session.user.id))
-      // .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
-      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`${exercises.createdAt} desc`)
-    :
-    await db.select()
-      .from(exercises)
-      .where(
-        and(eq(exercises.userId, session.user.id), sql`lower(${exercises.name}) like lower(${`%${searchVal}%`})`)
-      )
-      // .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
-      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`${exercises.createdAt} desc`)
+  const exerciseData = await db.select()
+    .from(exercises)
+    .where(eq(exercises.userId, session.user.id))
+    .orderBy(sql`date(${exercises.exerciseDate}) desc`, sql`${exercises.createdAt} desc`)
+
+  const bodyweightsData = await db.select()
+    .from(bodyweights)
+    .where(eq(bodyweights.userId, session.user.id))
+    .orderBy(sql`${bodyweights.bodyweightDate} desc`)
 
   return (
-    <Dashboard sessId={session.user.id} username={session.user.name} exercises={exercisesData} />
+    <Dashboard
+      bodyweightsData={bodyweightsData}
+      exerciseData={exerciseData}
+    />
   )
 }

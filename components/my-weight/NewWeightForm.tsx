@@ -40,7 +40,8 @@ export default function NewWeightForm({
     else {
       const res = await createBodyweight(newData, sessId)
       if (res?.error)
-        console.log(res.error)
+        setError('bodyweightDate', { message: 'error' }, { shouldFocus: true })
+        // console.log(res.error)
       else
         setNewWeight(false)
     }
