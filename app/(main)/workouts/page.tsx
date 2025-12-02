@@ -42,6 +42,6 @@ export default async function page({
       .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`${exercises.createdAt} desc`)
 
   return (
-    <Workouts sessId={session.user.id} username={session.user.name} exercises={exercisesData} />
+    <Workouts sessId={session.user.id} exercises={exercisesData} />
   )
 }

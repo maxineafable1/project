@@ -26,6 +26,7 @@ type Props = {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function instanceOfBodyweight(object: any): object is BodyweightsType {
   return typeof object === 'object' && object !== null;
 }
@@ -40,7 +41,7 @@ export default function BodyweightRow({
 
   const isObj = instanceOfBodyweight(date)
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, getValues, setError, reset } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
     resolver: zodResolver(bodyweightSchema),
   })
 

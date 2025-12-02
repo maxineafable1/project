@@ -1,11 +1,11 @@
 'use client'
 
-import { updateExercise } from "@/actions/exercise-actions"
+import { deleteExercise, updateExercise } from "@/actions/exercise-actions"
 import { createExerciseSchema, CreateExerciseSchemaType } from "@/utils/exercise-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { LoaderCircle } from "lucide-react"
 import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
-import DeleteConfirmModal from "./DeleteConfirmModal"
 import ExerciseForm from "./ExerciseForm"
 
 type Props = {
@@ -29,7 +29,19 @@ export default function EditExerciseRow({
   sessId,
 }: Props) {
   const [isEdit, setIsEdit] = useState(false)
-  const deleteBtnRef = useRef<HTMLButtonElement | null>(null)
+
+  const [isDeleteLoading, setDeleteLoading] = useState(false)
+
+  const dialogRef = useRef<HTMLDialogElement | null>(null)
+
+  async function handleExerciseDelete(exerciseId: number) {
+    setDeleteLoading(true)
+    const res = await deleteExercise(exerciseId)
+    if (res?.error)
+      console.log(res.error)
+    else
+      setDeleteLoading(false)
+  }
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, getValues } = useForm({
     resolver: zodResolver(createExerciseSchema),
@@ -103,7 +115,14 @@ export default function EditExerciseRow({
                 Edit
               </button>
               <button
-                ref={deleteBtnRef}
+                // ref={deleteBtnRef}
+                onClick={() => {
+                  if (dialogRef.current) {
+                    dialogRef.current.showModal()
+                    // setIsDelete(true)
+                  }
+                }}
+                // ref={ref}
                 className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
                 focus-visible:outline-blue-500 focus-visible:outline-2
                 transition-colors text-white"
@@ -114,7 +133,43 @@ export default function EditExerciseRow({
           </div>
         </div>
       )}
-      <DeleteConfirmModal deleteBtnRef={deleteBtnRef} exerciseId={id} />
+      <dialog
+        ref={dialogRef}
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+          backdrop:bg-black backdrop:opacity-80 dark:bg-neutral-800 dark:text-white
+          rounded-lg shadow p-6 max-w-sm w-full
+        ">
+        <div className="text-lg font-bold mb-1">Are you sure?</div>
+        <p className="text-sm">This will permanently delete this exercise.</p>
+        <div className="flex items-center justify-end gap-2 mt-4 ">
+          <button
+            onClick={() => {
+              if (dialogRef.current) {
+                dialogRef.current.close()
+              }
+            }}
+            className="px-4 py-1.5 rounded-lg border border-neutral-300 not-dark:hover:bg-neutral-100 
+            focus-visible:outline-blue-500 focus-visible:outline focus-visible:border-blue-500
+              dark:border-neutral-700 dark:hover:border-neutral-500 transition-colors "
+          >
+            Cancel
+          </button>
+          <form method="dialog">
+            <button
+              onClick={() => handleExerciseDelete(id)}
+              disabled={isDeleteLoading}
+              className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
+                focus-visible:outline-blue-500 focus-visible:outline-2
+                transition-colors text-white inline-flex items-center gap-1">
+              {isDeleteLoading ? <>
+                <LoaderCircle className="size-4 animate-spin" />
+                Deleting...
+              </>
+                : 'Delete'}
+            </button>
+          </form>
+        </div>
+      </dialog>
     </>
   )
 }

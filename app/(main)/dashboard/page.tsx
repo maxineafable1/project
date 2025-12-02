@@ -15,20 +15,6 @@ export default async function page() {
   if (!session)
     redirect('/sign-in')
 
-  // const latestDate = await db.query.exercises.findFirst({
-  //   where: eq(exercises.userId, session.user.id),
-  //   orderBy: sql`date (${exercises.exerciseDate}) desc`,
-  // })
-
-  // let exerciseData = null
-
-  // if (latestDate) {
-  //   exerciseData = await db.select()
-  //     .from(exercises)
-  //     .where(and(eq(exercises.userId, session.user.id), eq(exercises.exerciseDate, latestDate.exerciseDate)))
-  //     .orderBy(sql`date(${exercises.exerciseDate}) desc`, sql`${exercises.createdAt} desc`)
-  // }
-
   const exerciseData = await db.select()
     .from(exercises)
     .where(eq(exercises.userId, session.user.id))

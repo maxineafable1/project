@@ -78,7 +78,7 @@ export const verifications = sqliteTable("verifications", {
 export const exercises = sqliteTable("exercises", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
-  weight: integer("weight").notNull(),
+  weight: numeric("weight", { mode: 'number' }).notNull(),
   sets: integer("sets").notNull(),
   reps: integer("reps").notNull(),
   exerciseDate: text("exercise_date").notNull().default(sql`(current_timestamp)`),

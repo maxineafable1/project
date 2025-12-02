@@ -42,8 +42,6 @@ export default function ExerciseTable({
 }: Props) {
   const [isCreate, setIsCreate] = useState(false)
 
-  console.log(dayjs('2025-11-19').startOf('week').format().split('T')[0])
-
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, getValues } = useForm({
     resolver: zodResolver(createExerciseSchema),
   })
