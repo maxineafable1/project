@@ -95,8 +95,8 @@ export default function Dashboard({
       <div className="text-3xl font-bold">
         Dashboard
       </div>
-      <div className="grid grid-cols-1 xl:grid-cols-4 xl:grid-rows-3 gap-8 ">
-        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl xl:col-span-2 xl:row-span-3 ">
+      <div className="grid grid-cols-1 xl:grid-cols-4 2xl:grid-rows-3 gap-8 ">
+        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl xl:col-span-4 2xl:col-span-2 2xl:row-span-3 ">
           <div className="font-bold text-lg mb-4">Lastest Workout</div>
           {latestWorkout.length > 0 ? (
             <div>
@@ -149,9 +149,7 @@ export default function Dashboard({
             <div className="">No record yet</div>
           )}
         </div>
-        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl xl:col-span-1
-          space-y-4
-        ">
+        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl space-y-4 xl:col-span-2 2xl:col-span-1">
           <div className="font-bold text-lg">Recent Bodyweight</div>
           {weight ? (
             <div>
@@ -162,9 +160,7 @@ export default function Dashboard({
             <div className="">No record yet</div>
           )}
         </div>
-        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl xl:col-span-1
-          space-y-4
-        ">
+        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl space-y-4 xl:col-span-2 2xl:col-span-1">
           <div className="font-bold text-lg">Recent Avg Weight</div>
           {weight ? (
             <div className="">
@@ -177,32 +173,32 @@ export default function Dashboard({
             <div className="">No record yet</div>
           )}
         </div>
-        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl xl:row-span-2 xl:col-span-2
+        <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl xl:col-span-4 2xl:row-span-2 2xl:col-span-2
           space-y-4
         ">
           <div className="font-bold text-lg">Personal Records (1RM)</div>
-          <div className="grid sm:grid-cols-2 gap-y-4 xl:grid-cols-4 p-4 text-center rounded-lg bg-neutral-800">
+          <div className="grid sm:grid-cols-2 gap-y-4 xl:grid-cols-4 p-4 sm:text-center rounded-lg bg-white dark:bg-neutral-800">
             <div className="col-span-1">
               <div className="text-sm font-bold pb-3 border-b border-neutral-200 dark:border-neutral-700">Squat</div>
-              <div className="py-3 border-b sm:border-r border-neutral-200 dark:border-neutral-700">
+              <div className="py-3 border-b sm:border-r border-neutral-200 dark:border-neutral-700 max-sm:text-center">
                 {prs.squat ? `${prs.squat.isKilogram ? prs.squat.weight : +(prs.squat.weight * 2.205).toFixed(2)} ${prs.squat.isKilogram ? 'kg' : 'lb'}` : 'No record yet'}
               </div>
             </div>
             <div className="">
               <div className="text-sm font-bold pb-3 border-b border-neutral-200 dark:border-neutral-700">Bench</div>
-              <div className="py-3 border-b xl:border-r border-neutral-200 dark:border-neutral-700">
+              <div className="py-3 border-b xl:border-r border-neutral-200 dark:border-neutral-700 max-sm:text-center">
                 {prs.bench ? `${prs.bench.isKilogram ? prs.bench.weight : +(prs.bench.weight * 2.205).toFixed(2)} ${prs.bench.isKilogram ? 'kg' : 'lb'}` : 'No record yet'}
               </div>
             </div>
             <div className="">
               <div className="text-sm font-bold pb-3 border-b border-neutral-200 dark:border-neutral-700">Deadlift</div>
-              <div className="py-3 border-b sm:border-r border-neutral-200 dark:border-neutral-700">
+              <div className="py-3 border-b sm:border-r border-neutral-200 dark:border-neutral-700 max-sm:text-center">
                 {prs.deadlift ? `${prs.deadlift.isKilogram ? prs.deadlift.weight : +(prs.deadlift.weight * 2.205).toFixed(2)} ${prs.deadlift.isKilogram ? 'kg' : 'lb'}` : 'No record yet'}
               </div>
             </div>
             <div className="">
               <div className="text-sm font-bold pb-3 border-b border-neutral-200 dark:border-neutral-700">OHP</div>
-              <div className="py-3 border-b border-neutral-200 dark:border-neutral-700">
+              <div className="py-3 border-b border-neutral-200 dark:border-neutral-700 max-sm:text-center">
                 {prs.ohp ? `${prs.ohp.isKilogram ? prs.ohp.weight : +(prs.ohp.weight * 2.205).toFixed(2)} ${prs.ohp.isKilogram ? 'kg' : 'lb'}` : 'No record yet'}
               </div>
             </div>
