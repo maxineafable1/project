@@ -1,7 +1,7 @@
 import { db } from '@/db'
-import { bodyweights, exercises } from '@/db-schema'
+import { bodyweights, exercises, workouts } from '@/db-schema'
 import { auth } from '@/lib/auth'
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, inArray, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -15,20 +15,39 @@ export default async function page() {
   if (!session)
     redirect('/sign-in')
 
-  const exerciseData = await db.select()
-    .from(exercises)
-    .where(eq(exercises.userId, session.user.id))
-    .orderBy(sql`date(${exercises.exerciseDate}) desc`, sql`${exercises.createdAt} desc`)
+  const latestWorkout = await db.query.workouts.findFirst({
+    orderBy: workout => sql`${workout.exerciseDate} desc`,
+    with: {
+      exercises: {
+        orderBy: exercise => sql`${exercise.createdAt} desc`,
+      },
+    },
+    where: eq(workouts.userId, session.user.id),
+  })
 
   const bodyweightsData = await db.select()
     .from(bodyweights)
     .where(eq(bodyweights.userId, session.user.id))
     .orderBy(sql`${bodyweights.bodyweightDate} desc`)
 
+  const lifts = ['deadlift', 'squat', 'bench', 'ohp']
+
+  const prs = await db.select({
+    weight: sql<number>`max(${exercises.weight})`.as('weight'),
+    name: exercises.name,
+    isKilogram: exercises.isKilogram,
+  })
+    .from(exercises)
+    .where(and(inArray(sql`lower(${exercises.name})`, lifts), eq(exercises.sets, 1), eq(exercises.reps, 1)))
+    .groupBy(exercises.name)
+
+  console.log(prs)
+
   return (
     <Dashboard
       bodyweightsData={bodyweightsData}
-      exerciseData={exerciseData}
+      latestWorkout={latestWorkout}
+      prs={prs}
     />
   )
 }

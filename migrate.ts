@@ -1,8 +1,8 @@
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 // import { db } from "./db";
-import sqlite from 'better-sqlite3'
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import sqlite from 'better-sqlite3';
 import 'dotenv/config';
+import { drizzle } from "drizzle-orm/better-sqlite3";
 
 const url = `/data/${process.env.DATABASE_URL}`
 

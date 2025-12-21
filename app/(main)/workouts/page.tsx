@@ -1,8 +1,8 @@
 import Workouts from '@/components/Workouts'
 import { db } from '@/db'
-import { exercises } from '@/db-schema'
+import { workouts } from '@/db-schema'
 import { auth } from '@/lib/auth'
-import { and, eq, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -22,26 +22,27 @@ export default async function page({
 
   const searchParam = (await searchParams)
   const searchVal = Array.isArray(searchParam.search) ? searchParam.search[0] : searchParam.search
-  const sortBy = Array.isArray(searchParam.sortBy) ? searchParam.sortBy[0] : searchParam.sortBy
 
+  const sortBy = Array.isArray(searchParam.sortBy) ? searchParam.sortBy[0] : searchParam.sortBy
   const sortVal = sortBy ? safetySort.includes(sortBy.split('_')[1]) ? sortBy.split('_')[1] : 'desc' : 'desc'
 
-  const exercisesData = !searchVal
-    ? await db.select()
-      .from(exercises)
-      .where(eq(exercises.userId, session.user.id))
-      // .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
-      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`${exercises.createdAt} desc`)
-    :
-    await db.select()
-      .from(exercises)
-      .where(
-        and(eq(exercises.userId, session.user.id), sql`lower(${exercises.name}) like lower(${`%${searchVal}%`})`)
-      )
-      // .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`datetime(${exercises.createdAt}) desc`)
-      .orderBy(sql`date(${exercises.exerciseDate}) ${sql.raw(sortVal)}`, sql`${exercises.createdAt} desc`)
+  const workoutData = await db.query.workouts.findMany({
+    orderBy: workout => sql`${workout.exerciseDate} ${sql.raw(sortVal)}`,
+    with: {
+      exercises: {
+        ...(searchVal && {
+          where: (exercise, { like }) => like(exercise.name, `%${searchVal}%`),
+        }),
+        orderBy: exercise => sql`${exercise.createdAt} desc`,
+      },
+    },
+    where: eq(workouts.userId, session.user.id),
+  })
 
   return (
-    <Workouts sessId={session.user.id} exercises={exercisesData} />
+    <Workouts
+      sessId={session.user.id}
+      data={searchVal ? workoutData.filter(a => a.exercises.length > 0) : workoutData}
+    />
   )
 }

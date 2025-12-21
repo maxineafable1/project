@@ -1,6 +1,5 @@
 'use client'
 
-import { ExercisesType } from "@/db-schema"
 import { Minus, Plus } from "lucide-react"
 import { useState } from "react"
 import ExerciseTable from "./ExerciseTable"
@@ -13,22 +12,34 @@ dayjs.extend(localizedFormat);
 
 type Props = {
   sessId: string
-  exercises: ExercisesType[]
+  data: {
+    id: number;
+    userId: string;
+    exerciseDate: string;
+    exercises: {
+      name: string;
+      id: number;
+      createdAt: Date;
+      updatedAt: Date;
+      userId: string;
+      weight: number;
+      sets: number;
+      reps: number;
+      isKilogram: boolean;
+      workoutId: number | null;
+    }[];
+  }[]
 }
 
 export default function Workouts({
   sessId,
-  exercises,
+  data,
 }: Props) {
   const [newExercise, setNewExercise] = useState(false)
 
-  const groupBy = Object.groupBy(exercises, ({ exerciseDate }) => dayjs(exerciseDate).format('ll'))
-
-  const exerciseGroup = Object.entries(groupBy)
-
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
-      {(exerciseGroup.length > 0 || newExercise) && (
+      {(data.length > 0 || newExercise) && (
         <button
           onClick={() => setNewExercise(prev => !prev)}
           className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-black dark:focus-visible:outline-white focus-visible:outline-2
@@ -42,7 +53,7 @@ export default function Workouts({
       {newExercise && (
         <NewExerciseForm sessId={sessId} setNewExercise={setNewExercise} />
       )}
-      {(exerciseGroup.length === 0 && !newExercise) ?
+      {(data.length === 0 && !newExercise) ?
         <div className="max-w-md mx-auto text-center space-y-4">
           <div className="text-3xl font-bold">Track your first workout and see your progress grow!</div>
           {/* <div className="text-sm mx-auto">Click <span className="font-bold">New Exercise</span> to start tracking your workouts.</div> */}
@@ -56,8 +67,8 @@ export default function Workouts({
             {newExercise ? 'Cancel' : 'New Exercise'}
           </button>
         </div>
-        : exerciseGroup.map(([key, value]) => (
-          <ExerciseTable key={key} sessId={sessId} titleDate={key} value={value} />
+        : data.map(({ id, exerciseDate, exercises }) => (
+          <ExerciseTable key={id} sessId={sessId} titleDate={exerciseDate} value={exercises} />
         ))}
     </div>
   )

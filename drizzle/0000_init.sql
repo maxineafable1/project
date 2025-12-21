@@ -15,18 +15,30 @@ CREATE TABLE `accounts` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `exercises` (
+CREATE TABLE `bodyweights` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text NOT NULL,
-	`weight` integer NOT NULL,
-	`sets` integer NOT NULL,
-	`reps` integer NOT NULL,
-	`exercise_date` text DEFAULT (current_timestamp) NOT NULL,
+	`weight` numeric NOT NULL,
+	`date` text DEFAULT (current_timestamp) NOT NULL,
 	`is_kilogram` integer NOT NULL,
-	`user_id` text,
+	`user_id` text NOT NULL,
 	`created_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
 	`updated_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `exercises` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`name` text NOT NULL,
+	`weight` numeric NOT NULL,
+	`sets` integer NOT NULL,
+	`reps` integer NOT NULL,
+	`is_kilogram` integer NOT NULL,
+	`user_id` text NOT NULL,
+	`workout_id` integer NOT NULL,
+	`created_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
+	`updated_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`workout_id`) REFERENCES `workouts`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `sessions` (
@@ -60,4 +72,11 @@ CREATE TABLE `verifications` (
 	`expires_at` integer NOT NULL,
 	`created_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
 	`updated_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `workouts` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`date` text DEFAULT (current_timestamp) NOT NULL,
+	`user_id` text NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );

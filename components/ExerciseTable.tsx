@@ -27,11 +27,11 @@ type Props = {
     weight: number;
     sets: number;
     reps: number;
-    exerciseDate: string;
+    // exerciseDate: string;
     isKilogram: boolean;
     createdAt: Date;
     updatedAt: Date;
-    userId: string | null;
+    userId: string;
   }[] | undefined
 }
 
@@ -66,7 +66,7 @@ export default function ExerciseTable({
   return (
     <div>
       <div className="flex justify-between items-center mb-4 bg-neutral-100 dark:bg-neutral-900 px-6 py-2 rounded-lg">
-        <h2 className='text-xl font-bold'>{titleDate}</h2>
+        <h2 className='text-xl font-bold'>{dayjs(titleDate).format('ll')}</h2>
         <button
           onClick={() => setIsCreate(prev => {
             if (prev)
@@ -114,7 +114,12 @@ export default function ExerciseTable({
           />
         )}
         {value?.map(data => (
-          <EditExerciseRow key={data.id} data={data} sessId={sessId} />
+          <EditExerciseRow 
+            key={data.id} 
+            data={data} 
+            sessId={sessId}
+            titleDate={titleDate}
+          />
         ))}
       </div>
     </div>

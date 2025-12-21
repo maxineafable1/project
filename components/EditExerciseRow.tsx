@@ -15,18 +15,20 @@ type Props = {
     weight: number;
     sets: number;
     reps: number;
-    exerciseDate: string;
+    // exerciseDate: string;
     isKilogram: boolean;
     createdAt: Date;
     updatedAt: Date;
-    userId: string | null;
+    userId: string;
   }
   sessId: string
+  titleDate: string
 }
 
 export default function EditExerciseRow({
-  data: { id, name, weight, sets, reps, exerciseDate, isKilogram: isKilogramDefault },
+  data: { id, name, weight, sets, reps, isKilogram: isKilogramDefault, userId },
   sessId,
+  titleDate,
 }: Props) {
   const [isEdit, setIsEdit] = useState(false)
 
@@ -34,9 +36,9 @@ export default function EditExerciseRow({
 
   const dialogRef = useRef<HTMLDialogElement | null>(null)
 
-  async function handleExerciseDelete(exerciseId: number) {
+  async function handleExerciseDelete(exerciseId: number, date: string, userId: string) {
     setDeleteLoading(true)
-    const res = await deleteExercise(exerciseId)
+    const res = await deleteExercise(exerciseId, date, userId)
     if (res?.error)
       console.log(res.error)
     else
@@ -50,7 +52,7 @@ export default function EditExerciseRow({
       weight,
       sets,
       reps,
-      exerciseDate,
+      // exerciseDate,
       isKilogram: isKilogramDefault,
     }
   })
@@ -58,7 +60,7 @@ export default function EditExerciseRow({
   async function onSubmit(data: CreateExerciseSchemaType) {
     const newData = {
       ...data,
-      exerciseDate,
+      exerciseDate: titleDate,
     }
 
     const res = await updateExercise(id, newData, sessId)
@@ -93,7 +95,7 @@ export default function EditExerciseRow({
             {name}
           </div>
           <div className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
-            {weight}
+            {isKilogram ? weight : +(weight * 2.205).toFixed(2)}
           </div>
           <div className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700">
             {isKilogram ? 'Kg' : 'Lbs'}
@@ -156,7 +158,7 @@ export default function EditExerciseRow({
           </button>
           <form method="dialog">
             <button
-              onClick={() => handleExerciseDelete(id)}
+              onClick={() => handleExerciseDelete(id, titleDate, userId)}
               disabled={isDeleteLoading}
               className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
                 focus-visible:outline-blue-500 focus-visible:outline-2

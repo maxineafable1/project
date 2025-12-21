@@ -22,7 +22,7 @@ type Props = {
     isKilogram: boolean;
     createdAt: Date;
     updatedAt: Date;
-    userId: string | null;
+    userId: string
   }
 }
 
@@ -84,7 +84,7 @@ export default function BodyweightRow({
             <div className='flex items-center justify-center gap-2'>
               <form onSubmit={handleSubmit(onSubmit)} className='flex items-center gap-2'>
                 <input
-                  defaultValue={date.weight}
+                  defaultValue={date.isKilogram ? date.weight : +(date.weight * 2.205).toFixed(2)}
                   {...register('weight', { valueAsNumber: true })}
                   className={`border-2 text-sm rounded-lg px-2 max-w-12
                   focus-within:outline
@@ -115,7 +115,8 @@ export default function BodyweightRow({
               </form>
             </div>
           ) : (
-            <div>{date.weight} {date.isKilogram ? 'kg' : 'lb'}</div>
+            // <div>{date.weight} {date.isKilogram ? 'kg' : 'lb'}</div>
+            <div>{date.isKilogram ? `${date.weight} kg` : `${+(date.weight * 2.205).toFixed(2)} lb`}</div>
           )
         ) : (
           isAddWeight ? (
@@ -135,6 +136,7 @@ export default function BodyweightRow({
                 <div className="relative inline-flex gap-1">
                   <input
                     {...register('isKilogram')}
+                    defaultChecked
                     id="switch-component"
                     type="checkbox"
                     className="peer appearance-none w-8 h-4 focus-within:outline-blue-500 focus-within:outline-2

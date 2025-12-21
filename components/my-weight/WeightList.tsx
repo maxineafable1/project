@@ -81,7 +81,8 @@ export default function WeightList({
             const hasDate = value.find(v => v.bodyweightDate === currWeek)
             if (hasDate) {
               arr.push(hasDate)
-              total += hasDate.isKilogram ? hasDate.weight : (hasDate.weight / 2.205)
+              // total += hasDate.isKilogram ? hasDate.weight : (hasDate.weight / 2.205)
+              total += hasDate.weight
               count++
             }
             else

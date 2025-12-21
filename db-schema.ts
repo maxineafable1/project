@@ -81,17 +81,9 @@ export const exercises = sqliteTable("exercises", {
   weight: numeric("weight", { mode: 'number' }).notNull(),
   sets: integer("sets").notNull(),
   reps: integer("reps").notNull(),
-  exerciseDate: text("exercise_date").notNull().default(sql`(current_timestamp)`),
-  // exerciseDate: integer("exercise_date", { mode: 'timestamp_ms' })
-  //   .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
-  //   .notNull(),
   isKilogram: integer('is_kilogram', { mode: 'boolean' }).notNull(),
-  userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
-  // createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
-  // updatedAt: text("updated_at")
-  //   .notNull()
-  //   .default(sql`(current_timestamp)`)
-  //   .$onUpdate(() => sql`(current_timestamp)`),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  workoutId: integer("workout_id").notNull().references(() => workouts.id, { onDelete: "cascade" }),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
     .notNull(),
@@ -106,9 +98,9 @@ export type ExercisesType = typeof exercises.$inferSelect;
 export const bodyweights = sqliteTable("bodyweights", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   weight: numeric("weight", { mode: 'number' }).notNull(),
-  bodyweightDate: text("exercise_date").notNull().default(sql`(current_timestamp)`).unique(),
+  bodyweightDate: text("date").notNull().default(sql`(current_timestamp)`),
   isKilogram: integer('is_kilogram', { mode: 'boolean' }).notNull(),
-  userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
     .notNull(),
@@ -120,15 +112,26 @@ export const bodyweights = sqliteTable("bodyweights", {
 
 export type BodyweightsType = typeof bodyweights.$inferSelect;
 
+export const workouts = sqliteTable("workouts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  exerciseDate: text("date").notNull().default(sql`(current_timestamp)`),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+})
+
 export const usersRelations = relations(users, ({ many }) => ({
   exercises: many(exercises),
   bodyweights: many(bodyweights),
+  workouts: many(workouts)
 }));
 
 export const exercisesRelations = relations(exercises, ({ one }) => ({
   author: one(users, {
     fields: [exercises.userId],
     references: [users.id],
+  }),
+  workout: one(workouts, {
+    fields: [exercises.workoutId],
+    references: [workouts.id],
   }),
 }));
 
@@ -138,3 +141,11 @@ export const bodyweightsRelations = relations(bodyweights, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const workoutsRelations = relations(workouts, ({ one, many }) => ({
+  user: one(users, {
+    fields: [workouts.userId],
+    references: [users.id],
+  }),
+  exercises: many(exercises)
+}))
