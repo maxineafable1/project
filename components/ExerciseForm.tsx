@@ -16,6 +16,7 @@ type Props = {
   isEdit?: boolean
   setIsEdit?: Dispatch<SetStateAction<boolean>>
   reset?: UseFormReset<CreateExerciseSchemaType>
+  weight?: number
   isSubmitting: boolean
 }
 
@@ -29,6 +30,7 @@ export default function ExerciseForm({
   setIsEdit,
   reset,
   isSubmitting,
+  weight,
   isEdit = false,
 }: Props) {
   return (

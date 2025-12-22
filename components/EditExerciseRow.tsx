@@ -49,7 +49,7 @@ export default function EditExerciseRow({
     resolver: zodResolver(createExerciseSchema),
     defaultValues: {
       name,
-      weight,
+      weight: isKilogramDefault ? weight : +(weight * 2.205).toFixed(2),
       sets,
       reps,
       // exerciseDate,
@@ -86,6 +86,7 @@ export default function EditExerciseRow({
           reset={reset}
           setIsEdit={setIsEdit}
           isSubmitting={isSubmitting}
+          weight={weight}
         />
       ) : (
         <div

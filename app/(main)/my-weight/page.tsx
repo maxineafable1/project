@@ -19,7 +19,7 @@ export default async function page() {
     .where(eq(bodyweights.userId, session.user.id))
     .orderBy(sql`${bodyweights.bodyweightDate} desc`)
 
-  console.log(bodyweightsData)
+  // console.log(bodyweightsData)
 
   return (
     <WeightList

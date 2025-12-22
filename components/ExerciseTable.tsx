@@ -51,7 +51,7 @@ export default function ExerciseTable({
       ...data,
       exerciseDate: dayjs(titleDate).format('YYYY-MM-DD'),
     }
-
+    
     const res = await createExercise(newData, sessId)
     if (res?.error)
       console.log(res.error)

@@ -50,7 +50,7 @@ export default function Dashboard({
   latestWorkout,
   prs,
 }: Props) {
-  const lifts = ['deadlift', 'squat', 'bench', 'ohp']
+  const lifts = ['squat', 'bench', 'deadlift', 'ohp']
 
   function getWeight() {
     if (bodyweightsData.length === 0) return null
@@ -181,7 +181,7 @@ export default function Dashboard({
                   <div className="text-sm font-bold pb-3 border-b border-neutral-200 dark:border-neutral-700 capitalize">
                     {lift}
                   </div>
-                  <div className="py-3 border-b sm:group-odd:border-r xl:group-last:border-r-0 border-neutral-200 dark:border-neutral-700 max-sm:text-center">
+                  <div className="py-3 border-b sm:group-odd:border-r xl:border-r xl:group-last:border-r-0 border-neutral-200 dark:border-neutral-700 max-sm:text-center">
                     {curLift ? curLift.isKilogram ? `${curLift.weight} kg` : `${+(curLift.weight * 2.205).toFixed(2)} lb` : 'No record yet'}
                   </div>
                 </div>

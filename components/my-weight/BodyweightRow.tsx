@@ -75,7 +75,7 @@ export default function BodyweightRow({
           ${!isObj && 'text-center'} max-h-14 h-full`}
         onClick={() => {
           if (isObj || isAddWeight) return
-          console.log('adding', date)
+          // console.log('adding', date)
           setIsAddWeight(true)
         }}
       >

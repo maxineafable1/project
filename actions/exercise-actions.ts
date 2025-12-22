@@ -40,6 +40,8 @@ export async function createExercise(data: CreateExercise, userId: string) {
       await db.insert(exercises).values({
         ...data,
         workoutId: workoutExist.id,
+        // always store in kg for easy aggregate
+        weight: data.isKilogram ? data.weight : +(data.weight / 2.205),
         userId,
       })
     }

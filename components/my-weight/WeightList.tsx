@@ -119,7 +119,7 @@ export default function WeightList({
                     Average
                   </div>
                   <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 max-h-14 h-full">
-                    {average}kg ({averageLb}lb)
+                    {average} kg ({averageLb} lb)
                   </div>
                 </div>
               </div>

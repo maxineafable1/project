@@ -150,6 +150,7 @@ export default function Sidebar({
         </div>
         <Link
           href={'/dashboard'}
+          onClick={() => setSidebar(false)}
           className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
           hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
           '
@@ -159,6 +160,7 @@ export default function Sidebar({
         </Link>
         <Link
           href={'/workouts'}
+          onClick={() => setSidebar(false)}
           className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
           hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
           '
@@ -168,6 +170,7 @@ export default function Sidebar({
         </Link>
         <Link
           href={'/my-weight'}
+          onClick={() => setSidebar(false)}
           className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
           hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
           '
