@@ -9,10 +9,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -47,7 +48,8 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     }
 
     @Override
-    public UserDetails signup(String email, String password) {
+    @Transactional
+    public void signup(String email, String password) {
         Optional<User> userExists = userRepository.findByEmail(email);
         if (userExists.isEmpty()) {
             User user = new User();
@@ -57,36 +59,57 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
             user.setEnabled(false);
             userRepository.save(user);
 
-
             // todo send verify email
             String token = UUID.randomUUID().toString();
             userService.createVerificationToken(user, token);
 
-            String verificationLink = "http://localhost:8080/api/auth/verify?token=" + token;
+            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
             emailService.sendVerificationEmail(email, verificationLink);
-
-
-            authenticate(email, password);
-            return userDetailsService.loadUserByUsername(email);
         } else  {
-            throw new IllegalArgumentException("Account already exists with email: " + email);
+            User user = userExists.get();
+            if (user.isEnabled()) {
+                throw new IllegalArgumentException("Account already exists with email: " + email);
+            }
+
+            resendVerificationToken(email, user);
         }
     }
 
     @Override
-    public UserDetails login(String email, String password) {
-        Optional<User> userExists = userRepository.findByEmail(email);
-        // todo check user if verified email
-        if (userExists.isEmpty()) {
+    @Transactional
+    public Optional<UserDetails> login(String email, String password) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("Invalid email or password"));
+
+        boolean matches = passwordEncoder.matches(password, user.getPassword());
+        if (!matches) {
             throw new UsernameNotFoundException("Invalid email or password");
         } else {
-            boolean matches = passwordEncoder.matches(password, userExists.get().getPassword());
-            if (!matches) {
-                throw new UsernameNotFoundException("Invalid email or password");
-            } else {
+            if (user.isEnabled()) {
                 authenticate(email, password);
-                return userDetailsService.loadUserByUsername(email);
+                return Optional.of(userDetailsService.loadUserByUsername(email));
             }
+
+            resendVerificationToken(email, user);
+            return Optional.empty();
+        }
+    }
+
+    private void resendVerificationToken(String email, User user) {
+        // if user token is expired
+        if (user.getVerificationToken().getExpiryDate().isBefore(LocalDateTime.now())) {
+            user.setVerificationToken(null);
+            userRepository.save(user);
+
+            String token = UUID.randomUUID().toString();
+            userService.createVerificationToken(user, token);
+
+            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
+            emailService.sendVerificationEmail(email, verificationLink);
+        } else {
+            // resend token
+            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + user.getVerificationToken().getToken();
+            emailService.sendVerificationEmail(email, verificationLink);
         }
     }
 

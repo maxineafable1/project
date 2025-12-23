@@ -41,6 +41,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Bodyweight> bodyweights = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private VerificationToken verificationToken;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

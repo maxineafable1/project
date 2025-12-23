@@ -6,6 +6,7 @@ import com.liftts.backend.repositories.UserRepository;
 import com.liftts.backend.repositories.VerificationTokenRepository;
 import com.liftts.backend.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,4 +33,14 @@ public class UserServiceImplementation implements UserService {
         verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
         verificationTokenRepository.save(verificationToken);
     }
+
+    @Override
+    @Transactional
+    public void verifyUser(User user, Long id) {
+        user.setEnabled(true);
+        user.setVerificationToken(null);
+        userRepository.save(user);
+//        verificationTokenRepository.deleteById(id);
+    }
+
 }
