@@ -5,11 +5,10 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
+import { getSession } from '@/lib/session'
 
 export default async function page() {
-  const session = await auth.api.getSession({
-    headers: await headers() // you need to pass the headers object.
-  })
+  const session = await getSession()
 
   if (session)
     redirect('/')

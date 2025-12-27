@@ -58,6 +58,7 @@ export default function BodyweightRow({
     if (res?.error)
       console.log(res.error)
     else {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       isEditId ? setIsEditId(null) : setIsAddWeight(false)
     }
   }

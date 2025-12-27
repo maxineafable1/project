@@ -1,6 +1,5 @@
 'use client'
 
-import { authClient } from "@/lib/auth-client"
 import { signupSchema, SignupSchemaType } from "@/utils/auth-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
@@ -15,32 +14,29 @@ export default function SignupForm() {
   const [loading, setLoading] = useState(false)
   const [verifyMessage, setVerifyMessage] = useState<string | null>(null)
 
-  async function onSubmit(data1: SignupSchemaType) {
-    const { email, password } = data1
+  async function onSubmit(authInput: SignupSchemaType) {
+    setLoading(true)
+    const { email, password } = authInput
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, error } = await authClient.signUp.email({
-      email, // user email address
-      password, // user password -> min 8 characters by default
-      name: email.split('@')[0],
-      callbackURL: "/dashboard",
-    }, {
-      onRequest: () => {
-        //show loading
-        setLoading(true)
-      },
-      onSuccess: () => {
-        //redirect to the dashboard or sign in page
-        // router.push('/dashboard')
-        setVerifyMessage('Check your email to verify your account')
-        setLoading(false)
-      },
-      onError: (ctx) => {
-        // display the error message
-        setError("root", { message: ctx.error.message })
-        setLoading(false)
-      },
-    });
+    try {
+      const res = await fetch('http://localhost:8080/api/v1/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+
+      if (!res.ok) {
+        setError('root', { message: 'error test' })
+      }
+
+      const data = await res.json()
+      setVerifyMessage('Check your email to verify your account')
+      
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

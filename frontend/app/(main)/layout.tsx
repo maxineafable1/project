@@ -26,12 +26,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth.api.getSession({
-    headers: await headers()
-  })
+  // const session = await auth.api.getSession({
+  //   headers: await headers()
+  // })
 
-  if (!session)
-    redirect('/sign-in')
+  // if (!session)
+  //   redirect('/sign-in')
 
   return (
     <html lang="en">
@@ -39,7 +39,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="bg-white dark:bg-neutral-800 min-h-dvh">
-          <Sidebar username={session.user.name} />
+          {/* <Sidebar username={session.user.name} /> */}
           {children}
         </main>
       </body>

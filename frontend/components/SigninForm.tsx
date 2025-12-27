@@ -1,9 +1,9 @@
 'use client'
 
-import { authClient } from "@/lib/auth-client"
 import { signinSchema, SigninSchemaType } from "@/utils/auth-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -13,45 +13,49 @@ export default function SigninForm() {
   })
 
   const [loading, setLoading] = useState(false)
+  const [verifyMessage, setVerifyMessage] = useState<string | null>(null)
+
+  const router = useRouter()
 
   const inputRef = useRef<HTMLInputElement | null>(null)
 
-  async function onSubmit(data1: SigninSchemaType) {
-    const { email, password } = data1
+  async function onSubmit(authInput: SigninSchemaType) {
+    setLoading(true)
+    const { email, password } = authInput
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, error } = await authClient.signIn.email({
-      email, // user email address
-      password, // user password -> min 8 characters by default
-      callbackURL: "/dashboard",
-      /**
-       * remember the user session after the browser is closed. 
-       * @default true
-       */
-      rememberMe: inputRef.current ? inputRef.current.checked : false
-    }, {
-      onRequest: () => {
-        //show loading
-        setLoading(true)
-      },
-      onSuccess: () => {
-        //redirect to the dashboard or sign in page
-        // router.push('/dashboard')
-      },
-      onError: (ctx) => {
-        // display the error message
-        if (ctx.error.status === 403)
-          setError("root", { message: 'Please verify your email address' })
-        else
-          setError("root", { message: ctx.error.message })
+    try {
+      const res = await fetch('http://localhost:8080/api/v1/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
 
-        setLoading(false)
-      },
-    });
+      if (!res.ok) {
+        setError('root', { message: 'error test' })
+      }
+
+      const data = await res.json()
+      console.log(data)
+      
+      if (data.message)
+        setVerifyMessage('Check your email to verify your account')
+      else
+        router.push('/dashboard')
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <>
+      {verifyMessage && (
+        <p className="bg-blue-500 px-4 rounded py-1.5 text-sm text-white">
+          {verifyMessage}
+        </p>
+      )}
       {errors.root && (
         <p className="bg-red-400 px-4 rounded py-1.5 text-sm text-white">
           {errors.root.message}

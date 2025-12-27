@@ -30,7 +30,7 @@ export default function ExerciseForm({
   setIsEdit,
   reset,
   isSubmitting,
-  weight,
+  // weight,
   isEdit = false,
 }: Props) {
   return (
