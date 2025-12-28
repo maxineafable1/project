@@ -31,17 +31,13 @@ export default function NewWeightForm({
       bodyweightDate: data.bodyweightDate ? data.bodyweightDate : dayjs().format().split('T')[0]
     }
 
-    console.log(newData)
-
     if (dayjs(newData.bodyweightDate).isAfter(dayjs())) {
-      // console.log('date is after', newData.exerciseDate)
       setError('bodyweightDate', { message: 'error' }, { shouldFocus: true })
     }
     else {
       const res = await createBodyweight(newData, sessId)
       if (res?.error)
         setError('bodyweightDate', { message: 'error' }, { shouldFocus: true })
-        // console.log(res.error)
       else
         setNewWeight(false)
     }

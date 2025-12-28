@@ -13,6 +13,13 @@ type Create = {
 
 export async function createBodyweight(data: Create, userId: string) {
   try {
+    const weight = await db.query.bodyweights.findFirst({
+      where: and(eq(bodyweights.bodyweightDate, data.bodyweightDate), eq(bodyweights.userId, userId))
+    })
+
+    if (weight)
+      return { error: 'Date already has weight'}
+
     await db.insert(bodyweights).values({
       ...data,
       // always store in kg for easy aggregate

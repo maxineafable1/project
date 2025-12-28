@@ -1,36 +1,47 @@
 'use client'
 
-import { BodyweightsType } from '@/db-schema'
 import { Minus, Plus } from 'lucide-react'
 import { useState } from 'react'
 import NewWeightForm from './NewWeightForm'
 
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
-import BodyweightRow, { instanceOfBodyweight } from './BodyweightRow'
+import BodyweightRow from './BodyweightRow'
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
+dayjs.extend(localizedFormat);
 
 type Props = {
   sessId: string
-  bodyweights: BodyweightsType[]
+  // bodyweights: BodyweightsType[]
+  weights: {
+    id: number;
+    weight: number;
+    date: string;
+    isKilogram: boolean;
+  }[]
+  weeklyStatus: {
+    week: string;
+    average: number;
+    minWeight: number;
+    maxWeight: number;
+  }[]
 }
 
 export default function WeightList({
   sessId,
-  bodyweights,
+  weights,
+  weeklyStatus,
 }: Props) {
   const [newWeight, setNewWeight] = useState(false)
-
-  const groupBy = Object.groupBy(bodyweights, ({ bodyweightDate }) => dayjs(bodyweightDate).week())
-
-  const bodyweightGroup = Object.entries(groupBy).reverse()
+  const [isEditId, setIsEditId] = useState<number | null>(null)
 
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
-      {(bodyweights.length > 0 || newWeight) && (
+      {(weights.length > 0 || newWeight) && (
         <button
           onClick={() => setNewWeight(prev => !prev)}
           className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-black dark:focus-visible:outline-white focus-visible:outline-2
@@ -44,7 +55,7 @@ export default function WeightList({
       {newWeight && (
         <NewWeightForm sessId={sessId} setNewWeight={setNewWeight} />
       )}
-      {(bodyweights.length === 0 && !newWeight) ? (
+      {(weights.length === 0 && !newWeight) ? (
         <div className="max-w-md mx-auto text-center space-y-4">
           <div className="text-3xl font-bold">Start tracking your bodyweight progress from day one.</div>
           {/* <div className="text-sm mx-auto">Click <span className="font-bold">New Exercise</span> to start tracking your workouts.</div> */}
@@ -58,74 +69,82 @@ export default function WeightList({
           </button>
         </div>
       ) : (
-        bodyweightGroup.map(([key, value]) => {
-          if (!value) return
-          const currFirstAtWeek = dayjs(value[0].bodyweightDate)
-          const currLastAtWeek = dayjs(value[value.length - 1].bodyweightDate)
-
-          const startWeek = currFirstAtWeek.startOf('week')
-          const endWeek = currLastAtWeek.endOf('week')
-
-
-          let daysDiff = endWeek.diff(startWeek, 'day')
-          let daysAdd = 0
-
-          const arr = []
-          let total = 0
-          let count = 0
-
-          while (daysDiff >= 0) {
-            const week = startWeek.add(daysAdd, 'd')
-            const currWeek = week.format().split('T')[0]
-
-            const hasDate = value.find(v => v.bodyweightDate === currWeek)
-            if (hasDate) {
-              arr.push(hasDate)
-              // total += hasDate.isKilogram ? hasDate.weight : (hasDate.weight / 2.205)
-              total += hasDate.weight
-              count++
-            }
-            else
-              arr.push(currWeek)
-
-            daysDiff--
-            daysAdd++
-          }
-
-          const average = +(total / count).toFixed(2)
-          const averageLb = +((total / count) * 2.205).toFixed(2)
-
-          return (
-            <div
-              key={key}
-              className="w-full text-sm overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500"
-            >
-              <div className="grid grid-cols-[repeat(8,minmax(200px,1fr))] font-bold text-sm">
-                {arr.map(date => {
-                  const isObj = instanceOfBodyweight(date)
-                  return (
-                    <BodyweightRow
-                      key={isObj ? date.bodyweightDate : date}
-                      date={date}
-                      sessId={sessId}
-                    />
-                  )
-                })}
-                <div className="">
-                  <div className="px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 text-sm
-                    bg-neutral-100 dark:bg-neutral-900 group-first:rounded-l-lg group-last-of-type:rounded-r-lg
-                    uppercase
-                    ">
-                    Average
-                  </div>
-                  <div className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 max-h-14 h-full">
-                    {average} kg ({averageLb} lb)
-                  </div>
-                </div>
+        <div className="space-y-20">
+          <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
+            <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Week
+              </div>
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Average
+              </div>
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Minimum
+              </div>
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Maximum
               </div>
             </div>
-          )
-        })
+            {weeklyStatus.map(({ average, maxWeight, minWeight, week }) => {
+              const splitWeek = week.split('-')
+
+              const targetYear = +splitWeek[0];
+              const targetWeek = +splitWeek[1] + 1; // to match the sqlite week
+
+              const dateInTargetYear = dayjs().year(targetYear).startOf('year');
+
+              const startOfWeek = dateInTargetYear.week(targetWeek).startOf('week');
+              const endOfWeek = dateInTargetYear.week(targetWeek).endOf('week');
+
+              return (
+                <div
+                  key={week}
+                  className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-sm">
+                  <div
+                    className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+                    {startOfWeek.format('ll')} - {endOfWeek.format('ll')}
+                  </div>
+                  <div
+                    className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+                    {average.toFixed(2)} kg ({+(average * 2.205).toFixed(2)} lb)
+                  </div>
+                  <div
+                    className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+                    {average.toFixed(2)} kg ({+(minWeight * 2.205).toFixed(2)} lb)
+                  </div>
+                  <div
+                    className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+                    {average.toFixed(2)} kg ({+(maxWeight * 2.205).toFixed(2)} lb)
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
+            <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Date
+              </div>
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Weight
+              </div>
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Unit
+              </div>
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Actions
+              </div>
+            </div>
+            {weights.map(weight => (
+              <BodyweightRow
+                key={weight.id}
+                isEditId={isEditId}
+                setIsEditId={setIsEditId}
+                weight={weight}
+                sessId={sessId} />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )
