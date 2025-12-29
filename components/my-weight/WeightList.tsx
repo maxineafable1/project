@@ -9,6 +9,7 @@ import isoWeek from 'dayjs/plugin/isoWeek'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import BodyweightRow from './BodyweightRow'
+import { getStartEndDateFromWeek } from '@/utils/date'
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
@@ -16,7 +17,6 @@ dayjs.extend(localizedFormat);
 
 type Props = {
   sessId: string
-  // bodyweights: BodyweightsType[]
   weights: {
     id: number;
     weight: number;
@@ -86,23 +86,14 @@ export default function WeightList({
               </div>
             </div>
             {weeklyStatus.map(({ average, maxWeight, minWeight, week }) => {
-              const splitWeek = week.split('-')
-
-              const targetYear = +splitWeek[0];
-              const targetWeek = +splitWeek[1] + 1; // to match the sqlite week
-
-              const dateInTargetYear = dayjs().year(targetYear).startOf('year');
-
-              const startOfWeek = dateInTargetYear.week(targetWeek).startOf('week');
-              const endOfWeek = dateInTargetYear.week(targetWeek).endOf('week');
-
+              const { startOfWeek, endOfWeek } = getStartEndDateFromWeek(week)
               return (
                 <div
                   key={week}
                   className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-sm">
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
-                    {startOfWeek.format('ll')} - {endOfWeek.format('ll')}
+                    {startOfWeek} - {endOfWeek}
                   </div>
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
@@ -110,11 +101,11 @@ export default function WeightList({
                   </div>
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
-                    {average.toFixed(2)} kg ({+(minWeight * 2.205).toFixed(2)} lb)
+                    {minWeight.toFixed(2)} kg ({+(minWeight * 2.205).toFixed(2)} lb)
                   </div>
                   <div
                     className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
-                    {average.toFixed(2)} kg ({+(maxWeight * 2.205).toFixed(2)} lb)
+                    {maxWeight.toFixed(2)} kg ({+(maxWeight * 2.205).toFixed(2)} lb)
                   </div>
                 </div>
               )

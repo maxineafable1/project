@@ -25,10 +25,24 @@ export default async function page() {
     where: eq(workouts.userId, session.user.id),
   })
 
-  const bodyweightsData = await db.select()
+  // get latest bodyweight and weekly average
+  const latestBodyweight = await db.select()
     .from(bodyweights)
     .where(eq(bodyweights.userId, session.user.id))
     .orderBy(sql`${bodyweights.bodyweightDate} desc`)
+    .limit(1)
+
+  const latestWeeklyStatus = await db.select({
+    week: sql<string>`strftime('%Y-%W',${bodyweights.bodyweightDate}, '+1 day')`.as('week'),
+    average: sql<number>`avg(${bodyweights.weight})`.as('average'),
+    minWeight: sql<number>`min(${bodyweights.weight})`.as('minWeight'),
+    maxWeight: sql<number>`max(${bodyweights.weight})`.as('maxWeight'),
+  })
+    .from(bodyweights)
+    .where(eq(bodyweights.userId, session.user.id))
+    .groupBy(sql`strftime('%Y-%W',${bodyweights.bodyweightDate}, '+1 day')`)
+    .orderBy(sql`${bodyweights.bodyweightDate} desc`)
+    .limit(1)
 
   const lifts = ['deadlift', 'squat', 'bench', 'ohp']
 
@@ -41,11 +55,10 @@ export default async function page() {
     .where(and(inArray(sql`lower(${exercises.name})`, lifts), eq(exercises.sets, 1), eq(exercises.reps, 1)))
     .groupBy(exercises.name)
 
-  console.log(prs)
-
   return (
     <Dashboard
-      bodyweightsData={bodyweightsData}
+      latestBodyweight={latestBodyweight}
+      latestWeeklyStatus={latestWeeklyStatus}
       latestWorkout={latestWorkout}
       prs={prs}
     />
