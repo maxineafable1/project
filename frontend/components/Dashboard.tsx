@@ -1,5 +1,6 @@
 'use client'
 
+import { getStartEndDateFromWeek } from "@/utils/date";
 import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import isoWeek from 'dayjs/plugin/isoWeek'
@@ -23,14 +24,20 @@ type Exercise = {
 }
 
 type Props = {
-  bodyweightsData: {
+  latestBodyweight: {
     id: number;
     weight: number;
     bodyweightDate: string;
     isKilogram: boolean;
-    userId: string | null;
+    userId: string;
     createdAt: Date;
     updatedAt: Date;
+  }[]
+  latestWeeklyStatus: {
+    week: string;
+    average: number;
+    minWeight: number;
+    maxWeight: number;
   }[]
   latestWorkout: {
     id: number;
@@ -46,41 +53,17 @@ type Props = {
 }
 
 export default function Dashboard({
-  bodyweightsData,
+  latestBodyweight,
+  latestWeeklyStatus,
   latestWorkout,
   prs,
 }: Props) {
   const lifts = ['squat', 'bench', 'deadlift', 'ohp']
 
-  function getWeight() {
-    if (bodyweightsData.length === 0) return null
+  const bodyweight = latestBodyweight.at(0)
+  const averageBw = latestWeeklyStatus.at(0)
 
-    const groupBy = Object.groupBy(bodyweightsData, ({ bodyweightDate }) => dayjs(bodyweightDate).week())
-
-    const bodyweightGroup = Object.entries(groupBy)
-
-    // to get the average of most recent week
-    const weekBodyweights = bodyweightGroup[bodyweightGroup.length - 1][1]!
-
-    // latest bodyweight
-    const currentBodyweight = weekBodyweights.at(0)!
-
-    const total = weekBodyweights.reduce((acc, cur) => {
-      // return acc + (cur.isKilogram ? cur.weight : (cur.weight * 2.205))
-      return acc + cur.weight
-    }, 0)
-
-    const average = +(total / weekBodyweights.length).toFixed(2)
-    const averageLb = +((total / weekBodyweights.length) * 2.205).toFixed(2)
-
-    return {
-      currentBodyweight,
-      average,
-      averageLb,
-    }
-  }
-
-  const weight = getWeight()
+  const averageBwDate = averageBw ? getStartEndDateFromWeek(averageBw.week) : null
 
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
@@ -143,13 +126,13 @@ export default function Dashboard({
         </div>
         <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl space-y-4 xl:col-span-2 2xl:col-span-1">
           <div className="font-bold text-lg">Recent Bodyweight</div>
-          {weight ? (
+          {bodyweight ? (
             <div>
-              <div className="text-sm">{dayjs(weight.currentBodyweight.bodyweightDate).format('ll')}</div>
+              <div className="text-sm">{dayjs(bodyweight.bodyweightDate).format('ll')}</div>
               <div className="text-3xl">
-                {weight.currentBodyweight.isKilogram
-                  ? `${weight.currentBodyweight.weight} kg`
-                  : `${+(weight.currentBodyweight.weight * 2.205).toFixed(2)} lb`}
+                {bodyweight.isKilogram
+                  ? `${bodyweight.weight} kg`
+                  : `${+(bodyweight.weight * 2.205).toFixed(2)} lb`}
               </div>
             </div>
           ) : (
@@ -158,12 +141,12 @@ export default function Dashboard({
         </div>
         <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl space-y-4 xl:col-span-2 2xl:col-span-1">
           <div className="font-bold text-lg">Recent Avg Weight</div>
-          {weight ? (
+          {(averageBwDate && averageBw) ? (
             <div className="">
               <div className="text-sm">
-                {dayjs(weight.currentBodyweight.bodyweightDate).startOf('week').format('ll')} - {dayjs(weight.currentBodyweight.bodyweightDate).endOf('week').format('ll')}
+                {averageBwDate.startOfWeek} - {averageBwDate.endOfWeek}
               </div>
-              <div className="text-3xl">{weight.average}kg ({weight.averageLb}lb)</div>
+              <div className="text-3xl">{averageBw.average}kg ({+(averageBw.average * 2.205).toFixed(2)}lb)</div>
             </div>
           ) : (
             <div className="">No record yet</div>

@@ -14,17 +14,32 @@ export default async function page() {
   if (!session)
     redirect('/sign-in')
 
-  const bodyweightsData = await db.select()
+  const weights = await db.select({
+    id: bodyweights.id,
+    weight: bodyweights.weight,
+    date: bodyweights.bodyweightDate,
+    isKilogram: bodyweights.isKilogram,
+  })
     .from(bodyweights)
     .where(eq(bodyweights.userId, session.user.id))
     .orderBy(sql`${bodyweights.bodyweightDate} desc`)
 
-  // console.log(bodyweightsData)
+  const weeklyStatus = await db.select({
+    week: sql<string>`strftime('%Y-%W',${bodyweights.bodyweightDate}, '+1 day')`.as('week'),
+    average: sql<number>`avg(${bodyweights.weight})`.as('average'),
+    minWeight: sql<number>`min(${bodyweights.weight})`.as('minWeight'),
+    maxWeight: sql<number>`max(${bodyweights.weight})`.as('maxWeight'),
+  })
+    .from(bodyweights)
+    .where(eq(bodyweights.userId, session.user.id))
+    .groupBy(sql`strftime('%Y-%W',${bodyweights.bodyweightDate}, '+1 day')`)
+    .orderBy(sql`${bodyweights.bodyweightDate} desc`)
 
   return (
     <WeightList
       sessId={session.user.id}
-      bodyweights={bodyweightsData}
+      weights={weights}
+      weeklyStatus={weeklyStatus}
     />
   )
 }

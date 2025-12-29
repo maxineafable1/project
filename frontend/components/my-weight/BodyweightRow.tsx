@@ -1,29 +1,31 @@
 'use client'
 
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
-import { createBodyweight, deleteBodyweight, updateBodyweight } from '@/actions/bodyweight-actions'
+import { deleteBodyweight, updateBodyweight } from '@/actions/bodyweight-actions'
 import { BodyweightsType } from '@/db-schema'
 import { bodyweightSchema, BodyweightSchemaType } from '@/utils/zod-schemas/bodyweight-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { CircleX, LoaderCircle, Pencil, Plus, Trash } from 'lucide-react'
+import { LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import weekOfYear from 'dayjs/plugin/weekOfYear' // ES 2015
+
+dayjs.extend(weekOfYear);
 
 dayjs.extend(localizedFormat);
 
 type Props = {
   sessId: string
-  date: string | {
+  weight: {
     id: number;
     weight: number;
-    bodyweightDate: string;
+    date: string;
     isKilogram: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    userId: string
   }
+  isEditId: number | null
+  setIsEditId: Dispatch<SetStateAction<number | null>>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,196 +35,151 @@ export function instanceOfBodyweight(object: any): object is BodyweightsType {
 
 export default function BodyweightRow({
   sessId,
-  date,
+  weight: { date, id, isKilogram, weight },
+  isEditId,
+  setIsEditId,
 }: Props) {
-  const [isAddWeight, setIsAddWeight] = useState(false)
-  const [isEditId, setIsEditId] = useState<number | null>(null)
-  const [deleteIdLoading, setDeleteIdLoading] = useState<number | null>(null)
+  const [isDelete, setIsDelete] = useState(false)
 
-  const isObj = instanceOfBodyweight(date)
-
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm({
     resolver: zodResolver(bodyweightSchema),
+    defaultValues: {
+      weight: isKilogram ? weight : +(weight * 2.205).toFixed(2),
+      isKilogram,
+    }
   })
 
   async function onSubmit(data: BodyweightSchemaType) {
-    if (isSubmitting) return
     const newData = {
       ...data,
-      bodyweightDate: isObj ? date.bodyweightDate : date
+      bodyweightDate: date,
     }
 
-    const res = isEditId
-      ? await updateBodyweight(isEditId, newData, sessId)
-      : await createBodyweight(newData, sessId)
+    const res = await updateBodyweight(id, newData, sessId)
     if (res?.error)
       console.log(res.error)
-    else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      isEditId ? setIsEditId(null) : setIsAddWeight(false)
-    }
+    else
+      setIsEditId(null)
   }
 
   return (
-    <div key={isObj ? date.bodyweightDate : date}>
-      <div className="px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 text-sm
-        bg-neutral-100 dark:bg-neutral-900 group-first:rounded-l-lg group-last-of-type:rounded-r-lg
-        ">
-        {dayjs(isObj ? date.bodyweightDate : date).format('ll')}
-      </div>
+    <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-sm">
       <div
-        title={!isObj ? 'Add' : undefined}
-        className={`px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 group/inner
-          ${!isObj && 'text-center'} max-h-14 h-full`}
-        onClick={() => {
-          if (isObj || isAddWeight) return
-          // console.log('adding', date)
-          setIsAddWeight(true)
-        }}
-      >
-        {isObj ? (
-          isEditId ? (
-            <div className='flex items-center justify-center gap-2'>
-              <form onSubmit={handleSubmit(onSubmit)} className='flex items-center gap-2'>
-                <input
-                  defaultValue={date.isKilogram ? date.weight : +(date.weight * 2.205).toFixed(2)}
-                  {...register('weight', { valueAsNumber: true })}
-                  className={`border-2 text-sm rounded-lg px-2 max-w-12
-                  focus-within:outline
-                border-neutral-300 dark:border-neutral-700
-                  ${errors.weight
-                      ? 'focus-within:outline-red-500 focus-within:border-red-500'
-                      : 'focus-within:outline-blue-500 focus-within:border-blue-500 '}
-                  `}
-                  autoFocus
-                />
-                <div className="relative inline-flex gap-1">
-                  <input
-                    {...register('isKilogram')}
-                    id="switch-component"
-                    type="checkbox"
-                    defaultChecked={date.isKilogram}
-                    className="peer appearance-none w-8 h-4 focus-within:outline-blue-500 focus-within:outline-2
-                    bg-neutral-200 dark:bg-neutral-700 rounded-full checked:bg-blue-500 cursor-pointer transition-colors duration-300" />
-                  <label htmlFor="switch-component"
-                    className="absolute top-0 left-0 w-4 aspect-square 
-                    bg-white rounded-full border border-neutral-200 shadow-sm 
-                    dark:bg-neutral-900 dark:border-neutral-700
-                      transition-transform duration-300 peer-checked:translate-x-4 
-                    peer-checked:border-blue-500 cursor-pointer">
-                  </label>
-                  <span className='text-xs'>Kg</span>
-                </div>
-              </form>
-            </div>
-          ) : (
-            // <div>{date.weight} {date.isKilogram ? 'kg' : 'lb'}</div>
-            <div>{date.isKilogram ? `${date.weight} kg` : `${+(date.weight * 2.205).toFixed(2)} lb`}</div>
-          )
-        ) : (
-          isAddWeight ? (
-            <div className='flex items-center justify-center gap-2'>
-              <form onSubmit={handleSubmit(onSubmit)} className='flex items-center gap-2'>
-                <input
-                  {...register('weight', { valueAsNumber: true })}
-                  className={`border-2 text-sm rounded-lg px-2 max-w-12
-                      focus-within:outline
-                      border-neutral-300 dark:border-neutral-700
-                      ${errors.weight
-                      ? 'focus-within:outline-red-500 focus-within:border-red-500'
-                      : 'focus-within:outline-blue-500 focus-within:border-blue-500 '}
-                    `}
-                  autoFocus
-                />
-                <div className="relative inline-flex gap-1">
-                  <input
-                    {...register('isKilogram')}
-                    defaultChecked
-                    id="switch-component"
-                    type="checkbox"
-                    className="peer appearance-none w-8 h-4 focus-within:outline-blue-500 focus-within:outline-2
-                      bg-neutral-200 dark:bg-neutral-700 rounded-full checked:bg-blue-500 cursor-pointer transition-colors duration-300" />
-                  <label htmlFor="switch-component"
-                    className="absolute top-0 left-0 w-4 aspect-square 
-                        bg-white rounded-full border border-neutral-200 shadow-sm 
-                        dark:bg-neutral-900 dark:border-neutral-700
-                        transition-transform duration-300 peer-checked:translate-x-4 
-                        peer-checked:border-blue-500 cursor-pointer">
-                  </label>
-                  <span className='text-xs'>Kg</span>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <button className='p-1 rounded-sm group-hover/inner:bg-neutral-100 dark:group-hover/inner:bg-neutral-900
-                focus-within:outline-blue-500 focus-within:outline-2
-              '>
-              <Plus className='size-4' />
-            </button>
-          )
-        )}
+        className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+        {dayjs(date).format('ll')}
       </div>
-      {(isAddWeight && !isObj) && (
-        <div className="py-2 text-center">
-          <button
-            onClick={e => {
-              e.stopPropagation()
-              setIsAddWeight(false)
-              reset()
-            }}
-            title='Cancel'
-            className='p-1 rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900 
-            transition-colors focus-visible:outline-blue-500 focus-visible:outline-2
-            '>
-            <CircleX className='size-4' />
-          </button>
-        </div>
+      {isEditId === id ? (
+        <>
+          <form id='edit-form' onSubmit={handleSubmit(onSubmit)} hidden></form>
+          <div
+            className={`focus-within:outline-2 border-b border-r border-neutral-200 dark:border-neutral-700
+                  ${errors.weight
+                ? 'focus-within:outline-red-500'
+                : 'focus-within:outline-blue-500'}`}>
+            <input
+              form='edit-form'
+              type="text"
+              className='px-6 py-4 w-full border-0 outline-0'
+              autoFocus
+              {...register('weight', { valueAsNumber: true })}
+            />
+          </div>
+          <div className={`
+              border-b border-r border-neutral-200 dark:border-neutral-700
+              flex items-center gap-2 justify-center
+            `}>
+            <div className="flex items-center gap-2 font-bold">
+              <label htmlFor="kg">Kilogram</label>
+              <input
+                form='edit-form'
+                type="radio"
+                id='kg'
+                value={'true'}
+                className="px-6 py-4 border-0 outline-0 w-4 h-4 accent-blue-600 focus-visible:outline-2 focus-visible:outline-blue-500"
+                name='unit'
+                defaultChecked={isKilogram}
+                onClick={() => setValue('isKilogram', true, { shouldValidate: true })}
+              />
+            </div>
+            <div className="flex items-center gap-2 font-bold">
+              <label htmlFor="lbs">Pounds</label>
+              <input
+                form='edit-form'
+                type="radio"
+                id='lb'
+                value={'false'}
+                className="px-6 py-4 border-0 outline-0 w-4 h-4 accent-blue-600 focus-visible:outline-2 focus-visible:outline-blue-500"
+                name='unit'
+                defaultChecked={isKilogram === false}
+                onClick={() => setValue('isKilogram', false, { shouldValidate: true })}
+              />
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div
+            className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+            {isKilogram ? weight : +(weight * 2.205).toFixed(2)}
+          </div>
+          <div
+            className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+            {isKilogram ? 'Kg' : 'Lb'}
+          </div>
+        </>
       )}
-      {isObj && (
-        <div className="py-2 space-x-1 text-center">
+      <div className="px-6 h-full border-b border-neutral-200 dark:border-neutral-700 flex flex-col items-start justify-center">
+        <div className="flex gap-2">
           <button
-            title={isEditId ? 'Cancel' : 'Edit'}
             onClick={() => setIsEditId(prev => {
-              if (prev) {
-                reset()
-                return prev = null
-              }
-              prev = date.id
+              if (prev === id) return null
+              prev = id
               return prev
             })}
-            className='p-1 rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900 
-              transition-colors focus-visible:outline-blue-500 focus-visible:outline-2
-              '
-            disabled={isSubmitting && (isEditId === date.id)}
+            className="px-4 py-1.5 rounded-lg border border-neutral-300 not-dark:hover:bg-neutral-100 
+                focus-visible:outline-blue-500 focus-visible:outline focus-visible:border-blue-500
+                 dark:border-neutral-700 dark:hover:border-neutral-500 transition-colors "
           >
-            {isEditId
-              ? <CircleX className='size-4' />
-              : <Pencil className='size-4' />}
+            {isEditId === id ? 'Cancel' : 'Edit'}
           </button>
-          {!isEditId && (
+          {isEditId === id ? (
+            <button
+              type="submit"
+              form='edit-form'
+              className="px-4 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors text-white
+                dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2
+                "
+              disabled={isSubmitting}
+            >
+              {isSubmitting ?
+                <LoaderCircle className="size-4 animate-spin" />
+                : 'Save'}
+            </button>
+          ) : (
             <button
               title='Delete'
-              disabled={deleteIdLoading === date.id}
+              disabled={isDelete}
               onClick={async () => {
-                setDeleteIdLoading(date.id)
-                const res = await deleteBodyweight(date.id)
+                setIsDelete(true)
+                const res = await deleteBodyweight(id)
+
                 if (res?.error)
                   console.log(res.error)
-                else
-                  setDeleteIdLoading(null)
+
+                setIsDelete(false)
               }}
-              className='p-1 rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900 
-              transition-colors focus-visible:outline-blue-500 focus-visible:outline-2
-              '>
-              {deleteIdLoading === date.id ? (
-                <LoaderCircle className='size-4 text-red-500 animate-spin' />
-              ) : (
-                <Trash className='size-4 text-red-500' />
-              )}
+              className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
+                focus-visible:outline-blue-500 focus-visible:outline-2
+                transition-colors text-white w-full"
+            >
+              {isDelete ? <>
+                <LoaderCircle className='size-4 animate-spin' />
+              </>
+                : 'Delete'}
             </button>
           )}
         </div>
-      )}
+      </div>
     </div>
   )
 }
