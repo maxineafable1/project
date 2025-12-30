@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CreateExerciseRequest {
     private String name;
     private Boolean isKilogram;
-    private Integer weight;
+    private Double weight;
     private Integer sets;
     private Integer reps;
     private LocalDate exerciseDate;

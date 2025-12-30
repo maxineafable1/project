@@ -48,7 +48,7 @@ public class AuthenticationController {
                     .sameSite("Lax")
                     .path("/")
 //                .domain("http://localhost:3000")
-                    .maxAge(Duration.ofMinutes(60)) // todo change in prod
+                    .maxAge(Duration.ofDays(7)) // todo change in prod
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -114,7 +114,7 @@ public class AuthenticationController {
                 .sameSite("Lax")
                 .path("/")
 //                .domain("http://localhost:3000")
-                .maxAge(Duration.ofMinutes(60)) // todo change in prod
+                .maxAge(Duration.ofDays(7)) // todo change in prod
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

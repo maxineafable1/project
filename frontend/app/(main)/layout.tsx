@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import { getSession } from "@/lib/session";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,12 +27,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const session = await auth.api.getSession({
-  //   headers: await headers()
-  // })
+  const session = await getSession()
 
-  // if (!session)
-  //   redirect('/sign-in')
+  if (!session)
+    redirect('/sign-in')
 
   return (
     <html lang="en">
@@ -39,7 +38,8 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="bg-white dark:bg-neutral-800 min-h-dvh">
-          {/* <Sidebar username={session.user.name} /> */}
+          {/* todo username in payload or fetch user data */}
+          <Sidebar username={session.payload.sub!} />
           {children}
         </main>
       </body>

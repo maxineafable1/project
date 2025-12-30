@@ -1,12 +1,12 @@
 'use client'
 
-import { deleteExercise, updateExercise } from "@/actions/exercise-actions"
 import { createExerciseSchema, CreateExerciseSchemaType } from "@/utils/exercise-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
 import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import ExerciseForm from "./ExerciseForm"
+import { deleteExercise, updateExercise } from "@/actions/exercise-actions"
 
 type Props = {
   data: {
@@ -15,19 +15,18 @@ type Props = {
     weight: number;
     sets: number;
     reps: number;
-    // exerciseDate: string;
     isKilogram: boolean;
     createdAt: Date;
     updatedAt: Date;
     userId: string;
   }
-  sessId: string
+  jwt: string
   titleDate: string
 }
 
 export default function EditExerciseRow({
-  data: { id, name, weight, sets, reps, isKilogram: isKilogramDefault, userId },
-  sessId,
+  data: { id, name, weight, sets, reps, isKilogram: isKilogramDefault },
+  jwt,
   titleDate,
 }: Props) {
   const [isEdit, setIsEdit] = useState(false)
@@ -36,13 +35,17 @@ export default function EditExerciseRow({
 
   const dialogRef = useRef<HTMLDialogElement | null>(null)
 
-  async function handleExerciseDelete(exerciseId: number, date: string, userId: string) {
+  async function handleExerciseDelete(exerciseId: number) {
     setDeleteLoading(true)
-    const res = await deleteExercise(exerciseId, date, userId)
-    if (res?.error)
-      console.log(res.error)
-    else
+
+    try {
+      await deleteExercise(jwt, exerciseId)
+    } catch (error) {
+      // toast msg
+      console.log(error)
+    } finally {
       setDeleteLoading(false)
+    }
   }
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue, getValues } = useForm({
@@ -63,11 +66,14 @@ export default function EditExerciseRow({
       exerciseDate: titleDate,
     }
 
-    const res = await updateExercise(id, newData, sessId)
-    if (res?.error)
-      console.log(res.error)
-    else
+    try {
+      await updateExercise(jwt, newData, id)
+    } catch (error) {
+      // toast msg
+      console.log(error)
+    } finally {
       setIsEdit(false)
+    }
   }
 
   const isKilogram = getValues('isKilogram') ?? null
@@ -159,7 +165,7 @@ export default function EditExerciseRow({
           </button>
           <form method="dialog">
             <button
-              onClick={() => handleExerciseDelete(id, titleDate, userId)}
+              onClick={() => handleExerciseDelete(id)}
               disabled={isDeleteLoading}
               className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
                 focus-visible:outline-blue-500 focus-visible:outline-2

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UpdateExerciseRequest {
     private String name;
     private Boolean isKilogram;
-    private Integer weight;
+    private Double weight;
     private Integer sets;
     private Integer reps;
 }

@@ -25,7 +25,7 @@ public class Exercise {
     private Boolean isKilogram;
 
     @Column(nullable = false)
-    private Integer weight;
+    private Double weight;
 
     @Column(nullable = false)
     private Integer sets;

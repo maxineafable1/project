@@ -32,7 +32,8 @@ public class ExerciseServiceImplementation implements ExerciseService {
         Exercise exercise = new Exercise();
         exercise.setName(createExerciseRequest.getName());
         exercise.setIsKilogram(createExerciseRequest.getIsKilogram());
-        exercise.setWeight(createExerciseRequest.getWeight());
+        // always store in kg for easy aggregate
+        exercise.setWeight(createExerciseRequest.getIsKilogram() ? createExerciseRequest.getWeight() : createExerciseRequest.getWeight() / 2.205);
         exercise.setSets(createExerciseRequest.getSets());
         exercise.setReps(createExerciseRequest.getReps());
 //        exercise.setExerciseDate(createExerciseRequest.getExerciseDate());
@@ -79,7 +80,8 @@ public class ExerciseServiceImplementation implements ExerciseService {
 
         exercise.setName(updateExerciseRequest.getName());
         exercise.setIsKilogram(updateExerciseRequest.getIsKilogram());
-        exercise.setWeight(updateExerciseRequest.getWeight());
+        // always store in kg for easy aggregate
+        exercise.setWeight(updateExerciseRequest.getIsKilogram() ? updateExerciseRequest.getWeight() : updateExerciseRequest.getWeight() / 2.205);
         exercise.setSets(updateExerciseRequest.getSets());
         exercise.setReps(updateExerciseRequest.getReps());
 

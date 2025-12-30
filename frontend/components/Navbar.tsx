@@ -1,14 +1,21 @@
 'use client'
 
 import { authClient } from '@/lib/auth-client'
+import { JWTPayload } from 'jose'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-export default function Navbar() {
-	const {
-		data: session,
-	} = authClient.useSession()
+type Props = {
+	session: JWTPayload | null
+}
+
+export default function Navbar({
+	session,
+}: Props) {
+	// const {
+	// 	data: session,
+	// } = authClient.useSession()
 
 	const router = useRouter()
 
@@ -41,15 +48,15 @@ export default function Navbar() {
 				) : (
 					<>
 						<button
-							onClick={async () => {
-								await authClient.signOut({
-									fetchOptions: {
-										onSuccess: () => {
-											router.push("/");
-										},
-									},
-								});
-							}}
+							// onClick={async () => {
+							// 	await authClient.signOut({
+							// 		fetchOptions: {
+							// 			onSuccess: () => {
+							// 				router.push("/");
+							// 			},
+							// 		},
+							// 	});
+							// }}
 							className='text-sm px-6 py-1.5 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors text-white
                   dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2
                 '

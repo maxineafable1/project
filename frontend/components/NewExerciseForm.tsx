@@ -1,6 +1,5 @@
 'use client'
 
-import { createExercise } from "@/actions/exercise-actions";
 import { createExerciseSchema, CreateExerciseSchemaType } from "@/utils/exercise-form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert } from "lucide-react";
@@ -10,16 +9,17 @@ import ExerciseForm from "./ExerciseForm";
 
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
+import { createExercise } from "@/actions/exercise-actions";
 
 dayjs.extend(localizedFormat);
 
 type Props = {
-  sessId: string
+  jwt: string
   setNewExercise: Dispatch<SetStateAction<boolean>>
 }
 
 export default function NewExerciseForm({
-  sessId,
+  jwt,
   setNewExercise,
 }: Props) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, getValues, setError } = useForm({
@@ -37,11 +37,14 @@ export default function NewExerciseForm({
       setError('exerciseDate', { message: 'error' }, { shouldFocus: true })
     }
     else {
-      const res = await createExercise(newData, sessId)
-      if (res?.error)
-        console.log(res.error)
-      else
+      try {
+        await createExercise(jwt, newData)
+      } catch (error) {
+        // toast msg
+        console.log(error)
+      } finally {
         setNewExercise(false)
+      }
     }
   }
 

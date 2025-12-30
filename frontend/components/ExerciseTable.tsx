@@ -1,6 +1,5 @@
 'use client'
 
-import { createExercise } from "@/actions/exercise-actions"
 import { createExerciseSchema, CreateExerciseSchemaType } from "@/utils/exercise-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlert, Minus, Plus } from "lucide-react"
@@ -13,13 +12,14 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import isoWeek from 'dayjs/plugin/isoWeek'
+import { createExercise } from "@/actions/exercise-actions"
 
 dayjs.extend(localizedFormat);
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
 
 type Props = {
-  sessId: string
+  jwt: string
   titleDate: string
   value: {
     id: number;
@@ -27,7 +27,6 @@ type Props = {
     weight: number;
     sets: number;
     reps: number;
-    // exerciseDate: string;
     isKilogram: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -36,7 +35,7 @@ type Props = {
 }
 
 export default function ExerciseTable({
-  sessId,
+  jwt,
   titleDate,
   value,
 }: Props) {
@@ -51,13 +50,14 @@ export default function ExerciseTable({
       ...data,
       exerciseDate: dayjs(titleDate).format('YYYY-MM-DD'),
     }
-    
-    const res = await createExercise(newData, sessId)
-    if (res?.error)
-      console.log(res.error)
-    else {
+
+    try {
+      await createExercise(jwt, newData)
+    } catch (error) {
+      // toast msg
+      console.log(error)
+    } finally {
       setIsCreate(false)
-      reset()
     }
   }
 
@@ -114,10 +114,11 @@ export default function ExerciseTable({
           />
         )}
         {value?.map(data => (
-          <EditExerciseRow 
-            key={data.id} 
-            data={data} 
-            sessId={sessId}
+          <EditExerciseRow
+            key={data.id}
+            data={data}
+            jwt={jwt}
+            // sessId={sessId}
             titleDate={titleDate}
           />
         ))}

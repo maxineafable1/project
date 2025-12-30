@@ -1,11 +1,8 @@
 import SignupForm from '@/components/SignupForm'
-import Link from 'next/link'
-import React from 'react'
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
-import Image from 'next/image'
 import { getSession } from '@/lib/session'
+import Image from 'next/image'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 export default async function page() {
   const session = await getSession()

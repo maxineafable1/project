@@ -15,7 +15,7 @@ public class ExerciseDto {
     private Long id;
     private String name;
     private Boolean isKilogram;
-    private Integer weight;
+    private Double weight;
     private Integer sets;
     private Integer reps;
 //    private UserDto user;

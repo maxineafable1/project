@@ -1,95 +1,71 @@
 'use server'
 
-// import { exercise } from "@/db-schema"
-import { db } from "@/db"
-import { exercises, workouts } from "@/db-schema"
-// import { ExerciseType } from "@/auth-schema"
-import { and, eq, sql } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
-type CreateExercise = {
-  exerciseDate: string;
-  name: string;
-  weight: number;
-  sets: number;
-  reps: number;
-  isKilogram: boolean;
-}
-
-export async function createExercise(data: CreateExercise, userId: string) {
+export async function createExercise(jwt: string, newExercise: any) {
   try {
-    const workoutExist = await db.query.workouts.findFirst({
-      where: eq(workouts.exerciseDate, data.exerciseDate),
+    const res = await fetch('http://localhost:8080/api/v1/exercises', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${jwt}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newExercise)
     })
 
-    if (!workoutExist) {
-      // return { error: `Workout with date: ${workoutExist.exerciseDate}`}
-      const newWorkout = await db.insert(workouts).values({
-        exerciseDate: data.exerciseDate,
-        userId,
-      }).returning()
+    if (!res.ok)
+      throw new Error(`Request failed: ${res.status}`)
 
-      await db.insert(exercises).values({
-        ...data,
-        workoutId: newWorkout[0].id,
-        // always store in kg for easy aggregate
-        weight: data.isKilogram ? data.weight : +(data.weight / 2.205),
-        userId,
-      })
-    } else {
-      await db.insert(exercises).values({
-        ...data,
-        workoutId: workoutExist.id,
-        // always store in kg for easy aggregate
-        weight: data.isKilogram ? data.weight : +(data.weight / 2.205),
-        userId,
-      })
-    }
-
+    revalidatePath('/workouts')
   } catch (error) {
-    return { error }
-  }
+    if (error instanceof Error)
+      throw error
 
-  revalidatePath('/dashboard')
-}
-
-export async function deleteExercise(id: number, date: string, userId: string) {
-  try {
-    const workout = await db.query.workouts.findFirst({
-      columns: { exerciseDate: true },
-      where: and(eq(workouts.exerciseDate, date), eq(workouts.userId, userId)),
-      // with: { exercises: true },
-      extras: {
-        // exercisesCount: db.$count(exercises, eq(exercises.workoutId, workouts.id))
-        exercisesCount: sql`(select count(*) from "exercises" where "exercises"."workout_id" = "workouts"."id")`.as("exercise_count")
-      }
-    });
-
-    if (workout && workout.exercisesCount === 1) {
-      await db.delete(workouts).where(and(eq(workouts.exerciseDate, date), eq(workouts.userId, userId)))
-      revalidatePath('/dashboard')
-      return
-    }
-
-    await db.delete(exercises).where(eq(exercises.id, id))
-    revalidatePath('/dashboard')
-  } catch (error) {
-    return { error }
+    throw new Error('Server error. Please try again')
   }
 }
 
-export async function updateExercise(exerciseId: number, data: CreateExercise, userId: string) {
+export async function deleteExercise(jwt: string, exerciseId: number) {
   try {
-    await db.update(exercises)
-      .set({
-        ...data,
-        // always store in kg for easy aggregate
-        weight: data.isKilogram ? data.weight : +(data.weight / 2.205),
-      })
-      .where(and(eq(exercises.id, exerciseId), eq(exercises.userId, userId)))
-  } catch (error) {
-    return { error }
-  }
+    const res = await fetch(`http://localhost:8080/api/v1/exercises/${exerciseId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${jwt}`,
+        'Content-Type': 'application/json'
+      },
+    })
 
-  revalidatePath('/dashboard')
+    if (!res.ok)
+      throw new Error(`Request failed: ${res.status}`)
+
+    revalidatePath('/workouts')
+  } catch (error) {
+    if (error instanceof Error)
+      throw error
+
+    throw new Error('Server error. Please try again')
+  }
+}
+
+export async function updateExercise(jwt: string, updatedExercise: any, exerciseId: number) {
+  try {
+    const res = await fetch(`http://localhost:8080/api/v1/exercises/${exerciseId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${jwt}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedExercise)
+    })
+
+    if (!res.ok)
+      throw new Error(`Request failed: ${res.status}`)
+
+    revalidatePath('/workouts')
+  } catch (error) {
+    if (error instanceof Error)
+      throw error
+
+    throw new Error('Server error. Please try again')
+  }
 }

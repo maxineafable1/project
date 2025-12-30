@@ -23,13 +23,13 @@ public class UpdateExerciseRequestDto {
 
     @NotNull(message = "Weight is required")
     @Min(value = 1, message = "Weight should be greater than or equal to {value}kg/lb")
-    private Integer weight;
+    private Double weight;
 
     @NotNull(message = "Set is required")
-    @Min(value = 1, message = "Set should be greater than or equal to {value}kg/lb")
+    @Min(value = 1, message = "Set should be greater than or equal to {value}")
     private Integer sets;
 
     @NotNull(message = "Rep is required")
-    @Min(value = 1, message = "Rep should be greater than or equal to {value}kg/lb")
+    @Min(value = 1, message = "Rep should be greater than or equal to {value}")
     private Integer reps;
 }

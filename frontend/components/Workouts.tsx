@@ -11,7 +11,8 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat);
 
 type Props = {
-  sessId: string
+  // sessId: string
+  jwt: string
   data: {
     id: number;
     userId: string;
@@ -32,7 +33,8 @@ type Props = {
 }
 
 export default function Workouts({
-  sessId,
+  // sessId,
+  jwt,
   data,
 }: Props) {
   const [newExercise, setNewExercise] = useState(false)
@@ -51,7 +53,8 @@ export default function Workouts({
         </button>
       )}
       {newExercise && (
-        <NewExerciseForm sessId={sessId} setNewExercise={setNewExercise} />
+        // <NewExerciseForm sessId={sessId} setNewExercise={setNewExercise} />
+        <NewExerciseForm jwt={jwt} setNewExercise={setNewExercise} />
       )}
       {(data.length === 0 && !newExercise) ?
         <div className="max-w-md mx-auto text-center space-y-4">
@@ -68,7 +71,12 @@ export default function Workouts({
           </button>
         </div>
         : data.map(({ id, exerciseDate, exercises }) => (
-          <ExerciseTable key={id} sessId={sessId} titleDate={exerciseDate} value={exercises} />
+          // <ExerciseTable key={id} sessId={sessId} titleDate={exerciseDate} value={exercises} />
+          <ExerciseTable 
+            key={id} 
+            jwt={jwt}
+            titleDate={exerciseDate} 
+            value={exercises} />
         ))}
     </div>
   )

@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 
 import Dashboard from '@/components/Dashboard'
 import { getSession } from '@/lib/session'
+import { getLatestWorkout } from '@/lib/query/dashboard'
 
 export default async function page() {
   const session = await getSession()

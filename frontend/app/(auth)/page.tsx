@@ -1,13 +1,16 @@
 import Divider from "@/components/Divider";
 import Navbar from "@/components/Navbar";
+import { getSession } from "@/lib/session";
 import { ArrowRight, ChartLine, ChartNoAxesGantt, Dumbbell } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession()
+
   return (
     <div className="">
       <div className="max-w-screen-xl mx-auto">
-        <Navbar />
+        <Navbar session={session} />
       </div>
       <Divider />
       <div className="px-8 max-w-screen-xl mx-auto py-20 grid md:grid-cols-2 gap-8">

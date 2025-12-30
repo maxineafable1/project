@@ -12,7 +12,7 @@ export async function getSession() {
 
   try {
     const { payload } = await jwtVerify(session.value, encodedKey)
-    return payload
+    return { payload, jwt: session.value }
   } catch (error) {
     return null
   }
