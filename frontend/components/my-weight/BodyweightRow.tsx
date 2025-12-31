@@ -17,7 +17,7 @@ dayjs.extend(weekOfYear);
 dayjs.extend(localizedFormat);
 
 type Props = {
-  sessId: string
+  jwt: string
   weight: {
     id: number;
     weight: number;
@@ -34,7 +34,7 @@ export function instanceOfBodyweight(object: any): object is BodyweightsType {
 }
 
 export default function BodyweightRow({
-  sessId,
+  jwt,
   weight: { date, id, isKilogram, weight },
   isEditId,
   setIsEditId,
@@ -55,11 +55,14 @@ export default function BodyweightRow({
       bodyweightDate: date,
     }
 
-    const res = await updateBodyweight(id, newData, sessId)
-    if (res?.error)
-      console.log(res.error)
-    else
+    try {
+      await updateBodyweight(jwt, newData, id)
+    } catch (error) {
+      // toast msg
+      console.log(error)
+    } finally {
       setIsEditId(null)
+    }
   }
 
   return (
@@ -161,12 +164,14 @@ export default function BodyweightRow({
               disabled={isDelete}
               onClick={async () => {
                 setIsDelete(true)
-                const res = await deleteBodyweight(id)
-
-                if (res?.error)
-                  console.log(res.error)
-
-                setIsDelete(false)
+                try {
+                  await deleteBodyweight(jwt, id)
+                } catch (error) {
+                  // toast msg
+                  console.log(error)
+                } finally {
+                  setIsDelete(false)
+                }
               }}
               className="px-4 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 
                 focus-visible:outline-blue-500 focus-visible:outline-2

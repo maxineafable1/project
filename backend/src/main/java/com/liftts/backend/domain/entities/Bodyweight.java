@@ -22,7 +22,7 @@ public class Bodyweight {
     private Boolean isKilogram;
 
     @Column(nullable = false)
-    private Integer weight;
+    private Double weight;
 
     @Column(nullable = false, name = "date")
     private LocalDate date;

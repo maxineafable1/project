@@ -10,4 +10,5 @@ public interface BodyweightMapper {
     BodyweightDto toBodyweightDto(Bodyweight bodyweight);
     CreateBodyweightRequest toCreateExerciseRequest(CreateBodyweightRequestDto createBodyweightRequestDto);
     UpdateBodyweightRequest toUpdateExerciseRequest(UpdateBodyweightRequestDto updateBodyweightRequestDto);
+    AverageBodyweightDto toAverageBodyweightDto(WeeklyBodyweight weeklyBodyweight);
 }

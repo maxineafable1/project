@@ -13,12 +13,14 @@ import { createBodyweight } from '@/actions/bodyweight-actions'
 dayjs.extend(localizedFormat);
 
 type Props = {
-  sessId: string
+  // sessId: string
+  jwt: string
   setNewWeight: Dispatch<SetStateAction<boolean>>
 }
 
 export default function NewWeightForm({
-  sessId,
+  // sessId,
+  jwt,
   setNewWeight,
 }: Props) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, getValues, setError } = useForm({
@@ -28,18 +30,25 @@ export default function NewWeightForm({
   async function onSubmit(data: BodyweightSchemaType) {
     const newData = {
       ...data,
-      bodyweightDate: data.bodyweightDate ? data.bodyweightDate : dayjs().format().split('T')[0]
+      // TODO change all to date only for simplicity
+      date: data.bodyweightDate ? data.bodyweightDate : dayjs().format().split('T')[0]
     }
 
     if (dayjs(newData.bodyweightDate).isAfter(dayjs())) {
       setError('bodyweightDate', { message: 'error' }, { shouldFocus: true })
     }
     else {
-      const res = await createBodyweight(newData, sessId)
-      if (res?.error)
-        setError('bodyweightDate', { message: 'error' }, { shouldFocus: true })
-      else
+      try {
+        await createBodyweight(jwt, newData)
         setNewWeight(false)
+      } catch (error) {
+        // duplicate date error
+        if (error instanceof Error && !error.message.startsWith('Request'))
+          setError('bodyweightDate', { message: 'Date already exists' }, { shouldFocus: true })
+        else
+          // toast msg
+          console.log(error)
+      }
     }
   }
 

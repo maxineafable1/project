@@ -7,19 +7,11 @@ dayjs.extend(localizedFormat);
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
 
-export function getStartEndDateFromWeek(yearWeek: string) {
-  const splitWeek = yearWeek.split('-')
+export function getStartEndDateFromWeek(localDateTime: string) {
+  const splitWeek = localDateTime.split('T')[0]
 
-  const targetYear = +splitWeek[0];
-  const targetWeek = +splitWeek[1] + 1; // to match the sqlite week
+  const startDate = dayjs(splitWeek).format('ll')
+  const endDate = dayjs(splitWeek).endOf('week').format('ll')
 
-  const dateInTargetYear = dayjs().year(targetYear).startOf('year');
-
-  const startOfWeek = dateInTargetYear.week(targetWeek).startOf('week');
-  const endOfWeek = dateInTargetYear.week(targetWeek).endOf('week');
-
-  return {
-    startOfWeek: startOfWeek.format('ll'),
-    endOfWeek: endOfWeek.format('ll'),
-  }
+  return { startDate, endDate }
 }

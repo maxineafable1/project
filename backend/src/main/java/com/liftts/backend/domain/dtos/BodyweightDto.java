@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class BodyweightDto {
     private Long id;
     private Boolean isKilogram;
-    private Integer weight;
+    private Double weight;
     private LocalDate date;
 //    private UserDto user;
     private LocalDateTime createdAt;

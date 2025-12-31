@@ -17,5 +17,5 @@ public class UpdateBodyweightRequestDto {
 
     @NotNull(message = "Weight is required")
     @Min(value = 1, message = "Weight should be greater than or equal to {value}kg/lb")
-    private Integer weight;
+    private Double weight;
 }

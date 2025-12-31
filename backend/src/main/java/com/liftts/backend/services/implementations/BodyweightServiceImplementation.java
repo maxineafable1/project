@@ -1,7 +1,9 @@
 package com.liftts.backend.services.implementations;
 
+import com.liftts.backend.domain.dtos.AverageBodyweightDto;
 import com.liftts.backend.domain.dtos.CreateBodyweightRequest;
 import com.liftts.backend.domain.dtos.UpdateBodyweightRequest;
+import com.liftts.backend.domain.dtos.WeeklyBodyweight;
 import com.liftts.backend.domain.entities.Bodyweight;
 import com.liftts.backend.domain.entities.User;
 import com.liftts.backend.repositories.BodyweightRepository;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +35,8 @@ public class BodyweightServiceImplementation implements BodyweightService {
         Bodyweight bodyweight = new Bodyweight();
         bodyweight.setUser(user);
         bodyweight.setDate(date);
-        bodyweight.setWeight(createBodyweightRequest.getWeight());
+        // always store in kg
+        bodyweight.setWeight(createBodyweightRequest.getIsKilogram() ? createBodyweightRequest.getWeight() : createBodyweightRequest.getWeight() / 2.205);
         bodyweight.setIsKilogram(createBodyweightRequest.getIsKilogram());
         return bodyweightRepository.save(bodyweight);
     }
@@ -48,8 +53,14 @@ public class BodyweightServiceImplementation implements BodyweightService {
         Bodyweight bodyweight = bodyweightRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new IllegalArgumentException("Bodyweight not found with id: " + id));
 
-        bodyweight.setWeight(updateBodyweightRequest.getWeight());
+        // always store in kg
+        bodyweight.setWeight(updateBodyweightRequest.getIsKilogram() ? updateBodyweightRequest.getWeight() : updateBodyweightRequest.getWeight() / 2.205);
         bodyweight.setIsKilogram(updateBodyweightRequest.getIsKilogram());
         return bodyweightRepository.save(bodyweight);
+    }
+
+    @Override
+    public List<WeeklyBodyweight> getLatestWeeklyStatus(UUID userId) {
+        return bodyweightRepository.getWeeklyWeightStat(userId);
     }
 }

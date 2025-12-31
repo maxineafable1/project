@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -31,6 +32,15 @@ public class BodyweightController {
         List<Bodyweight> bodyweights = bodyweightService.getBodyweights(currUser);
         List<BodyweightDto> bodyweightDtos = bodyweights.stream().map(bodyweightMapper::toBodyweightDto).toList();
         return ResponseEntity.ok(bodyweightDtos);
+    }
+
+    @GetMapping(path = "/weekly")
+    public ResponseEntity<List<AverageBodyweightDto>> getWeeklyBodyweightStat(
+            @RequestAttribute UUID userId
+    ) {
+        User currUser = userService.getUserById(userId);
+        List<WeeklyBodyweight> latestWeeklyStatus = bodyweightService.getLatestWeeklyStatus(currUser.getId());
+        return ResponseEntity.ok(latestWeeklyStatus.stream().map(bodyweightMapper::toAverageBodyweightDto).toList());
     }
 
     @PostMapping

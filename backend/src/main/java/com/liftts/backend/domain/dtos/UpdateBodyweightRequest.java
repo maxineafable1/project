@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateBodyweightRequest {
     private Boolean isKilogram;
-    private Integer weight;
+    private Double weight;
 }

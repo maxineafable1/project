@@ -16,7 +16,7 @@ dayjs.extend(isoWeek);
 dayjs.extend(localizedFormat);
 
 type Props = {
-  sessId: string
+  jwt: string
   weights: {
     id: number;
     weight: number;
@@ -32,7 +32,8 @@ type Props = {
 }
 
 export default function WeightList({
-  sessId,
+  // sessId,
+  jwt,
   weights,
   weeklyStatus,
 }: Props) {
@@ -53,7 +54,8 @@ export default function WeightList({
         </button>
       )}
       {newWeight && (
-        <NewWeightForm sessId={sessId} setNewWeight={setNewWeight} />
+        // <NewWeightForm sessId={sessId} setNewWeight={setNewWeight} />
+        <NewWeightForm jwt={jwt} setNewWeight={setNewWeight} />
       )}
       {(weights.length === 0 && !newWeight) ? (
         <div className="max-w-md mx-auto text-center space-y-4">
@@ -86,14 +88,14 @@ export default function WeightList({
               </div>
             </div>
             {weeklyStatus.map(({ average, maxWeight, minWeight, week }) => {
-              const { startOfWeek, endOfWeek } = getStartEndDateFromWeek(week)
+              const { startDate, endDate } = getStartEndDateFromWeek(week)
               return (
                 <div
                   key={week}
                   className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-sm">
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
-                    {startOfWeek} - {endOfWeek}
+                    {startDate} - {endDate}
                   </div>
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
@@ -132,7 +134,8 @@ export default function WeightList({
                 isEditId={isEditId}
                 setIsEditId={setIsEditId}
                 weight={weight}
-                sessId={sessId} />
+                jwt={jwt}
+              />
             ))}
           </div>
         </div>
