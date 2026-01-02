@@ -7,11 +7,9 @@ import com.liftts.backend.mappers.WorkoutMapper;
 import com.liftts.backend.services.UserService;
 import com.liftts.backend.services.WorkoutService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,10 +23,23 @@ public class WorkoutController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<WorkoutDto>> getAllWorkouts(@RequestAttribute UUID userId) {
+    public ResponseEntity<List<WorkoutDto>> getAllWorkouts(
+            @RequestAttribute UUID userId,
+            @RequestParam String name,
+            Pageable pageable
+    ) {
         User currentUser = userService.getUserById(userId);
-        List<Workout> workouts = workoutService.getWorkouts(currentUser);
+        List<Workout> workouts = workoutService.getWorkouts(name, pageable, currentUser);
         List<WorkoutDto> workoutDtos = workouts.stream().map(workoutMapper::toDto).toList();
         return ResponseEntity.ok(workoutDtos);
+    }
+
+    @GetMapping(path = "/latest")
+    public ResponseEntity<WorkoutDto> getLatestWorkout(
+            @RequestAttribute UUID userId
+    ) {
+        User currentUser = userService.getUserById(userId);
+        Workout workout = workoutService.getLatestWorkout(currentUser);
+        return ResponseEntity.ok(workoutMapper.toDto(workout));
     }
 }

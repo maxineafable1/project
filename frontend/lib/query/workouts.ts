@@ -1,6 +1,11 @@
-export async function getWorkouts(jwt: string) {
+type Params = {
+  name: string
+  sortBy: string
+}
+
+export async function getAllWorkouts(jwt: string, { name, sortBy }: Params) {
   try {
-    const res = await fetch('http://localhost:8080/api/v1/workouts', {
+    const res = await fetch(`http://localhost:8080/api/v1/workouts?name=${name}&sort=${sortBy}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${jwt}`,

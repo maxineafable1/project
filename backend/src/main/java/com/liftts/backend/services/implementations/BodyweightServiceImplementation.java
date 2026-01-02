@@ -60,7 +60,17 @@ public class BodyweightServiceImplementation implements BodyweightService {
     }
 
     @Override
-    public List<WeeklyBodyweight> getLatestWeeklyStatus(UUID userId) {
+    public List<WeeklyBodyweight> getWeeklyStatus(UUID userId) {
         return bodyweightRepository.getWeeklyWeightStat(userId);
+    }
+
+    @Override
+    public WeeklyBodyweight getLatestWeeklyStatus(UUID userId) {
+        return bodyweightRepository.getLatestWeeklyWeightStat(userId);
+    }
+
+    @Override
+    public Bodyweight getLatestBodyweight(User user) {
+        return bodyweightRepository.findFirstByUserOrderByDateDesc(user);
     }
 }

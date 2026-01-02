@@ -30,5 +30,20 @@ public interface BodyweightRepository extends JpaRepository<Bodyweight, Long> {
     """, nativeQuery = true)
     List<WeeklyBodyweight> getWeeklyWeightStat(@Param("userId") UUID userId);
 
+    @Query(value = """
+    SELECT
+        date_bin('7 days', b.date, timestamp '2023-1-1') AS week,
+        AVG(b.weight) AS average,
+        MIN(b.weight) AS minWeight,
+        MAX(b.weight) AS maxWeight
+    FROM bodyweights b
+    WHERE b.user_id = :userId
+    GROUP BY week
+    ORDER BY week DESC
+    LIMIT 1
+    """, nativeQuery = true)
+    WeeklyBodyweight getLatestWeeklyWeightStat(@Param("userId") UUID userId);
+
     Optional<Bodyweight> findByIdAndUser(Long id, User user);
+    Bodyweight findFirstByUserOrderByDateDesc(User user);
 }

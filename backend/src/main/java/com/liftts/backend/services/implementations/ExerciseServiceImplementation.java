@@ -1,6 +1,7 @@
 package com.liftts.backend.services.implementations;
 
 import com.liftts.backend.domain.dtos.CreateExerciseRequest;
+import com.liftts.backend.domain.dtos.ExercisePr;
 import com.liftts.backend.domain.dtos.UpdateExerciseRequest;
 import com.liftts.backend.domain.entities.Exercise;
 import com.liftts.backend.domain.entities.User;
@@ -13,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -86,5 +89,11 @@ public class ExerciseServiceImplementation implements ExerciseService {
         exercise.setReps(updateExerciseRequest.getReps());
 
         return exerciseRepository.save(exercise);
+    }
+
+    @Override
+    public List<ExercisePr> getExercisePr(UUID id) {
+        List<String> lifts = Arrays.asList("squat", "bench", "deadlift", "ohp");
+        return exerciseRepository.getExercisePrs(id, lifts);
     }
 }

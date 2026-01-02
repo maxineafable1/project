@@ -27,18 +27,18 @@ type Props = {
   latestBodyweight: {
     id: number;
     weight: number;
-    bodyweightDate: string;
+    date: string;
     isKilogram: boolean;
     userId: string;
     createdAt: Date;
     updatedAt: Date;
-  }[]
+  } | null
   latestWeeklyStatus: {
     week: string;
     average: number;
     minWeight: number;
     maxWeight: number;
-  }[]
+  } | null
   latestWorkout: {
     id: number;
     userId: string;
@@ -60,10 +60,7 @@ export default function Dashboard({
 }: Props) {
   const lifts = ['squat', 'bench', 'deadlift', 'ohp']
 
-  const bodyweight = latestBodyweight.at(0)
-  const averageBw = latestWeeklyStatus.at(0)
-
-  const averageBwDate = averageBw ? getStartEndDateFromWeek(averageBw.week) : null
+  const latestAvgBwDates = latestWeeklyStatus ? getStartEndDateFromWeek(latestWeeklyStatus.week) : null
 
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
@@ -126,13 +123,13 @@ export default function Dashboard({
         </div>
         <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl space-y-4 xl:col-span-2 2xl:col-span-1">
           <div className="font-bold text-lg">Recent Bodyweight</div>
-          {bodyweight ? (
+          {latestBodyweight ? (
             <div>
-              <div className="text-sm">{dayjs(bodyweight.bodyweightDate).format('ll')}</div>
+              <div className="text-sm">{dayjs(latestBodyweight.date).format('ll')}</div>
               <div className="text-3xl">
-                {bodyweight.isKilogram
-                  ? `${bodyweight.weight} kg`
-                  : `${+(bodyweight.weight * 2.205).toFixed(2)} lb`}
+                {latestBodyweight.isKilogram
+                  ? `${latestBodyweight.weight} kg`
+                  : `${+(latestBodyweight.weight * 2.205).toFixed(2)} lb`}
               </div>
             </div>
           ) : (
@@ -141,12 +138,12 @@ export default function Dashboard({
         </div>
         <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl space-y-4 xl:col-span-2 2xl:col-span-1">
           <div className="font-bold text-lg">Recent Avg Weight</div>
-          {(averageBwDate && averageBw) ? (
+          {(latestAvgBwDates && latestWeeklyStatus) ? (
             <div className="">
               <div className="text-sm">
-                {averageBwDate.startOfWeek} - {averageBwDate.endOfWeek}
+                {latestAvgBwDates.startDate} - {latestAvgBwDates.endDate}
               </div>
-              <div className="text-3xl">{averageBw.average}kg ({+(averageBw.average * 2.205).toFixed(2)}lb)</div>
+              <div className="text-3xl">{latestWeeklyStatus.average} kg ({+(latestWeeklyStatus.average * 2.205).toFixed(2)} lb)</div>
             </div>
           ) : (
             <div className="">No record yet</div>
@@ -160,8 +157,8 @@ export default function Dashboard({
             {lifts.map(lift => {
               const curLift = prs.find(pr => pr.name.toLowerCase() === lift)
               return (
-                <div key={lift} className="col-span-1 group">
-                  <div className="text-sm font-bold pb-3 border-b border-neutral-200 dark:border-neutral-700 capitalize">
+                <div key={lift} className="col-span-1 group group">
+                  <div className="group-last:uppercase text-sm font-bold pb-3 border-b border-neutral-200 dark:border-neutral-700 capitalize">
                     {lift}
                   </div>
                   <div className="py-3 border-b sm:group-odd:border-r xl:border-r xl:group-last:border-r-0 border-neutral-200 dark:border-neutral-700 max-sm:text-center">

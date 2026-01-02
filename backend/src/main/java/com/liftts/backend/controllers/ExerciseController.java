@@ -32,6 +32,13 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseDtos);
     }
 
+    @GetMapping(path = "/prs")
+    public ResponseEntity<List<ExercisePrsDto>> getExercisePrs(@RequestAttribute UUID userId) {
+        User loggedInUser = userService.getUserById(userId);
+        List<ExercisePr> exercisePrs = exerciseService.getExercisePr(loggedInUser.getId());
+        return ResponseEntity.ok(exercisePrs.stream().map(exerciseMapper::toExercisePrsDto).toList());
+    }
+
     @PostMapping
     public ResponseEntity<ExerciseDto> createExercises(
             @Valid @RequestBody CreateExerciseRequestDto createExerciseRequestDto,

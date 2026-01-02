@@ -39,8 +39,26 @@ public class BodyweightController {
             @RequestAttribute UUID userId
     ) {
         User currUser = userService.getUserById(userId);
-        List<WeeklyBodyweight> latestWeeklyStatus = bodyweightService.getLatestWeeklyStatus(currUser.getId());
+        List<WeeklyBodyweight> latestWeeklyStatus = bodyweightService.getWeeklyStatus(currUser.getId());
         return ResponseEntity.ok(latestWeeklyStatus.stream().map(bodyweightMapper::toAverageBodyweightDto).toList());
+    }
+
+    @GetMapping(path = "/weekly/latest")
+    public ResponseEntity<AverageBodyweightDto> getLatestWeeklyBodyweightStat(
+            @RequestAttribute UUID userId
+    ) {
+        User currUser = userService.getUserById(userId);
+        WeeklyBodyweight latestWeeklyStatus = bodyweightService.getLatestWeeklyStatus(currUser.getId());
+        return ResponseEntity.ok(bodyweightMapper.toAverageBodyweightDto(latestWeeklyStatus));
+    }
+
+    @GetMapping(path = "/latest")
+    public ResponseEntity<BodyweightDto> getLatestBodyweight(
+            @RequestAttribute UUID userId
+    ) {
+        User currUser = userService.getUserById(userId);
+        Bodyweight latestBodyweight = bodyweightService.getLatestBodyweight(currUser);
+        return ResponseEntity.ok(bodyweightMapper.toBodyweightDto(latestBodyweight));
     }
 
     @PostMapping

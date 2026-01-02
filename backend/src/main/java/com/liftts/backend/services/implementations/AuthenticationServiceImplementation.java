@@ -37,7 +37,8 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final Long jwtExpiryMs = 86400000L;
+    @Value("${security.jwt.token.expiration-time}")
+    private Long jwtExpiryMs;
 
     @Override
     public UserDetails authenticate(String email, String password) {

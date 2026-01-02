@@ -23,6 +23,7 @@ public class Workout {
     private LocalDate exerciseDate;
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OrderBy("createdAt DESC")
     List<Exercise> exercises = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
