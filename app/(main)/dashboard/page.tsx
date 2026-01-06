@@ -52,7 +52,12 @@ export default async function page() {
     isKilogram: exercises.isKilogram,
   })
     .from(exercises)
-    .where(and(inArray(sql`lower(${exercises.name})`, lifts), eq(exercises.sets, 1), eq(exercises.reps, 1)))
+    .where(and(
+      inArray(sql`lower(${exercises.name})`, lifts),
+      eq(exercises.sets, 1),
+      eq(exercises.reps, 1),
+      eq(exercises.userId, session.user.id),
+    ))
     .groupBy(exercises.name)
 
   return (
