@@ -17,6 +17,6 @@ public interface BodyweightService {
     void deleteBodyweight(User user, Long id);
     Bodyweight updateBodyweight(User user, Long id, UpdateBodyweightRequest updateBodyweightRequest);
     List<WeeklyBodyweight> getWeeklyStatus(UUID userId);
-    WeeklyBodyweight getLatestWeeklyStatus(UUID userId);
-    Bodyweight getLatestBodyweight(User user);
+    Optional<WeeklyBodyweight> getLatestWeeklyStatus(UUID userId);
+    Optional<Bodyweight> getLatestBodyweight(User user);
 }

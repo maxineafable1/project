@@ -12,17 +12,20 @@ export default async function page() {
 
   const sessJwt = session.jwt
 
-  const latestWorkout = await getLatestWorkout(sessJwt)
-  const latestBodyweight = await getLatestBodyweight(sessJwt)
-  const latestWeeklyStatus = await getLatestWeeklyBodyweightStat(sessJwt)
-  const prs = await getExercisePrs(sessJwt)
-
+  const [latestWorkout, latestBodyweight, latestWeeklyStatus, prs] =
+    await Promise.allSettled([
+      getLatestWorkout(sessJwt),
+      getLatestBodyweight(sessJwt),
+      getLatestWeeklyBodyweightStat(sessJwt),
+      getExercisePrs(sessJwt),
+    ])
+    
   return (
     <Dashboard
-      latestBodyweight={latestBodyweight}
-      latestWeeklyStatus={latestWeeklyStatus}
-      latestWorkout={latestWorkout}
-      prs={prs}
+      latestBodyweight={latestBodyweight.status === 'fulfilled' ? latestBodyweight.value : null}
+      latestWeeklyStatus={latestWeeklyStatus.status === 'fulfilled' ? latestWeeklyStatus.value : null}
+      latestWorkout={latestWorkout.status === 'fulfilled' ? latestWorkout.value : null}
+      prs={prs.status === 'fulfilled' ? prs.value : []}
     />
   )
 }

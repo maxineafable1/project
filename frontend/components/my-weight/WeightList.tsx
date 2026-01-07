@@ -32,7 +32,6 @@ type Props = {
 }
 
 export default function WeightList({
-  // sessId,
   jwt,
   weights,
   weeklyStatus,
@@ -57,7 +56,7 @@ export default function WeightList({
         // <NewWeightForm sessId={sessId} setNewWeight={setNewWeight} />
         <NewWeightForm jwt={jwt} setNewWeight={setNewWeight} />
       )}
-      {(weights.length === 0 && !newWeight) ? (
+      {(weights.length === 0 && !newWeight) && (
         <div className="max-w-md mx-auto text-center space-y-4">
           <div className="text-3xl font-bold">Start tracking your bodyweight progress from day one.</div>
           {/* <div className="text-sm mx-auto">Click <span className="font-bold">New Exercise</span> to start tracking your workouts.</div> */}
@@ -70,7 +69,8 @@ export default function WeightList({
             <Plus className="size-4" /> Add weight
           </button>
         </div>
-      ) : (
+      )}
+      {weights.length > 0 && (
         <div className="space-y-20">
           <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
             <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">

@@ -6,6 +6,7 @@ import com.liftts.backend.domain.entities.User;
 import com.liftts.backend.mappers.BodyweightMapper;
 import com.liftts.backend.services.BodyweightService;
 import com.liftts.backend.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,8 +49,10 @@ public class BodyweightController {
             @RequestAttribute UUID userId
     ) {
         User currUser = userService.getUserById(userId);
-        WeeklyBodyweight latestWeeklyStatus = bodyweightService.getLatestWeeklyStatus(currUser.getId());
-        return ResponseEntity.ok(bodyweightMapper.toAverageBodyweightDto(latestWeeklyStatus));
+        WeeklyBodyweight weeklyBodyweight = bodyweightService.getLatestWeeklyStatus(currUser.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Bodyweight not found"));
+
+        return ResponseEntity.ok(bodyweightMapper.toAverageBodyweightDto(weeklyBodyweight));
     }
 
     @GetMapping(path = "/latest")
@@ -57,7 +60,9 @@ public class BodyweightController {
             @RequestAttribute UUID userId
     ) {
         User currUser = userService.getUserById(userId);
-        Bodyweight latestBodyweight = bodyweightService.getLatestBodyweight(currUser);
+        Bodyweight latestBodyweight = bodyweightService.getLatestBodyweight(currUser)
+                .orElseThrow(() -> new EntityNotFoundException("Bodyweight not found"));
+
         return ResponseEntity.ok(bodyweightMapper.toBodyweightDto(latestBodyweight));
     }
 

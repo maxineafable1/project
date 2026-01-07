@@ -44,7 +44,7 @@ type Props = {
     userId: string;
     exerciseDate: string;
     exercises: Exercise[];
-  } | undefined
+  } | null
   prs: {
     weight: number;
     name: string;

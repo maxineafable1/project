@@ -42,8 +42,8 @@ public interface BodyweightRepository extends JpaRepository<Bodyweight, Long> {
     ORDER BY week DESC
     LIMIT 1
     """, nativeQuery = true)
-    WeeklyBodyweight getLatestWeeklyWeightStat(@Param("userId") UUID userId);
+    Optional<WeeklyBodyweight> getLatestWeeklyWeightStat(@Param("userId") UUID userId);
 
     Optional<Bodyweight> findByIdAndUser(Long id, User user);
-    Bodyweight findFirstByUserOrderByDateDesc(User user);
+    Optional<Bodyweight> findFirstByUserOrderByDateDesc(User user);
 }

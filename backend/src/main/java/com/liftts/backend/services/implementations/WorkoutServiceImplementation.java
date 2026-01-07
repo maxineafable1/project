@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class WorkoutServiceImplementation implements WorkoutService {
     }
 
     @Override
-    public Workout getLatestWorkout(User user) {
+    public Optional<Workout> getLatestWorkout(User user) {
         return workoutRepository.findFirstByUserOrderByExerciseDateDesc(user);
     }
 }

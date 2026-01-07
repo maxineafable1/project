@@ -9,15 +9,16 @@ export default async function page() {
   if (!session)
     redirect('/sign-in')
 
-  const weights = await getBodyweights(session.jwt)
-
-  const weeklyStatus = await getWeeklyBodyweightStat(session.jwt)
+  const [weights, weeklyStatus] = await Promise.allSettled([
+    getBodyweights(session.jwt),
+    getWeeklyBodyweightStat(session.jwt),
+  ])
 
   return (
     <WeightList
       jwt={session.jwt}
-      weights={weights}
-      weeklyStatus={weeklyStatus}
+      weights={weights.status === 'fulfilled' ? weights.value : []}
+      weeklyStatus={weeklyStatus.status === 'fulfilled' ? weeklyStatus.value : []}
     />
   )
 }

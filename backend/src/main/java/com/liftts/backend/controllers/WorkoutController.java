@@ -6,6 +6,7 @@ import com.liftts.backend.domain.entities.Workout;
 import com.liftts.backend.mappers.WorkoutMapper;
 import com.liftts.backend.services.UserService;
 import com.liftts.backend.services.WorkoutService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,9 @@ public class WorkoutController {
             @RequestAttribute UUID userId
     ) {
         User currentUser = userService.getUserById(userId);
-        Workout workout = workoutService.getLatestWorkout(currentUser);
+        Workout workout = workoutService.getLatestWorkout(currentUser)
+                .orElseThrow(() -> new EntityNotFoundException("Workout not found"));
+
         return ResponseEntity.ok(workoutMapper.toDto(workout));
     }
 }

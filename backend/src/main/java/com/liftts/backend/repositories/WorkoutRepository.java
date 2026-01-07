@@ -31,5 +31,5 @@ public interface WorkoutRepository extends JpaRepository<Workout, Long> {
             Pageable pageable,
             User user);
 
-    Workout findFirstByUserOrderByExerciseDateDesc(User user);
+    Optional<Workout> findFirstByUserOrderByExerciseDateDesc(User user);
 }
