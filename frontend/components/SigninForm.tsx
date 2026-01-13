@@ -1,9 +1,9 @@
 'use client'
 
+import { login } from "@/actions/auth-actions"
 import { signinSchema, SigninSchemaType } from "@/utils/auth-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -15,8 +15,6 @@ export default function SigninForm() {
   const [loading, setLoading] = useState(false)
   const [verifyMessage, setVerifyMessage] = useState<string | null>(null)
 
-  const router = useRouter()
-
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   async function onSubmit(authInput: SigninSchemaType) {
@@ -24,26 +22,20 @@ export default function SigninForm() {
     const { email, password } = authInput
 
     try {
-      const res = await fetch('http://localhost:8080/api/v1/auth/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
+      const res = await login(email, password)
+      console.log(res)
 
-      if (!res.ok) {
-        setError('root', { message: 'error test' })
-      }
-
-      const data = await res.json()
-      console.log(data)
-      
-      if (data.message)
-        setVerifyMessage('Check your email to verify your account')
-      else
-        router.push('/dashboard')
+      if (res.error)
+        setError('root', { message: res.error })
+      else if (res.message)
+        setVerifyMessage(res.message)
     } catch (error) {
       console.log(error)
+      // setError('root', {
+      //   message: error instanceof Error
+      //     ? error.message
+      //     : 'Server error. Please try again'
+      // })
     } finally {
       setLoading(false)
     }
@@ -51,12 +43,12 @@ export default function SigninForm() {
 
   return (
     <>
-      {verifyMessage && (
+      {(verifyMessage && !errors.root) && (
         <p className="bg-blue-500 px-4 rounded py-1.5 text-sm text-white">
           {verifyMessage}
         </p>
       )}
-      {errors.root && (
+      {(errors.root && !verifyMessage) && (
         <p className="bg-red-400 px-4 rounded py-1.5 text-sm text-white">
           {errors.root.message}
         </p>

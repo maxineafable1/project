@@ -1,0 +1,35 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: liftts-frontend-container
+    ports:
+      - 3001:3001
+    env_file:
+      - frontend/.env.production
+    depends_on:
+      - backend
+    restart: unless-stopped
+    environment:
+      API_URL: http://backend:8080
+    networks:
+      - liftts-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: liftts-backend-container
+    # expose:
+    #   - "8080"
+    ports:
+      - 8080:8080
+    env_file:
+      - backend/.env
+    restart: unless-stopped
+    networks:
+      - liftts-network
+
+networks:
+  liftts-network:

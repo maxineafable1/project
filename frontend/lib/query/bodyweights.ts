@@ -1,5 +1,5 @@
 export async function getBodyweights(jwt: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/bodyweights`, {
+  const res = await fetch(`${process.env.API_URL}/api/v1/bodyweights`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${jwt}`,
@@ -15,7 +15,7 @@ export async function getBodyweights(jwt: string) {
 }
 
 export async function getWeeklyBodyweightStat(jwt: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/bodyweights/weekly`, {
+  const res = await fetch(`${process.env.API_URL}/api/v1/bodyweights/weekly`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${jwt}`,

@@ -3,7 +3,6 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 
 import { deleteBodyweight, updateBodyweight } from '@/actions/bodyweight-actions'
-import { BodyweightsType } from '@/db-schema'
 import { bodyweightSchema, BodyweightSchemaType } from '@/utils/zod-schemas/bodyweight-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
@@ -28,11 +27,6 @@ type Props = {
   setIsEditId: Dispatch<SetStateAction<number | null>>
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function instanceOfBodyweight(object: any): object is BodyweightsType {
-  return typeof object === 'object' && object !== null;
-}
-
 export default function BodyweightRow({
   jwt,
   weight: { date, id, isKilogram, weight },
@@ -41,7 +35,7 @@ export default function BodyweightRow({
 }: Props) {
   const [isDelete, setIsDelete] = useState(false)
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = useForm({
     resolver: zodResolver(bodyweightSchema),
     defaultValues: {
       weight: isKilogram ? weight : +(weight * 2.205).toFixed(2),

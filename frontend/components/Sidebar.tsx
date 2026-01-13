@@ -1,6 +1,6 @@
 'use client'
 
-import { authClient } from '@/lib/auth-client'
+import { logout } from '@/lib/session'
 import { Calendar, ChevronDown, Dumbbell, LayoutDashboard, LogOut, Menu, Search, User, Weight, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -192,13 +192,8 @@ export default function Sidebar({
           ${!isUserDropdown && 'hidden'} shadow bg-white dark:bg-neutral-700 rounded *:text-start`}>
             <button
               onClick={async () => {
-                await authClient.signOut({
-                  fetchOptions: {
-                    onSuccess: () => {
-                      router.push("/");
-                    },
-                  },
-                });
+                await logout()
+                router.push('/')
               }}
               className='inline-flex gap-1.5 px-3 py-1.5 w-full text-sm cursor-pointer mt-auto 
             hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors'

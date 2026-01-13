@@ -13,13 +13,11 @@ import { createBodyweight } from '@/actions/bodyweight-actions'
 dayjs.extend(localizedFormat);
 
 type Props = {
-  // sessId: string
   jwt: string
   setNewWeight: Dispatch<SetStateAction<boolean>>
 }
 
 export default function NewWeightForm({
-  // sessId,
   jwt,
   setNewWeight,
 }: Props) {
@@ -27,24 +25,25 @@ export default function NewWeightForm({
     resolver: zodResolver(bodyweightSchema),
   })
 
-  async function onSubmit(data: BodyweightSchemaType) {
+  async function onSubmit(newBodyweight: BodyweightSchemaType) {
     const newData = {
-      ...data,
-      // TODO change all to date only for simplicity
-      date: data.bodyweightDate ? data.bodyweightDate : dayjs().format().split('T')[0]
+      ...newBodyweight,
+      date: newBodyweight.date ? newBodyweight.date : dayjs().format().split('T')[0]
     }
 
-    if (dayjs(newData.bodyweightDate).isAfter(dayjs())) {
-      setError('bodyweightDate', { message: 'error' }, { shouldFocus: true })
+    if (dayjs(newData.date).isAfter(dayjs())) {
+      console.log('newData: ', newData.date, 'after: ', dayjs().date)
+      setError('date', { message: 'Bodyweight already exists with date' }, { shouldFocus: true })
+      return
     }
-    else {
-      try {
-        await createBodyweight(jwt, newData)
-        setNewWeight(false)
-      } catch (error) {
-        // duplicate date error
-        if (error instanceof Error && !error.message.startsWith('Request'))
-          setError('bodyweightDate', { message: 'Date already exists' }, { shouldFocus: true })
+
+    try {
+      await createBodyweight(jwt, newData)
+      setNewWeight(false)
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.startsWith('Bodyweight'))
+          setError('date', { message: 'Bodyweight already exists with this date' }, { shouldFocus: true })
         else
           // toast msg
           console.log(error)
@@ -62,11 +61,11 @@ export default function NewWeightForm({
             <span className="font-bold">Bodyweight Date</span> (Optional)
           </label>
           <input
-            id="bodyweightDate"
+            id="date"
             type="date"
-            {...register('bodyweightDate')}
+            {...register('date')}
             className={`focus-within:outline-2 
-            ${errors.bodyweightDate ? 'focus-within:outline-red-500' : 'focus-within:outline-blue-500'}  
+            ${errors.date ? 'focus-within:outline-red-500' : 'focus-within:outline-blue-500'}  
           `}
             max={dayjs().format().split('T')[0]}
           />

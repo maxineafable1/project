@@ -64,7 +64,8 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
             String token = UUID.randomUUID().toString();
             userService.createVerificationToken(user, token);
 
-            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
+//            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
+            String verificationLink = "http://localhost:3001/verify-email?token=" + token;
             emailService.sendVerificationEmail(email, verificationLink);
         } else  {
             User user = userExists.get();
@@ -105,11 +106,13 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
             String token = UUID.randomUUID().toString();
             userService.createVerificationToken(user, token);
 
-            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
+//            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
+            String verificationLink = "http://localhost:3001/verify-email?token=" + token;
             emailService.sendVerificationEmail(email, verificationLink);
         } else {
             // resend token
-            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + user.getVerificationToken().getToken();
+//            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + user.getVerificationToken().getToken();
+            String verificationLink = "http://localhost:3001/verify-email?token=" + user.getVerificationToken().getToken();
             emailService.sendVerificationEmail(email, verificationLink);
         }
     }

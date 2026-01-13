@@ -16,10 +16,10 @@ FROM base AS deps
 USER node
 WORKDIR /app
 
-RUN pnpm init
-RUN printf "onlyBuiltDependencies:\n- better-sqlite3\n" >> pnpm-workspace.yaml
-RUN pnpm add better-sqlite3
-RUN node -e 'new require("better-sqlite3")(":memory:")'
+# RUN pnpm init
+# RUN printf "onlyBuiltDependencies:\n- better-sqlite3\n" >> pnpm-workspace.yaml
+# RUN pnpm add better-sqlite3
+# RUN node -e 'new require("better-sqlite3")(":memory:")'
 
 COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
@@ -31,14 +31,14 @@ WORKDIR /app
 COPY --chown=node:node --from=deps /app/node_modules ./node_modules
 COPY --chown=node:node . .
 
-COPY --chown=node:node /drizzle ./drizzle
+# COPY --chown=node:node /drizzle ./drizzle
 
 COPY --chown=node:node .env.production .env.production
 
-USER root
+# USER root
 
 # Give /data directory correct permissions otherwise WAL mode won't work. It means you can't have 2 users writing to the database at the same time without this line as *.sqlite-wal & *.sqlite-shm are automatically created & deleted when *.sqlite is busy.
-RUN mkdir -p /data && chown -R node:node /data
+# RUN mkdir -p /data && chown -R node:node /data
 
 ENV NODE_ENV=production
 
@@ -57,18 +57,18 @@ ENV NODE_ENV=production
 
 COPY --from=builder --chown=node:node /app/public ./public
 
-COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+# COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 
-COPY --from=builder --chown=node:node /app/drizzle ./drizzle
+# COPY --from=builder --chown=node:node /app/drizzle ./drizzle
 
-COPY --from=builder --chown=node:node /app/migrate.ts ./migrate.ts
-COPY --from=builder --chown=node:node /app/package.json ./package.json
-COPY --from=builder --chown=node:node /app/pnpm-lock.yaml ./pnpm-lock.yaml
+# COPY --from=builder --chown=node:node /app/migrate.ts ./migrate.ts
+# COPY --from=builder --chown=node:node /app/package.json ./package.json
+# COPY --from=builder --chown=node:node /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder --chown=node:node /app/run.sh ./run.sh
 
 RUN chmod +x run.sh

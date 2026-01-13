@@ -34,17 +34,17 @@ export default function NewExerciseForm({
 
     if (dayjs(newData.exerciseDate).isAfter(dayjs())) {
       // console.log('date is after', newData.exerciseDate)
-      setError('exerciseDate', { message: 'error' }, { shouldFocus: true })
+      setError('exerciseDate', { message: 'Date must be today or earlier' }, { shouldFocus: true })
+      return
     }
-    else {
-      try {
-        await createExercise(jwt, newData)
-      } catch (error) {
-        // toast msg
-        console.log(error)
-      } finally {
-        setNewExercise(false)
-      }
+
+    try {
+      await createExercise(jwt, newData)
+    } catch (error) {
+      // toast msg
+      console.log(error)
+    } finally {
+      setNewExercise(false)
     }
   }
 

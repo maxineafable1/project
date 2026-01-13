@@ -1,5 +1,6 @@
 'use client'
 
+import { signup } from "@/actions/auth-actions"
 import { signupSchema, SignupSchemaType } from "@/utils/auth-form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoaderCircle } from "lucide-react"
@@ -19,21 +20,35 @@ export default function SignupForm() {
     const { email, password } = authInput
 
     try {
-      const res = await fetch('http://localhost:8080/api/v1/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
+      const res = await signup(email, password)
+      console.log(res)
 
-      if (!res.ok) {
-        setError('root', { message: 'error test' })
-      }
+      if (res.error)
+        setError('root', { message: res.error })
+      else if (res.message)
+        setVerifyMessage(res.message)
 
-      const data = await res.json()
-      setVerifyMessage('Check your email to verify your account')
-      
+      // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/signup`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, password })
+      // })
+
+      // if (!res.ok && res.status === 400) {
+      //   throw new Error('Account already exists')
+      // }
+
+      // const data = await res.json()
+      // if (data.message)
+      //   setVerifyMessage('Check your email to verify your account')
+
     } catch (error) {
       console.log(error)
+      // setError('root', {
+      //   message: error instanceof Error
+      //     ? error.message
+      //     : 'Server error. Please try again'
+      // })
     } finally {
       setLoading(false)
     }
@@ -41,12 +56,12 @@ export default function SignupForm() {
 
   return (
     <>
-      {verifyMessage && (
+      {(verifyMessage && !errors.root) && (
         <p className="bg-blue-500 px-4 rounded py-1.5 text-sm text-white">
           {verifyMessage}
         </p>
       )}
-      {errors.root && (
+      {(errors.root && !verifyMessage) && (
         <p className="bg-red-400 px-4 rounded py-1.5 text-sm text-white">
           {errors.root.message}
         </p>

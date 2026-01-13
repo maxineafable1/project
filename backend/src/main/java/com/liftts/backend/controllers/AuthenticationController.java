@@ -1,5 +1,6 @@
 package com.liftts.backend.controllers;
 
+import com.liftts.backend.domain.dtos.AuthenticationResponse;
 import com.liftts.backend.domain.dtos.LoginRequest;
 import com.liftts.backend.domain.dtos.LoginResponse;
 import com.liftts.backend.domain.entities.User;
@@ -9,6 +10,7 @@ import com.liftts.backend.services.AuthenticationService;
 import com.liftts.backend.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -30,6 +32,22 @@ public class AuthenticationController {
     private final UserService userService;
     private final UserDetailsService userDetailsService;
 
+    @Value("${app.cookie.secure}")
+    private boolean cookieSecure;
+
+    @Value("${app.cookie.max-age-days}")
+    private long cookieMaxAgeDays;
+
+    @Value("${app.cookie.domain}")
+    private String cookieDomain;
+
+    @Value("${app.cookie.name}")
+    private String cookieName;
+
+    @Value("${app.frontend.url-redirect}")
+    private String frontendRedirectUrl;
+
+
     @PostMapping(path = "/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest loginRequest,
@@ -42,19 +60,24 @@ public class AuthenticationController {
         if (userDetails.isPresent()) {
             String jwtToken = authenticationService.generateToken(userDetails.get());
 
-            ResponseCookie cookie = ResponseCookie.from("liftts-session", jwtToken)
-                    .httpOnly(true)
-                    .secure(false) // todo change in prod to true
-                    .sameSite("Lax")
-                    .path("/")
-//                .domain("http://localhost:3000")
-                    .maxAge(Duration.ofDays(7)) // todo change in prod
-                    .build();
-
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+//            ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(cookieName, jwtToken)
+//                    .httpOnly(true)
+//                    .secure(cookieSecure)
+//                    .sameSite("Lax")
+//                    .path("/")
+//                    .maxAge(Duration.ofDays(cookieMaxAgeDays));
+//
+//            // todo set domain only in prod
+//            if (cookieDomain != null && !cookieDomain.isEmpty()) {
+//                builder.domain(cookieDomain);
+//            }
+//
+//            ResponseCookie cookie = builder.build();
+//
+//            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             LoginResponse loginResponse = LoginResponse.builder()
-                    .authenticationResponse(null)
+                    .authenticationResponse(AuthenticationResponse.builder().token(jwtToken).build())
                     .message(null)
                     .build();
 
@@ -84,8 +107,9 @@ public class AuthenticationController {
         return new ResponseEntity<>(loginResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/verify")
-    public ResponseEntity<Void> confirmEmailVerification(
+//    @GetMapping(path = "/verify")
+    @PostMapping(path = "/verify")
+    public ResponseEntity<AuthenticationResponse> confirmEmailVerification(
             @RequestParam String token,
             HttpServletResponse response
     ) {
@@ -108,22 +132,28 @@ public class AuthenticationController {
 
         String jwtToken = authenticationService.generateToken(userDetails);
 
-        ResponseCookie cookie = ResponseCookie.from("liftts-session", jwtToken)
-                .httpOnly(true)
-                .secure(false) // todo change in prod to true
-                .sameSite("Lax")
-                .path("/")
-//                .domain("http://localhost:3000")
-                .maxAge(Duration.ofDays(7)) // todo change in prod
-                .build();
+//        ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(cookieName, jwtToken)
+//                .httpOnly(true)
+//                .secure(cookieSecure)
+//                .sameSite("Lax")
+//                .path("/")
+//                .maxAge(Duration.ofDays(cookieMaxAgeDays));
+//
+//        // todo set domain only in prod
+//        if (cookieDomain != null && !cookieDomain.isEmpty()) {
+//            builder.domain(cookieDomain);
+//        }
+//
+//        ResponseCookie cookie = builder.build();
+//
+//        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+//
+//        response.setHeader(
+//                HttpHeaders.LOCATION,
+//                frontendRedirectUrl
+//        );
 
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        response.setHeader(
-                HttpHeaders.LOCATION,
-                "http://localhost:3000/dashboard"
-        );
-
-        return new ResponseEntity<>(HttpStatus.FOUND);
+        return ResponseEntity.ok(AuthenticationResponse.builder().token(jwtToken).build());
+//        return new ResponseEntity<>(HttpStatus.FOUND);
     }
 }

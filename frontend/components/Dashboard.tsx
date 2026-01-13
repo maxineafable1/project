@@ -137,13 +137,13 @@ export default function Dashboard({
           )}
         </div>
         <div className="dark:bg-neutral-900 bg-neutral-100 p-8 rounded-xl space-y-4 xl:col-span-2 2xl:col-span-1">
-          <div className="font-bold text-lg">Recent Avg Weight</div>
+          <div className="font-bold text-lg">Recent Average Weight</div>
           {(latestAvgBwDates && latestWeeklyStatus) ? (
             <div className="">
               <div className="text-sm">
                 {latestAvgBwDates.startDate} - {latestAvgBwDates.endDate}
               </div>
-              <div className="text-3xl">{latestWeeklyStatus.average} kg ({+(latestWeeklyStatus.average * 2.205).toFixed(2)} lb)</div>
+              <div className="text-3xl">{latestWeeklyStatus.average.toFixed(2)} kg ({+(latestWeeklyStatus.average * 2.205).toFixed(2)} lb)</div>
             </div>
           ) : (
             <div className="">No record yet</div>

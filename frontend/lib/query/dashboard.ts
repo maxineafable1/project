@@ -1,5 +1,5 @@
 export async function getLatestWorkout(jwt: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/workouts/latest`, {
+  const res = await fetch(`${process.env.API_URL}/api/v1/workouts/latest`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${jwt}`,
@@ -15,7 +15,7 @@ export async function getLatestWorkout(jwt: string) {
 }
 
 export async function getLatestBodyweight(jwt: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/bodyweights/latest`, {
+  const res = await fetch(`${process.env.API_URL}/api/v1/bodyweights/latest`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${jwt}`,
@@ -31,7 +31,7 @@ export async function getLatestBodyweight(jwt: string) {
 }
 
 export async function getLatestWeeklyBodyweightStat(jwt: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/bodyweights/weekly/latest`, {
+  const res = await fetch(`${process.env.API_URL}/api/v1/bodyweights/weekly/latest`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${jwt}`,
@@ -47,7 +47,7 @@ export async function getLatestWeeklyBodyweightStat(jwt: string) {
 }
 
 export async function getExercisePrs(jwt: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/exercises/prs`, {
+  const res = await fetch(`${process.env.API_URL}/api/v1/exercises/prs`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${jwt}`,

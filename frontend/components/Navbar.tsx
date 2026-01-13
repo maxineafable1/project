@@ -1,6 +1,6 @@
 'use client'
 
-import { authClient } from '@/lib/auth-client'
+import { logout } from '@/lib/session'
 import { JWTPayload } from 'jose'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -13,10 +13,6 @@ type Props = {
 export default function Navbar({
 	session,
 }: Props) {
-	// const {
-	// 	data: session,
-	// } = authClient.useSession()
-
 	const router = useRouter()
 
 	return (
@@ -48,15 +44,10 @@ export default function Navbar({
 				) : (
 					<>
 						<button
-							// onClick={async () => {
-							// 	await authClient.signOut({
-							// 		fetchOptions: {
-							// 			onSuccess: () => {
-							// 				router.push("/");
-							// 			},
-							// 		},
-							// 	});
-							// }}
+							onClick={async () => {
+								await logout()
+								router.push('/')
+							}}
 							className='text-sm px-6 py-1.5 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors text-white
                   dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2
                 '

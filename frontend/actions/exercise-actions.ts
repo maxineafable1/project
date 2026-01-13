@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 
 export async function createExercise(jwt: string, newExercise: any) {
   try {
-    const res = await fetch('http://localhost:8080/api/v1/exercises', {
+    const res = await fetch(`${process.env.API_URL}/api/v1/exercises`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${jwt}`,
@@ -27,7 +27,7 @@ export async function createExercise(jwt: string, newExercise: any) {
 
 export async function deleteExercise(jwt: string, exerciseId: number) {
   try {
-    const res = await fetch(`http://localhost:8080/api/v1/exercises/${exerciseId}`, {
+    const res = await fetch(`${process.env.API_URL}/api/v1/exercises/${exerciseId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${jwt}`,
@@ -49,7 +49,7 @@ export async function deleteExercise(jwt: string, exerciseId: number) {
 
 export async function updateExercise(jwt: string, updatedExercise: any, exerciseId: number) {
   try {
-    const res = await fetch(`http://localhost:8080/api/v1/exercises/${exerciseId}`, {
+    const res = await fetch(`${process.env.API_URL}/api/v1/exercises/${exerciseId}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${jwt}`,
