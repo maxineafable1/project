@@ -8,18 +8,13 @@ import com.liftts.backend.domain.entities.VerificationToken;
 import com.liftts.backend.repositories.VerificationTokenRepository;
 import com.liftts.backend.services.AuthenticationService;
 import com.liftts.backend.services.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -32,49 +27,17 @@ public class AuthenticationController {
     private final UserService userService;
     private final UserDetailsService userDetailsService;
 
-    @Value("${app.cookie.secure}")
-    private boolean cookieSecure;
-
-    @Value("${app.cookie.max-age-days}")
-    private long cookieMaxAgeDays;
-
-    @Value("${app.cookie.domain}")
-    private String cookieDomain;
-
-    @Value("${app.cookie.name}")
-    private String cookieName;
-
-    @Value("${app.frontend.url-redirect}")
-    private String frontendRedirectUrl;
-
-
     @PostMapping(path = "/login")
     public ResponseEntity<LoginResponse> login(
-            @RequestBody LoginRequest loginRequest,
-            HttpServletResponse response
+            @RequestParam Boolean rememberMe,
+            @RequestBody LoginRequest loginRequest
     ) {
         Optional<UserDetails> userDetails = authenticationService.login(
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
         );
         if (userDetails.isPresent()) {
-            String jwtToken = authenticationService.generateToken(userDetails.get());
-
-//            ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(cookieName, jwtToken)
-//                    .httpOnly(true)
-//                    .secure(cookieSecure)
-//                    .sameSite("Lax")
-//                    .path("/")
-//                    .maxAge(Duration.ofDays(cookieMaxAgeDays));
-//
-//            // todo set domain only in prod
-//            if (cookieDomain != null && !cookieDomain.isEmpty()) {
-//                builder.domain(cookieDomain);
-//            }
-//
-//            ResponseCookie cookie = builder.build();
-//
-//            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            String jwtToken = authenticationService.generateToken(userDetails.get(), rememberMe);
 
             LoginResponse loginResponse = LoginResponse.builder()
                     .authenticationResponse(AuthenticationResponse.builder().token(jwtToken).build())
@@ -110,8 +73,7 @@ public class AuthenticationController {
 //    @GetMapping(path = "/verify")
     @PostMapping(path = "/verify")
     public ResponseEntity<AuthenticationResponse> confirmEmailVerification(
-            @RequestParam String token,
-            HttpServletResponse response
+            @RequestParam String token
     ) {
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(
                 () -> new IllegalArgumentException("Invalid token provided")
@@ -130,30 +92,8 @@ public class AuthenticationController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
 
-        String jwtToken = authenticationService.generateToken(userDetails);
-
-//        ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(cookieName, jwtToken)
-//                .httpOnly(true)
-//                .secure(cookieSecure)
-//                .sameSite("Lax")
-//                .path("/")
-//                .maxAge(Duration.ofDays(cookieMaxAgeDays));
-//
-//        // todo set domain only in prod
-//        if (cookieDomain != null && !cookieDomain.isEmpty()) {
-//            builder.domain(cookieDomain);
-//        }
-//
-//        ResponseCookie cookie = builder.build();
-//
-//        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-//
-//        response.setHeader(
-//                HttpHeaders.LOCATION,
-//                frontendRedirectUrl
-//        );
+        String jwtToken = authenticationService.generateToken(userDetails, false); // for first time users
 
         return ResponseEntity.ok(AuthenticationResponse.builder().token(jwtToken).build());
-//        return new ResponseEntity<>(HttpStatus.FOUND);
     }
 }

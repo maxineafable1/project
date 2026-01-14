@@ -33,7 +33,6 @@ build/
 .vscode/
 
 # todo temporary only
-application.properties
 application-dev.properties
-application-prod.properties
+
 .env

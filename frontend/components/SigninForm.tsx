@@ -22,7 +22,7 @@ export default function SigninForm() {
     const { email, password } = authInput
 
     try {
-      const res = await login(email, password)
+      const res = await login(email, password, inputRef.current?.checked)
       console.log(res)
 
       if (res.error)

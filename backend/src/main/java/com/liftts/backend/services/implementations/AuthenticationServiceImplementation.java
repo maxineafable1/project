@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -37,8 +38,13 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${security.jwt.token.expiration-time}")
-    private Long jwtExpiryMs;
+    @Value("${app.environment}")
+    private String environment;
+
+    private final String baseUrl = isProd()
+            ? "https://liftts.app"
+//            ? "http://localhost:3001"
+            : "http://localhost:3000";
 
     @Override
     public UserDetails authenticate(String email, String password) {
@@ -64,8 +70,7 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
             String token = UUID.randomUUID().toString();
             userService.createVerificationToken(user, token);
 
-//            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
-            String verificationLink = "http://localhost:3001/verify-email?token=" + token;
+            String verificationLink = baseUrl + "/verify-email?token=" + token;
             emailService.sendVerificationEmail(email, verificationLink);
         } else  {
             User user = userExists.get();
@@ -106,25 +111,28 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
             String token = UUID.randomUUID().toString();
             userService.createVerificationToken(user, token);
 
-//            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + token;
-            String verificationLink = "http://localhost:3001/verify-email?token=" + token;
+            String verificationLink = baseUrl + "/verify-email?token=" + token;
             emailService.sendVerificationEmail(email, verificationLink);
         } else {
-            // resend token
-//            String verificationLink = "http://localhost:8080/api/v1/auth/verify?token=" + user.getVerificationToken().getToken();
-            String verificationLink = "http://localhost:3001/verify-email?token=" + user.getVerificationToken().getToken();
+            // resend current user token
+            String verificationLink = baseUrl + "/verify-email?token=" + user.getVerificationToken().getToken();
+
             emailService.sendVerificationEmail(email, verificationLink);
         }
     }
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Boolean rememberMe) {
         Map<String, Object> claims = new HashMap<>();
+
+        long rememberMeExpiryMs = Duration.ofDays(30).toMillis();
+        long jwtExpiryMs = Duration.ofDays(1).toMillis();
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiryMs))
+                .setExpiration(new Date(System.currentTimeMillis() + (rememberMe ? rememberMeExpiryMs : jwtExpiryMs)))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -165,5 +173,9 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     private Key getSigningKey() {
         byte[] keyBytes = secretKey.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private boolean isProd() {
+        return "prod".equals(environment);
     }
 }

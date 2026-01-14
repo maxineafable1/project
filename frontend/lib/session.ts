@@ -6,9 +6,12 @@ import { jwtVerify } from 'jose'
 const jwtKey = process.env.JWT_SECRET!
 const encodedKey = new TextEncoder().encode(jwtKey)
 
+const isProd = process.env.NODE_ENV === 'production'
+const cookieName = 'liftts-session'
+
 export async function getSession() {
   const cookieStore = await cookies()
-  const session = cookieStore.get('liftts-session')
+  const session = cookieStore.get(cookieName)
 
   if (!session) return null
 
@@ -23,17 +26,24 @@ export async function getSession() {
 
 export async function logout() {
   const cookieStore = await cookies()
-  cookieStore.delete('liftts-session')
+  cookieStore.delete(cookieName)
 }
 
-export async function createSession(jwt: string) {
+export async function createSession(jwt: string, rememberMeChecked?: boolean) {
   const cookieStore = await cookies()
 
-  cookieStore.set('liftts-session', jwt, {
+  cookieStore.set(cookieName, jwt, {
     httpOnly: true,
-    secure: false,
+    secure: isProd, // change to false when test/dev
     path: '/',
-    maxAge: 604800, // 7 days in seconds
+    maxAge: rememberMeChecked ? getCookieMaxAge(30) : getCookieMaxAge(1),
+    ...(isProd && {
+      domain: '.liftts.app',
+    }),
     sameSite: 'lax',
   })
+}
+
+function getCookieMaxAge(days: number) {
+  return days * 60 * 60 * 24;
 }
