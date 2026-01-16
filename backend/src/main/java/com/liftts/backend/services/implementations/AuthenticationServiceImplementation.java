@@ -38,13 +38,8 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${app.environment}")
-    private String environment;
-
-    private final String baseUrl = isProd()
-            ? "https://liftts.app"
-//            ? "http://localhost:3001"
-            : "http://localhost:3000";
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Override
     public UserDetails authenticate(String email, String password) {
@@ -173,9 +168,5 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
     private Key getSigningKey() {
         byte[] keyBytes = secretKey.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    private boolean isProd() {
-        return "prod".equals(environment);
     }
 }
