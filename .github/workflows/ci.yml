@@ -46,7 +46,7 @@ jobs:
           if [ -z "${{ secrets.ENV_FILE }}" ]; then
             echo "Error: ENV_FILE is empty or not set." && exit 1
           fi
-          echo "${{ secrets.ENV_FILE }}" > .env.production
+          echo "${{ secrets.ENV_FILE }}" > ./frontend/.env.production
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.4.0
