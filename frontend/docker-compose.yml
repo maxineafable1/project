@@ -1,0 +1,12 @@
+services:
+  app:
+    image: ghcr.io/maxineafable1/liftts:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: liftts-container
+    ports:
+      - 3001:3001
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
