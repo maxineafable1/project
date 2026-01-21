@@ -26,6 +26,7 @@ export default async function page() {
       latestWeeklyStatus={latestWeeklyStatus.status === 'fulfilled' ? latestWeeklyStatus.value : null}
       latestWorkout={latestWorkout.status === 'fulfilled' ? latestWorkout.value : null}
       prs={prs.status === 'fulfilled' ? prs.value : []}
+      jwt={sessJwt}
     />
   )
 }
