@@ -7,7 +7,7 @@ import { bodyweightSchema, BodyweightSchemaType } from '@/utils/zod-schemas/body
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { LoaderCircle } from 'lucide-react'
+import { Ban, LoaderCircle, Save, SquarePen, Trash } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import weekOfYear from 'dayjs/plugin/weekOfYear' // ES 2015
 
@@ -60,7 +60,7 @@ export default function BodyweightRow({
   }
 
   return (
-    <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-sm">
+    <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] text-sm">
       <div
         className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
         {dayjs(date).format('ll')}
@@ -154,7 +154,6 @@ export default function BodyweightRow({
             </button>
           ) : (
             <button
-              title='Delete'
               disabled={isDelete}
               onClick={async () => {
                 setIsDelete(true)

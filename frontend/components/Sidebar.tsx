@@ -1,11 +1,38 @@
 'use client'
 
 import { logout } from '@/lib/session'
-import { Calendar, ChevronDown, Dumbbell, LayoutDashboard, LogOut, Menu, Search, User, Weight, X } from 'lucide-react'
+import { Calendar, ChevronDown, Dumbbell, LayoutDashboard, LogOutIcon, Menu, Search, Weight, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { Button } from './ui/button'
+
+const navItems = [
+  {
+    href: '/dashboard',
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    href: '/workouts',
+    label: 'Workouts',
+    icon: Dumbbell,
+  },
+  {
+    href: '/my-weight',
+    label: 'My Weight',
+    icon: Weight,
+  },
+]
 
 type Props = {
   username: string
@@ -15,7 +42,6 @@ export default function Sidebar({
   username,
 }: Props) {
   const [sidebar, setSidebar] = useState(false)
-  const [isUserDropdown, setIsUserDropdown] = useState(false)
   const [isSortDropdown, setIsSortDropdown] = useState(false)
 
   const router = useRouter()
@@ -78,30 +104,30 @@ export default function Sidebar({
             <X />
           </button>
         </div>
-        <div className="mb-4">
-          <form
-            onSubmit={e => {
-              e.preventDefault()
-              if (inputRef.current && inputRef.current.value)
-                router.push(pathname + '?' + createQueryString('search', inputRef.current.value))
-              else
-                router.push(pathname)
-            }}
-            className="
+        {pathname === '/workouts' && (
+          <>
+            <div className="mb-4">
+              <form
+                onSubmit={e => {
+                  e.preventDefault()
+                  if (inputRef.current && inputRef.current.value)
+                    router.push(pathname + '?' + createQueryString('search', inputRef.current.value))
+                  else
+                    router.push(pathname)
+                }}
+                className="
             focus-within:border-blue-500 focus-within:outline-blue-500 focus-within:outline
             border border-neutral-300 dark:border-neutral-700
             rounded-md px-4 py-2 inline-flex items-center gap-2 w-full">
-            <Search className='size-5' />
-            <input
-              ref={inputRef}
-              type="search"
-              placeholder='Search'
-              className='text-sm w-full focus:border-0 focus:outline-0'
-            />
-          </form>
-        </div>
-        {pathname === '/workouts' && (
-          <>
+                <Search className='size-5' />
+                <input
+                  ref={inputRef}
+                  type="search"
+                  placeholder='Search'
+                  className='text-sm w-full focus:border-0 focus:outline-0'
+                />
+              </form>
+            </div>
             <div className="font-bold text-sm mb-2">
               Sort by
             </div>
@@ -148,61 +174,50 @@ export default function Sidebar({
         <div className="font-bold text-sm my-2">
           Application
         </div>
-        <Link
-          href={'/dashboard'}
-          onClick={() => setSidebar(false)}
-          className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
-          hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
-          '
-        >
-          <LayoutDashboard className='size-4' />
-          Dashboard
-        </Link>
-        <Link
-          href={'/workouts'}
-          onClick={() => setSidebar(false)}
-          className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
-          hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
-          '
-        >
-          <Dumbbell className='size-4' />
-          Workouts
-        </Link>
-        <Link
-          href={'/my-weight'}
-          onClick={() => setSidebar(false)}
-          className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
-          hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm
-          '
-        >
-          <Weight className='size-4' />
-          My Weight
-        </Link>
+        {navItems.map(({ href, label, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            onClick={e => {
+              if (href === pathname) {
+                e.preventDefault()
+                return
+              }
 
-        <div className="mt-auto relative w-full">
-          <button
-            onClick={() => setIsUserDropdown(prev => !prev)}
-            className={`inline-flex items-center gap-2 py-1.5 px-3 text-sm focus-visible:outline-blue-500 focus-visible:outline-2
-          ${isUserDropdown ? 'bg-white dark:bg-neutral-600' : 'hover:bg-white bg-neutral-200 dark:hover:bg-neutral-600 dark:bg-neutral-700'} rounded transition-colors w-full 
-        `}>
-            <User className='size-4' />
-            <span>{username}</span>
-          </button>
-          <div className={`z-10 absolute w-full -top-1 -translate-y-full overflow-hidden
-          ${!isUserDropdown && 'hidden'} shadow bg-white dark:bg-neutral-700 rounded *:text-start`}>
-            <button
+              setSidebar(false)
+            }}
+            aria-current={pathname === href ? 'page' : undefined}
+            className='inline-flex items-center gap-2 py-1.5 px-3 focus-visible:outline-blue-500 focus-visible:outline-2
+          hover:bg-white dark:hover:bg-neutral-700 rounded transition-colors w-full text-sm'
+          >
+            <Icon className="size-4" />
+            {label}
+          </Link>
+        ))}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className='justify-start mt-auto'>
+              {username}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent style={{ width: "var(--radix-popper-anchor-width)" }}>
+            {/* <DropdownMenuItem>
+              <UserIcon />
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator /> */}
+            <DropdownMenuItem
+              variant="destructive"
               onClick={async () => {
                 await logout()
                 router.push('/')
               }}
-              className='inline-flex gap-1.5 px-3 py-1.5 w-full text-sm cursor-pointer mt-auto 
-            hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors'
             >
-              <LogOut className='size-4' />
-              Sign out
-            </button>
-          </div>
-        </div>
+              <LogOutIcon />
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       {/* hamburger when small screen */}
       <button

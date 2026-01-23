@@ -241,8 +241,11 @@ export default function Dashboard({
           <CardContent>
             {(latestAvgBwDates && latestWeeklyStatus) ? (
               <div className="">
-                <div className="text-sm">
-                  {latestAvgBwDates.startDate} - {latestAvgBwDates.endDate}
+                <div className="flex items-center gap-2">
+                  <Calendar className="size-4" />
+                  <div className="font-bold text-sm">
+                    {latestAvgBwDates.startDate} - {latestAvgBwDates.endDate}
+                  </div>
                 </div>
                 <div className="text-3xl">{latestWeeklyStatus.average.toFixed(2)} kg ({+(latestWeeklyStatus.average * 2.205).toFixed(2)} lb)</div>
               </div>

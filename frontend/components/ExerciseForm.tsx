@@ -114,17 +114,6 @@ export default function ExerciseForm({
       </div>
       <div className="px-6 border-b border-neutral-200 dark:border-neutral-700 h-full flex flex-col items-start justify-center">
         <div className="flex gap-2">
-          <button
-            type="submit"
-            className="px-4 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors text-white
-                  dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2
-                  "
-            disabled={isSubmitting}
-          >
-            {isSubmitting ?
-              <LoaderCircle className="size-4 animate-spin" />
-              : 'Save'}
-          </button>
           {isEdit && (
             <button
               onClick={() => {
@@ -139,6 +128,16 @@ export default function ExerciseForm({
               Cancel
             </button>
           )}
+          <button
+            type="submit"
+            className="px-4 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors text-white
+            dark:focus-visible:outline-white focus-visible:outline-black focus-visible:outline-2"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ?
+              <LoaderCircle className="size-4 animate-spin" />
+              : 'Save'}
+          </button>
         </div>
       </div>
     </form>

@@ -42,15 +42,18 @@ export default function WeightList({
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
       {(weights.length > 0 || newWeight) && (
-        <button
-          onClick={() => setNewWeight(prev => !prev)}
-          className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-black dark:focus-visible:outline-white focus-visible:outline-2
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold">My Weight</h2>
+          <button
+            onClick={() => setNewWeight(prev => !prev)}
+            className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-black dark:focus-visible:outline-white focus-visible:outline-2
           bg-blue-500 hover:bg-blue-600 transition-colors px-4 py-2 rounded font-bold self-end
           "
-        >
-          {newWeight ? <Minus className="size-4" /> : <Plus className="size-4" />}
-          {newWeight ? 'Cancel' : 'Add weight'}
-        </button>
+          >
+            {newWeight ? <Minus className="size-4" /> : <Plus className="size-4" />}
+            <span>{newWeight ? 'Cancel' : 'Add weight'}</span>
+          </button>
+        </div>
       )}
       {newWeight && (
         // <NewWeightForm sessId={sessId} setNewWeight={setNewWeight} />
@@ -71,8 +74,9 @@ export default function WeightList({
         </div>
       )}
       {weights.length > 0 && (
-        <div className="space-y-20">
+        <div className="space-y-20">    
           <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
+            <h3 className='font-bold text-xl mb-2'>Weekly Status</h3>
             <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">
               <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
                 Week
@@ -92,7 +96,7 @@ export default function WeightList({
               return (
                 <div
                   key={week}
-                  className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-sm">
+                  className="grid grid-cols-[repeat(4,minmax(200px,1fr))] text-sm">
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
                     {startDate} - {endDate}
@@ -114,6 +118,7 @@ export default function WeightList({
             })}
           </div>
           <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
+            <h3 className='font-bold text-xl mb-2'>Track Your Bodyweight</h3>
             <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">
               <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
                 Date
