@@ -4,7 +4,6 @@ import { Minus, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import NewWeightForm from './NewWeightForm'
 
-import { getBodyweights } from '@/lib/query/bodyweights'
 import { getStartEndDateFromWeek } from '@/utils/date'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
@@ -56,10 +55,11 @@ export default function WeightList({
 
   async function revalidateWeights(currentNumPage: number) {
     try {
-      const res = await getBodyweights(jwt, currentNumPage)
-      setWeights(res.content)
-      setFirstPage(res.first)
-      setlastPage(res.last)
+      const res = await fetch(`/api/bodyweights?page=${currentNumPage}`)
+      const data = await res.json()
+      setWeights(data.content)
+      setFirstPage(data.first)
+      setlastPage(data.last)
     } catch (error) {
       console.log(error)
     }
