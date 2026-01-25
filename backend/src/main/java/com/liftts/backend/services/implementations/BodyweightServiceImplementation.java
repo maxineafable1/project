@@ -1,6 +1,5 @@
 package com.liftts.backend.services.implementations;
 
-import com.liftts.backend.domain.dtos.AverageBodyweightDto;
 import com.liftts.backend.domain.dtos.CreateBodyweightRequest;
 import com.liftts.backend.domain.dtos.UpdateBodyweightRequest;
 import com.liftts.backend.domain.dtos.WeeklyBodyweight;
@@ -9,6 +8,8 @@ import com.liftts.backend.domain.entities.User;
 import com.liftts.backend.repositories.BodyweightRepository;
 import com.liftts.backend.services.BodyweightService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,8 +23,8 @@ public class BodyweightServiceImplementation implements BodyweightService {
     private final BodyweightRepository bodyweightRepository;
 
     @Override
-    public List<Bodyweight> getBodyweights(User user) {
-        return bodyweightRepository.findAllByUserOrderByDateDesc(user);
+    public Page<Bodyweight> getBodyweights(User user, Pageable pageable) {
+        return bodyweightRepository.findAllByUserOrderByDateDesc(user, pageable);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package com.liftts.backend.repositories;
 
-import com.liftts.backend.domain.dtos.AverageBodyweightDto;
 import com.liftts.backend.domain.dtos.WeeklyBodyweight;
 import com.liftts.backend.domain.entities.Bodyweight;
 import com.liftts.backend.domain.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BodyweightRepository extends JpaRepository<Bodyweight, Long> {
-    List<Bodyweight> findAllByUserOrderByDateDesc(User user);
+    Page<Bodyweight> findAllByUserOrderByDateDesc(User user, Pageable pageable);
     boolean existsByDateAndUser(LocalDate date, User user);
 //    date_trunc('week', b.date)
     @Query(value = """

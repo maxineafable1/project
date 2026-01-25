@@ -14,10 +14,21 @@ export default async function page() {
     getWeeklyBodyweightStat(session.jwt),
   ])
 
+  console.log(weights)
+  const obj = weights.status === 'fulfilled'
+    ? {
+      weights: weights.value.content,
+      first: weights.value.first,
+      last: weights.value.last,
+      number: weights.value.number,
+      empty: weights.value.empty,
+    }
+    : null
+
   return (
     <WeightList
       jwt={session.jwt}
-      weights={weights.status === 'fulfilled' ? weights.value : []}
+      obj={obj}
       weeklyStatus={weeklyStatus.status === 'fulfilled' ? weeklyStatus.value : []}
     />
   )

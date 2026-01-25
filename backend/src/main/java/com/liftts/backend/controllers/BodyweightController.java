@@ -9,6 +9,9 @@ import com.liftts.backend.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +29,15 @@ public class BodyweightController {
     private final BodyweightMapper bodyweightMapper;
 
     @GetMapping
-    public ResponseEntity<List<BodyweightDto>> getBodyweights(
-            @RequestAttribute UUID userId
+    public ResponseEntity<Page<BodyweightDto>> getBodyweights(
+            @RequestAttribute UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
         User currUser = userService.getUserById(userId);
-        List<Bodyweight> bodyweights = bodyweightService.getBodyweights(currUser);
-        List<BodyweightDto> bodyweightDtos = bodyweights.stream().map(bodyweightMapper::toBodyweightDto).toList();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Bodyweight> bodyweights = bodyweightService.getBodyweights(currUser, pageable);
+        Page<BodyweightDto> bodyweightDtos = bodyweights.map(bodyweightMapper::toBodyweightDto);
         return ResponseEntity.ok(bodyweightDtos);
     }
 

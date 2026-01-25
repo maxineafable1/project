@@ -1,28 +1,38 @@
 'use client'
 
 import { Minus, Plus } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import NewWeightForm from './NewWeightForm'
 
+import { getBodyweights } from '@/lib/query/bodyweights'
+import { getStartEndDateFromWeek } from '@/utils/date'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
+import { Button } from '../ui/button'
 import BodyweightRow from './BodyweightRow'
-import { getStartEndDateFromWeek } from '@/utils/date'
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
 dayjs.extend(localizedFormat);
 
+export type WeightList = {
+  id: number;
+  weight: number;
+  date: string;
+  isKilogram: boolean;
+}
+
 type Props = {
   jwt: string
-  weights: {
-    id: number;
-    weight: number;
-    date: string;
-    isKilogram: boolean;
-  }[]
+  obj: {
+    weights: WeightList[];
+    first: boolean;
+    last: boolean;
+    empty: boolean
+    number: number;
+  } | null
   weeklyStatus: {
     week: string;
     average: number;
@@ -33,11 +43,31 @@ type Props = {
 
 export default function WeightList({
   jwt,
-  weights,
+  obj,
   weeklyStatus,
 }: Props) {
+  const [weights, setWeights] = useState(obj ? obj.weights : [])
+  const [firstPage, setFirstPage] = useState(obj?.first)
+  const [lastPage, setlastPage] = useState(obj?.last)
+  const [currPage, setCurrPage] = useState(1)
+
   const [newWeight, setNewWeight] = useState(false)
   const [isEditId, setIsEditId] = useState<number | null>(null)
+
+  async function revalidateWeights(currentNumPage: number) {
+    try {
+      const res = await getBodyweights(jwt, currentNumPage)
+      setWeights(res.content)
+      setFirstPage(res.first)
+      setlastPage(res.last)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    revalidateWeights(currPage)
+  }, [currPage])
 
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col">
@@ -57,9 +87,14 @@ export default function WeightList({
       )}
       {newWeight && (
         // <NewWeightForm sessId={sessId} setNewWeight={setNewWeight} />
-        <NewWeightForm jwt={jwt} setNewWeight={setNewWeight} />
+        <NewWeightForm
+          jwt={jwt}
+          setNewWeight={setNewWeight}
+          revalidateWeights={revalidateWeights}
+          currPage={currPage}
+        />
       )}
-      {(weights.length === 0 && !newWeight) && (
+      {(obj && obj.weights.length === 0 && !newWeight) && (
         <div className="max-w-md mx-auto text-center space-y-4">
           <div className="text-3xl font-bold">Start tracking your bodyweight progress from day one.</div>
           {/* <div className="text-sm mx-auto">Click <span className="font-bold">New Exercise</span> to start tracking your workouts.</div> */}
@@ -73,8 +108,8 @@ export default function WeightList({
           </button>
         </div>
       )}
-      {weights.length > 0 && (
-        <div className="space-y-20">    
+      <div className="space-y-20">
+        {weeklyStatus.length > 0 && (
           <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
             <h3 className='font-bold text-xl mb-2'>Weekly Status</h3>
             <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">
@@ -117,6 +152,8 @@ export default function WeightList({
               )
             })}
           </div>
+        )}
+        {obj && obj.weights.length > 0 && (
           <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
             <h3 className='font-bold text-xl mb-2'>Track Your Bodyweight</h3>
             <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">
@@ -140,11 +177,33 @@ export default function WeightList({
                 setIsEditId={setIsEditId}
                 weight={weight}
                 jwt={jwt}
+                revalidateWeights={revalidateWeights}
+                currPage={currPage}
               />
             ))}
+            <div className="flex items-center justify-between mt-4">
+              {/* {(currentPage && +currentPage > 1) && ( */}
+              {!firstPage && (
+                <Button
+                  // onClick={() => router.push(pathname + '?' + createQueryString(currentPage - 1), { scroll: false })}
+                  onClick={() => setCurrPage(prev => prev - 1)}
+                >
+                  Previous
+                </Button>
+              )}
+              {!lastPage && (
+                <Button
+                  // onClick={() => router.push(pathname + '?' + createQueryString(currentPage === 0 ? currentPage + 2 : currentPage + 1), { scroll: false })}
+                  onClick={() => setCurrPage(prev => prev + 1)}
+                  className='ml-auto'
+                >
+                  Next
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

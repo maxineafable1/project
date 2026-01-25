@@ -7,9 +7,9 @@ import { bodyweightSchema, BodyweightSchemaType } from '@/utils/zod-schemas/body
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { Ban, LoaderCircle, Save, SquarePen, Trash } from 'lucide-react'
+import weekOfYear from 'dayjs/plugin/weekOfYear'; // ES 2015
+import { LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import weekOfYear from 'dayjs/plugin/weekOfYear' // ES 2015
 
 dayjs.extend(weekOfYear);
 
@@ -25,6 +25,8 @@ type Props = {
   }
   isEditId: number | null
   setIsEditId: Dispatch<SetStateAction<number | null>>
+  revalidateWeights(currentNumPage: number): Promise<void>
+  currPage: number
 }
 
 export default function BodyweightRow({
@@ -32,6 +34,8 @@ export default function BodyweightRow({
   weight: { date, id, isKilogram, weight },
   isEditId,
   setIsEditId,
+  revalidateWeights,
+  currPage,
 }: Props) {
   const [isDelete, setIsDelete] = useState(false)
 
@@ -51,6 +55,7 @@ export default function BodyweightRow({
 
     try {
       await updateBodyweight(jwt, newData, id)
+      revalidateWeights(currPage)
     } catch (error) {
       // toast msg
       console.log(error)
@@ -159,6 +164,7 @@ export default function BodyweightRow({
                 setIsDelete(true)
                 try {
                   await deleteBodyweight(jwt, id)
+                  revalidateWeights(currPage)
                 } catch (error) {
                   // toast msg
                   console.log(error)

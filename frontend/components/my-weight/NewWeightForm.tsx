@@ -15,11 +15,15 @@ dayjs.extend(localizedFormat);
 type Props = {
   jwt: string
   setNewWeight: Dispatch<SetStateAction<boolean>>
+  revalidateWeights(currentNumPage: number): Promise<void>
+  currPage: number
 }
 
 export default function NewWeightForm({
   jwt,
   setNewWeight,
+  revalidateWeights,
+  currPage,
 }: Props) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, getValues, setError } = useForm({
     resolver: zodResolver(bodyweightSchema),
@@ -40,6 +44,7 @@ export default function NewWeightForm({
     try {
       await createBodyweight(jwt, newData)
       setNewWeight(false)
+      revalidateWeights(currPage)
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.startsWith('Bodyweight'))
