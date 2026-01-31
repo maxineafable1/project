@@ -16,11 +16,15 @@ dayjs.extend(localizedFormat);
 type Props = {
   jwt: string
   setNewExercise: Dispatch<SetStateAction<boolean>>
+  revalidateWorkouts?: (currPage: number) => Promise<void>
+  currPage?: number
 }
 
 export default function NewExerciseForm({
   jwt,
   setNewExercise,
+  revalidateWorkouts,
+  currPage,
 }: Props) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, getValues, setError } = useForm({
     resolver: zodResolver(createExerciseSchema),
@@ -40,6 +44,8 @@ export default function NewExerciseForm({
 
     try {
       await createExercise(jwt, newData)
+      if (revalidateWorkouts && currPage)
+        revalidateWorkouts(currPage)
     } catch (error) {
       // toast msg
       console.log(error)

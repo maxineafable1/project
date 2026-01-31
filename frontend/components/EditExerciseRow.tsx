@@ -22,12 +22,21 @@ type Props = {
   }
   jwt: string
   titleDate: string
+  // revalidateWorkouts: () => void
+  revalidateWorkouts: (currPage: number) => Promise<void>
+  currPage: number
+  numOfElements: number | null
+  workoutsLength: number
 }
 
 export default function EditExerciseRow({
   data: { id, name, weight, sets, reps, isKilogram: isKilogramDefault },
   jwt,
   titleDate,
+  revalidateWorkouts,
+  currPage,
+  numOfElements,
+  workoutsLength,
 }: Props) {
   const [isEdit, setIsEdit] = useState(false)
 
@@ -40,6 +49,12 @@ export default function EditExerciseRow({
 
     try {
       await deleteExercise(jwt, exerciseId)
+      if (numOfElements && numOfElements === 1 && workoutsLength === 1) {
+        console.log('currPage', currPage)
+        revalidateWorkouts(currPage - 1)
+      }
+      else
+        revalidateWorkouts(currPage)
     } catch (error) {
       // toast msg
       console.log(error)
@@ -68,6 +83,7 @@ export default function EditExerciseRow({
 
     try {
       await updateExercise(jwt, newData, id)
+      revalidateWorkouts(currPage)
     } catch (error) {
       // toast msg
       console.log(error)

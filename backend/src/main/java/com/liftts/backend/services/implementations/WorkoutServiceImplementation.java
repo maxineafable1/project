@@ -5,6 +5,7 @@ import com.liftts.backend.domain.entities.Workout;
 import com.liftts.backend.repositories.WorkoutRepository;
 import com.liftts.backend.services.WorkoutService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class WorkoutServiceImplementation implements WorkoutService {
     private final WorkoutRepository workoutRepository;
 
     @Override
-    public List<Workout> getWorkouts(String name, Pageable pageable, User user) {
+    public Page<Workout> getWorkouts(String name, Pageable pageable, User user) {
         return workoutRepository.findParentsWithChildrenByChildName(name, pageable, user);
     }
 

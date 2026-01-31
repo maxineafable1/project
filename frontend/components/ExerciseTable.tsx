@@ -32,12 +32,21 @@ type Props = {
     updatedAt: Date;
     userId: string;
   }[] | undefined
+  // revalidateWorkouts: () => void
+  revalidateWorkouts: (currPage: number) => Promise<void>
+  currPage: number
+  numOfElements: number | null
+  workoutsLength: number
 }
 
 export default function ExerciseTable({
   jwt,
   titleDate,
   value,
+  revalidateWorkouts,
+  currPage,
+  numOfElements,
+  workoutsLength,
 }: Props) {
   const [isCreate, setIsCreate] = useState(false)
 
@@ -53,6 +62,7 @@ export default function ExerciseTable({
 
     try {
       await createExercise(jwt, newData)
+      revalidateWorkouts(currPage)
     } catch (error) {
       // toast msg
       console.log(error)
@@ -120,6 +130,10 @@ export default function ExerciseTable({
             jwt={jwt}
             // sessId={sessId}
             titleDate={titleDate}
+            revalidateWorkouts={revalidateWorkouts}
+            currPage={currPage}
+            numOfElements={numOfElements}
+            workoutsLength={workoutsLength}
           />
         ))}
       </div>

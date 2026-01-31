@@ -2,6 +2,7 @@ package com.liftts.backend.repositories;
 
 import com.liftts.backend.domain.entities.User;
 import com.liftts.backend.domain.entities.Workout;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +27,7 @@ public interface WorkoutRepository extends JpaRepository<Workout, Long> {
             OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%'))
         )
     """)
-    List<Workout> findParentsWithChildrenByChildName(
+    Page<Workout> findParentsWithChildrenByChildName(
             @Param("name") String name,
             Pageable pageable,
             User user);

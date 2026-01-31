@@ -1,10 +1,11 @@
 type Params = {
-  name: string
+  name?: string
   sortBy: string
+  direction: string
 }
 
-export async function getAllWorkouts(jwt: string, { name, sortBy }: Params) {
-  const res = await fetch(`${process.env.API_URL}/api/v1/workouts?name=${name}&sort=${sortBy}`, {
+export async function getAllWorkouts(jwt: string, { name, sortBy, direction }: Params) {
+  const res = await fetch(`${process.env.API_URL}/api/v1/workouts?${name ? `name=${name}` : undefined}&sortBy=${sortBy}&direction=${direction}`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${jwt}`,
