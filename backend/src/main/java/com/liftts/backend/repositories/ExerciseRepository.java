@@ -18,14 +18,16 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     Optional<Exercise> findByIdAndUser(Long id, User user);
 
     @Query(value = """
-        SELECT 
-                MAX(e.weight) AS weight,
-                e.name AS name,
-                e.is_kilogram AS isKilogram
-        FROM exercises e
-        WHERE e.user_id = :userId AND e.sets = 1 AND e.reps = 1 AND LOWER(e.name) IN (:lifts)
-        GROUP BY name, isKilogram
-    """, nativeQuery = true)
+    SELECT
+        MAX(e.weight) AS weight,
+        e.name AS name,
+        e.isKilogram AS isKilogram,
+        w.exerciseDate AS exerciseDate
+    FROM Exercise e
+    JOIN e.workout w
+    WHERE e.user.id = :userId AND e.sets = 1 AND e.reps = 1 AND LOWER(e.name) IN (:lifts)
+    GROUP BY e.name, e.isKilogram, w.exerciseDate
+    """)
     List<ExercisePr> getExercisePrs(
             @Param("userId") UUID userId,
             @Param("lifts") List<String> lifts

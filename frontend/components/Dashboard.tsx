@@ -66,6 +66,7 @@ type Props = {
     weight: number;
     name: string;
     isKilogram: boolean;
+    exerciseDate: string;
   }[]
   jwt: string
 }
@@ -261,13 +262,16 @@ export default function Dashboard({
               Best recorded one-rep maxes
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4 sm:grid-cols-2 xl:grid-rows-[repeat(2,minmax(50px,120px))] p-4 auto-rows-min">
+          <CardContent className="grid gap-4 sm:grid-cols-2 xl:grid-rows-[repeat(2,minmax(50px,1fr))]">
             {lifts.map(lift => {
               const curLift = prs.find(pr => pr.name.toLowerCase() === lift)
               return (
-                <Card key={lift} className="group">
+                <Card key={lift} className="group justify-between">
                   <CardHeader>
-                    <CardTitle className="capitalize group-last-of-type:uppercase">{lift}</CardTitle>
+                    <CardTitle className="capitalize group-last-of-type:uppercase">
+                      {lift}
+                    </CardTitle>
+                    {curLift && <div className="text-sm">{dayjs(curLift.exerciseDate).format('ll')}</div>}
                   </CardHeader>
                   <CardContent className="">
                     {curLift ?
