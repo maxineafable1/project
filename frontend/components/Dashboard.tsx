@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ import NewExerciseForm from "./NewExerciseForm";
 dayjs.extend(localizedFormat);
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
+dayjs.extend(relativeTime)
 
 type Exercise = {
   name: string;
@@ -271,7 +273,12 @@ export default function Dashboard({
                     <CardTitle className="capitalize group-last-of-type:uppercase">
                       {lift}
                     </CardTitle>
-                    {curLift && <div className="text-sm">{dayjs(curLift.exerciseDate).format('ll')}</div>}
+                    {curLift && (
+                      <div className="flex items-center gap-2">
+                        <Calendar className="size-4" />
+                        <div className="text-sm">{dayjs(curLift.exerciseDate).format('ll')}</div>
+                      </div>
+                    )}
                   </CardHeader>
                   <CardContent className="">
                     {curLift ?
@@ -288,29 +295,54 @@ export default function Dashboard({
             })}
           </CardContent>
         </Card>
-        {/* <Card className="w-full xl:col-span-4 2xl:col-span-2">
+        <Card className="w-full xl:col-span-2 2xl:col-span-1">
           <CardHeader>
-            <CardTitle>Days Since Last Workout</CardTitle>
+            <CardTitle>Last Workout</CardTitle>
             <CardDescription>
-              Enter your email below to login to your account
+              When you last trained
             </CardDescription>
-            <CardAction>
-              <Button variant="link">Sign Up</Button>
-            </CardAction>
           </CardHeader>
-          <CardContent>
-            test
+          <CardContent className="my-auto">
+            {latestWorkout ? (
+              <div className="text-3xl">
+                {(() => {
+                  const workoutDay = dayjs(latestWorkout.exerciseDate).startOf("day")
+                  const today = dayjs().startOf("day")
+
+                  return workoutDay.isSame(today, "day")
+                    ? "Today"
+                    : workoutDay.from(today)
+                })()}
+              </div>
+            ) : (
+              <div>No record yet.</div>
+            )}
           </CardContent>
-          <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-            <Button variant="outline" className="w-full">
-              Login with Google
-            </Button>
-          </CardFooter>
-        </Card> */}
-        {/* <div className="bg-neutral-400 h-96 xl:row-span-2 xl:col-span-2"></div> */}
+        </Card>
+        <Card className="w-full xl:col-span-2 2xl:col-span-1">
+          <CardHeader>
+            <CardTitle>Bodyweight</CardTitle>
+            <CardDescription>
+              Your most recent entry
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="my-auto">
+            {latestBodyweight ? (
+              <div className="text-3xl">
+                {(() => {
+                  const workoutDay = dayjs(latestBodyweight.date).startOf("day")
+                  const today = dayjs().startOf("day")
+
+                  return workoutDay.isSame(today, "day")
+                    ? "Today"
+                    : workoutDay.from(today)
+                })()}
+              </div>
+            ) : (
+              <div>No record yet.</div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
