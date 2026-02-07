@@ -1,9 +1,9 @@
 export function formatWeight(valKg: number) {
   const kg = Number.isInteger(valKg)
     ? valKg
-    : Number(valKg.toFixed(0));
+    : +valKg.toFixed(2);
 
-  const lbRaw = valKg * 2.205;
+  const lbRaw = kg * 2.205;
   const lb = Number.isInteger(lbRaw)
     ? lbRaw
     : Number(lbRaw.toFixed(2));

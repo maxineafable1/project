@@ -12,6 +12,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { Button } from '../ui/button'
 import BodyweightRow from './BodyweightRow'
 import { formatWeight } from '@/utils/number'
+import { Switch } from "@/components/ui/switch"
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
@@ -50,6 +51,7 @@ export default function WeightList({
   const [firstPage, setFirstPage] = useState(obj?.first)
   const [lastPage, setlastPage] = useState(obj?.last)
   const [currPage, setCurrPage] = useState(1)
+  const [isCheckedWeightLoss, setIsCheckedWeightLoss] = useState(true)
 
   const [newWeight, setNewWeight] = useState(false)
   const [isEditId, setIsEditId] = useState<number | null>(null)
@@ -112,7 +114,19 @@ export default function WeightList({
       <div className="space-y-20">
         {weeklyStatus.length > 0 && (
           <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
-            <h3 className='font-bold text-xl mb-2'>Weekly Status</h3>
+            <div className="flex items-center gap-4 mb-2">
+              <h3 className='font-bold text-xl'>Weekly Status</h3>
+              <div className="flex items-center gap-1">
+                <Switch
+                  id='weight-loss'
+                  checked={isCheckedWeightLoss}
+                  onCheckedChange={val => {
+                    setIsCheckedWeightLoss(val)
+                  }}
+                />
+                <label htmlFor="weight-loss">Weight Loss</label>
+              </div>
+            </div>
             <div className="grid grid-cols-[repeat(5,minmax(200px,1fr))] font-bold text-xs uppercase">
               <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
                 Week
@@ -161,9 +175,9 @@ export default function WeightList({
                           className="flex items-center gap-2"
                         >
                           {isGain ? (
-                            <ArrowUp className="size-4 text-green-500" />
+                            <ArrowUp className={`size-4 ${isCheckedWeightLoss ? 'text-red-500' : 'text-green-500'}`} />
                           ) : (
-                            <ArrowDown className="size-4 text-red-500" />
+                            <ArrowDown className={`size-4 ${isCheckedWeightLoss ? 'text-green-500' : 'text-red-500'}`} />
                           )}
                           {weightDisplay}
                         </span>
