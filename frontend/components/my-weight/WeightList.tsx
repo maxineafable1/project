@@ -1,6 +1,6 @@
 'use client'
 
-import { Minus, Plus } from 'lucide-react'
+import { ArrowDown, ArrowUp, Minus, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import NewWeightForm from './NewWeightForm'
 
@@ -11,6 +11,7 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { Button } from '../ui/button'
 import BodyweightRow from './BodyweightRow'
+import { formatWeight } from '@/utils/number'
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
@@ -112,12 +113,15 @@ export default function WeightList({
         {weeklyStatus.length > 0 && (
           <div className="w-full text-sm text-left rtl:text-right overflow-x-auto no-scrollbar p-1 focus-visible:outline-2 focus-visible:outline-blue-500">
             <h3 className='font-bold text-xl mb-2'>Weekly Status</h3>
-            <div className="grid grid-cols-[repeat(4,minmax(200px,1fr))] font-bold text-xs uppercase">
+            <div className="grid grid-cols-[repeat(5,minmax(200px,1fr))] font-bold text-xs uppercase">
               <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
                 Week
               </div>
               <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
                 Average
+              </div>
+              <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
+                Difference
               </div>
               <div className={`px-6 py-3 border-b border-neutral-200 dark:border-neutral-700`}>
                 Minimum
@@ -126,27 +130,53 @@ export default function WeightList({
                 Maximum
               </div>
             </div>
-            {weeklyStatus.map(({ average, maxWeight, minWeight, week }) => {
+            {weeklyStatus.map(({ average, maxWeight, minWeight, week }, i) => {
               const { startDate, endDate } = getStartEndDateFromWeek(week)
+              const maxLength = weeklyStatus.length
+
+              const next = i < maxLength - 1 ? weeklyStatus[i + 1].average : null
+              const diff = next ? average - next : null
+
               return (
                 <div
                   key={week}
-                  className="grid grid-cols-[repeat(4,minmax(200px,1fr))] text-sm">
+                  className="grid grid-cols-[repeat(5,minmax(200px,1fr))] text-sm">
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
                     {startDate} - {endDate}
                   </div>
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
-                    {average.toFixed(2)} kg ({+(average * 2.205).toFixed(2)} lb)
+                    {formatWeight(average)}
                   </div>
                   <div
                     className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
-                    {minWeight.toFixed(2)} kg ({+(minWeight * 2.205).toFixed(2)} lb)
+                    {diff !== null && diff !== 0 && (() => {
+                      const weightDisplay = formatWeight(diff)
+                      const isGain = diff > 0
+
+                      return (
+                        <span
+                          aria-label="Weight difference"
+                          className="flex items-center gap-2"
+                        >
+                          {isGain ? (
+                            <ArrowUp className="size-4 text-green-500" />
+                          ) : (
+                            <ArrowDown className="size-4 text-red-500" />
+                          )}
+                          {weightDisplay}
+                        </span>
+                      )
+                    })()}
+                  </div>
+                  <div
+                    className="px-6 py-4 border-b border-r border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
+                    {formatWeight(minWeight)}
                   </div>
                   <div
                     className="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 truncate overflow-x-auto focus-visible:outline-blue-500 focus-visible:outline-2">
-                    {maxWeight.toFixed(2)} kg ({+(maxWeight * 2.205).toFixed(2)} lb)
+                    {formatWeight(maxWeight)}
                   </div>
                 </div>
               )
@@ -182,10 +212,8 @@ export default function WeightList({
               />
             ))}
             <div className="flex items-center justify-between mt-4">
-              {/* {(currentPage && +currentPage > 1) && ( */}
               {!firstPage && (
                 <Button
-                  // onClick={() => router.push(pathname + '?' + createQueryString(currentPage - 1), { scroll: false })}
                   onClick={() => setCurrPage(prev => prev - 1)}
                 >
                   Previous
@@ -193,7 +221,6 @@ export default function WeightList({
               )}
               {!lastPage && (
                 <Button
-                  // onClick={() => router.push(pathname + '?' + createQueryString(currentPage === 0 ? currentPage + 2 : currentPage + 1), { scroll: false })}
                   onClick={() => setCurrPage(prev => prev + 1)}
                   className='ml-auto'
                 >
