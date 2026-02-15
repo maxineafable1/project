@@ -1,13 +1,24 @@
 'use client'
 
-import { Minus, Plus } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { Calendar, Minus, Plus, Search } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import ExerciseTable from "./ExerciseTable"
 import NewExerciseForm from "./NewExerciseForm"
 
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { Button } from "./ui/button"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 dayjs.extend(localizedFormat);
 
@@ -60,8 +71,38 @@ export default function Workouts({
 
   const [numOfElements, setNumOfElements] = useState<number | null>(null)
 
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const sortByParam = searchParams.get('sortBy')
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
+  
+  const removeQueryParam = useCallback(
+    (name: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete(name)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
+
   const revalidateWorkouts = useCallback((curPage?: number) => {
-    console.log('revalidateWorkouts')
+    // console.log('revalidateWorkouts')
     setWorkouts(obj ? obj.workouts : [])
     setFirstPage(obj?.first)
     setlastPage(obj?.last)
@@ -90,7 +131,7 @@ export default function Workouts({
       setFirstPage(data.first)
       setlastPage(data.last)
       setCurrPage(data.number)
-      console.log('data', data)
+      // console.log('data', data)
       setNumOfElements(data.numberOfElements)
     } catch (error) {
       console.log(error)
@@ -100,7 +141,7 @@ export default function Workouts({
 
   useEffect(() => {
     // if (searchVal) {
-    console.log('useffect 2', searchVal)
+    // console.log('useffect 2', searchVal)
     revalidateWorkouts()
     // }
   }, [searchVal, revalidateWorkouts])
@@ -108,17 +149,87 @@ export default function Workouts({
   return (
     <div className="p-8 lg:p-12 lg:ml-[24rem] space-y-8 lg:space-y-12 flex flex-col h-full min-h-dvh">
       {(workouts.length > 0 || newExercise) && (
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold">Workouts</h2>
-          <button
-            onClick={() => setNewExercise(prev => !prev)}
-            className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-black dark:focus-visible:outline-white focus-visible:outline-2
-          bg-blue-500 hover:bg-blue-600 transition-colors px-4 py-2 rounded font-bold self-end
-          "
-          >
-            {newExercise ? <Minus className="size-4" /> : <Plus className="size-4" />}
-            <span>{newExercise ? 'Cancel' : 'New Exercise'}</span>
-          </button>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-bold">Workouts</h2>
+            <button
+              onClick={() => setNewExercise(prev => !prev)}
+              className="inline-flex items-center gap-2 text-sm text-white cursor-pointer focus-visible:outline-black dark:focus-visible:outline-white focus-visible:outline-2
+            bg-blue-500 hover:bg-blue-600 transition-colors px-4 py-2 rounded font-bold self-end
+            "
+            >
+              {newExercise ? <Minus className="size-4" /> : <Plus className="size-4" />}
+              <span>{newExercise ? 'Cancel' : 'New Exercise'}</span>
+            </button>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                if (inputRef.current && inputRef.current.value)
+                  router.push(pathname + '?' + createQueryString('search', inputRef.current.value))
+                else
+                  router.push(pathname)
+              }}
+              className="
+              focus-within:border-blue-500 focus-within:outline-blue-500 focus-within:outline
+              border border-neutral-300 dark:border-neutral-700
+              rounded-md px-4 py-2 inline-flex items-center gap-2 w-full
+              max-w-sm
+            ">
+              <Search className='size-5' />
+              <input
+                ref={inputRef}
+                type="search"
+                placeholder='Search'
+                className='text-sm w-full focus:border-0 focus:outline-0'
+              />
+            </form>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Sort By</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="flex items-center gap-1">
+                    <Calendar className='size-4' />
+                    Date
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      if (sortByParam === 'date_desc') return
+                      router.push(pathname + '?' + createQueryString('sortBy', 'date_desc'))
+                    }}
+                    className="data-[disabled]:opacity-50 data-[disabled]:pointer-events-none"
+                    disabled={sortByParam === 'date_desc'}
+                  >
+                    Newest First
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      if (sortByParam === 'date_asc') return
+                      router.push(pathname + '?' + createQueryString('sortBy', 'date_asc'))
+                    }}
+                    disabled={sortByParam === 'date_asc'}
+                  >
+                    Oldest First
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.replace(pathname + '?' + removeQueryParam('sortBy'));
+                    }}
+                    variant="destructive"
+                  >
+                    Clear
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       )}
       {newExercise && (

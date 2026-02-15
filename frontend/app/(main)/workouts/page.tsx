@@ -38,7 +38,7 @@ export default async function page({
     empty: workouts.empty,
   }
 
-  console.log(workouts)
+  // console.log(workouts)
 
   return (
     <Workouts
